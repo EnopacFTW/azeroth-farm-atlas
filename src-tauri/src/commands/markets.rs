@@ -40,7 +40,7 @@ fn manual_quotes(state: &AppState, market_id: &str, items: &[u32]) -> AppResult<
             cache_expires_at: None,
             is_live_snapshot: false,
             source_url: None,
-            attribution_text: "Manueller Preis (eigene Notiz)".into(),
+            attribution_text: crate::i18n::tr("Manueller Preis (eigene Notiz)", "Manual price (own note)"),
             attribution_url: None,
             data_source_note: p.note,
             from_cache: true,
@@ -51,7 +51,7 @@ fn manual_quotes(state: &AppState, market_id: &str, items: &[u32]) -> AppResult<
 #[tauri::command]
 pub async fn fetch_quotes(state: State<'_, AppState>, provider: String, market_id: String, item_ids: Vec<u32>) -> AppResult<Vec<MarketQuote>> {
     if item_ids.len() > 400 {
-        return Err(AppError::invalid("Zu viele Items auf einmal (max. 400)"));
+        return Err(AppError::invalid(crate::i18n::tr("Zu viele Items auf einmal (max. 400)", "Too many items at once (max. 400)")));
     }
     if provider == "manual" {
         return manual_quotes(&state, &market_id, &item_ids);
@@ -74,7 +74,7 @@ pub async fn fetch_quote_detail(state: State<'_, AppState>, provider: String, ma
 pub async fn fetch_crafting(state: State<'_, AppState>, market_id: String, profession: String) -> AppResult<serde_json::Value> {
     let s = state.market_settings()?;
     if !s.ahledger_enabled {
-        return Err(AppError::new("provider_disabled", "AHledger ist deaktiviert – Rezeptdaten kommen von AHledger."));
+        return Err(AppError::new("provider_disabled", crate::i18n::tr("AHledger ist deaktiviert – Rezeptdaten kommen von AHledger.", "AHledger is disabled – recipe data comes from AHledger.")));
     }
     crate::market::ahledger::Ahledger::new(credentials::get("ahledger_api_key")).crafting(&state.market.http, &market_id, &profession).await
 }

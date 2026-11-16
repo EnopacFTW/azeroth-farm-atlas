@@ -65,9 +65,9 @@ pub fn item_key(item_id: u32, variant_key: Option<&str>) -> Result<u64, AppError
     match variant_key {
         None => Ok(item_id as u64),
         Some(v) => {
-            let k: u64 = v.parse().map_err(|_| AppError::invalid("Ungültiger Varianten-Schlüssel"))?;
+            let k: u64 = v.parse().map_err(|_| AppError::invalid(crate::i18n::tr("Ungültiger Varianten-Schlüssel", "Invalid variant key")))?;
             if k == 0 || k > (1u64 << 53) - 1 {
-                return Err(AppError::invalid("Varianten-Schlüssel außerhalb des gültigen Bereichs"));
+                return Err(AppError::invalid(crate::i18n::tr("Varianten-Schlüssel außerhalb des gültigen Bereichs", "Variant key outside the valid range")));
             }
             Ok(k)
         }
@@ -108,11 +108,11 @@ pub fn parse_item(r: &HttpResponse, item_id: u32, variant_key: Option<&str>) -> 
         attribution_text: ATTRIBUTION.into(),
         attribution_url: Some(HOME.into()),
         data_source_note: Some(if p.row.is_none() {
-            "Keine Lesung (row = null)".into()
+            crate::i18n::tr("Keine Lesung (row = null)", "No reading (row = null)")
         } else if p.live {
             "Live-Tabelle".into()
         } else {
-            "Stündlicher Snapshot (live = false); Statistik der Lesung laut Doku nicht als Min/Median spezifiziert".into()
+            crate::i18n::tr("Stündlicher Snapshot (live = false); Statistik der Lesung laut Doku nicht als Min/Median spezifiziert", "Hourly snapshot (live = false); the docs do not specify the reading as min/median")
         }),
         from_cache: false,
     })
@@ -137,7 +137,7 @@ impl Fyi {
 /// `{"error":"bad_market"}` -> clear "market not offered" message, so the UI can switch provider.
 fn map_error(e: AppError) -> AppError {
     if matches!(e.http_status, Some(400) | Some(404)) {
-        return AppError::new("market_unavailable", "Dieser Markt wird von auctionhouse.fyi nicht angeboten (bad_market/404). Für EU bitte AHledger verwenden.")
+        return AppError::new("market_unavailable", crate::i18n::tr("Dieser Markt wird von auctionhouse.fyi nicht angeboten (bad_market/404). Für EU bitte AHledger verwenden.", "auctionhouse.fyi does not offer this market (bad_market/404). Use AHledger for EU."))
             .with_status(e.http_status.unwrap_or(404));
     }
     e

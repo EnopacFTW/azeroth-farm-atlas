@@ -46,7 +46,7 @@ fn json_one(c: &Connection, sql: &str, p: impl rusqlite::Params) -> AppResult<Op
 
 pub fn spot_candidates(c: &Connection, q: &CandidateQuery) -> AppResult<Vec<Value>> {
     if !(1..=60).contains(&q.level) {
-        return Err(AppError::invalid("Level muss zwischen 1 und 60 liegen"));
+        return Err(AppError::invalid(crate::i18n::tr("Level muss zwischen 1 und 60 liegen", "Level must be between 1 and 60")));
     }
     json_rows(
         c,
@@ -206,7 +206,7 @@ pub fn zone_layer(c: &Connection, zone_id: u32) -> AppResult<Value> {
            'levelMin', level_min, 'levelMax', level_max, 'srcMap', src_map) FROM zones WHERE id = ?1",
         [zone_id],
     )?
-    .ok_or_else(|| AppError::not_found("Zone nicht gefunden"))?;
+    .ok_or_else(|| AppError::not_found(crate::i18n::tr("Zone nicht gefunden", "Zone not found")))?;
     Ok(serde_json::json!({ "zone": zone, "spots": spots, "nodes": nodes }))
 }
 
@@ -233,6 +233,26 @@ pub fn coverage(c: &Connection) -> AppResult<Value> {
     )?;
     Ok(serde_json::json!({ "bands": rows, "meta": meta, "counts": counts }))
 }
+
+/// Spawn density of all NPC and gathering-node spawns of a zone on a coarse grid (cols × rows over 0–100 %).
+/// Used as a neutral base layer when no map image is imported: it shows where the zone has content, not terrain.
+pub fn zone_density(c: &Connection, zone_id: u32, cols: usize, rows: usize) -> AppResult<Value> {
+    let mut grid = vec![0u32; cols * rows];
+    let mut st = c.prepare("SELECT x, y FROM npc_spawns WHERE zone_id = ?1 UNION ALL SELECT x, y FROM object_spawns WHERE zone_id = ?1")?;
+    let mut total = 0u32;
+    for p in st.query_map([zone_id], |r| Ok((r.get::<_, f64>(0)?, r.get::<_, f64>(1)?)))? {
+        let (x, y) = p?;
+        if !(0.0..=100.0).contains(&x) || !(0.0..=100.0).contains(&y) {
+            continue;
+        }
+        let cx = ((x / 100.0) * cols as f64).min(cols as f64 - 1.0) as usize;
+        let cy = ((y / 100.0) * rows as f64).min(rows as f64 - 1.0) as usize;
+        grid[cy * cols + cx] += 1;
+        total += 1;
+    }
+    Ok(serde_json::json!({ "zoneId": zone_id, "cols": cols, "rows": rows, "total": total, "max": grid.iter().max().copied().unwrap_or(0), "cells": grid }))
+}
+
 
 #[cfg(test)]
 mod tests {

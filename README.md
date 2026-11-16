@@ -2,7 +2,12 @@
 
 Windows-Desktop-App (Tauri 2 · Rust · React/TypeScript · SQLite) für **World of Warcraft: Forever, Level 1–60**:
 Farmfinder für XP, Gold, Stoff, Leder, Bergbau, Kräuter, Angeln und Rares mit belegten Forever-Spawns, Skillprüfung,
-Koordinatenkarten, Farmtracker und **echten Auktionshauspreisen** (AHledger, auctionhouse.fyi, optional Blizzard).
+Koordinatenkarten (mit eigenen, lokal importierten Kartenbildern), Farmtracker und **echten Auktionshauspreisen**
+(AHledger, auctionhouse.fyi, optional Blizzard). Oberfläche **Deutsch / English**, Auto-Updater über GitHub Releases.
+
+*English:* Windows desktop app for WoW: Forever (levels 1–60) – farm finder, maps, profession planner, farm tracker and
+live auction house prices. Switch the language with the DE/EN toggle in the header. Download the installer from
+[Releases](https://github.com/EnopacFTW/azeroth-farm-atlas/releases); later versions install from inside the app.
 
 > Planungs-, Nachschlage- und Tracking-Tool. Keine Spielautomatisierung, kein Speicherlesen, kein Packet-Sniffing.
 
@@ -24,7 +29,7 @@ Voraussetzungen und Details: [docs/windows-build.md](docs/windows-build.md).
 |---|---|
 | Farmfinder | Level-Regler 1–60, Klasse, Fraktion, 2 Primärberufe + Skill, Angeln, Farmziele, Filter (solo, Elites, Instanzen, PvP-Risiko, noch XP, verwertbar, Forever-only), Ergebnisliste mit Eignung, Hauptdrops, Skill-Status, Karte, „Warum / Warum nicht / Welche Daten fehlen“ |
 | Spot-Detail | Mobs mit NPC-ID/Level/Klasse/Kürschnerbarkeit, Loot getrennt nach Kill/Kürschnern/Knoten/Angeln/Quest mit Chance, Händler- und AH-Preis, Ertragsmodell (gemessen vs. modelliert), `/way`-Kopie, Rare-Drop-Rechner, Session starten |
-| Weltatlas | Kontinent → Zone, Ebenen Spots/Erz/Kräuter/Fischschwärme, Marker nach Skill gefiltert |
+| Weltatlas | Kontinent → Zone, Ebenen Spots/Erz/Kräuter/Fischschwärme, Marker nach Skill gefiltert, eigene Kartenbilder importieren (einzeln/Ordner) und ausrichten; ohne Bild Spawndichte als Grundkarte |
 | Item / NPC | alle belegten Quellen inkl. Händler, passende Spots, Live-Preis mit Verlauf, Watchlist |
 | Berufe | Sammelknoten nach Skillfarbe, Forever-Rezepte bis Zielskill mit Reagenzien und Preisen (AHledger) |
 | Auktionshaus | Markt/Anbieter-Wahl, Providerstatus, Itempreis + Verlauf, Bulk-Sync mit ETag/304, Watchlist, manuelle Preise |

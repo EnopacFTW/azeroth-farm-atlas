@@ -50,11 +50,11 @@ pub struct MarketEngine {
 }
 
 fn provider(p: &str) -> AppResult<ProviderId> {
-    ProviderId::parse(p).ok_or_else(|| AppError::invalid("Unbekannter Preisanbieter"))
+    ProviderId::parse(p).ok_or_else(|| AppError::invalid(crate::i18n::tr("Unbekannter Preisanbieter", "Unknown price provider")))
 }
 
 fn disabled(name: &str) -> AppError {
-    AppError::new("provider_disabled", format!("{name} ist in den Einstellungen deaktiviert."))
+    AppError::new("provider_disabled", crate::i18n::tr(format!("{name} ist in den Einstellungen deaktiviert."), format!("{name} is disabled in the settings.")))
 }
 
 impl MarketEngine {
@@ -70,7 +70,7 @@ impl MarketEngine {
     }
 
     fn with_cache<T>(&self, f: impl FnOnce(&mut Connection) -> AppResult<T>) -> AppResult<T> {
-        let mut c = self.cache.lock().map_err(|_| AppError::new("lock", "Cache gesperrt"))?;
+        let mut c = self.cache.lock().map_err(|_| AppError::new("lock", crate::i18n::tr("Cache gesperrt", "Cache locked")))?;
         cache::purge_expired(&c)?;
         f(&mut c)
     }
@@ -83,7 +83,7 @@ impl MarketEngine {
             }
         }
         let (Some(id), Some(secret)) = (credentials::get("blizzard_client_id"), credentials::get("blizzard_client_secret")) else {
-            return Err(AppError::new("not_configured", "Keine Blizzard-Developer-Zugangsdaten hinterlegt (Einstellungen → Preisquellen)."));
+            return Err(AppError::new("not_configured", crate::i18n::tr("Keine Blizzard-Developer-Zugangsdaten hinterlegt (Einstellungen → Preisquellen).", "No Blizzard developer credentials stored (Settings → price sources).")));
         };
         let b = blizzard_forever::Blizzard::new(&s.blizzard_region)?;
         let t = b.token(&self.http, &id, &secret).await?;
@@ -252,11 +252,11 @@ impl MarketEngine {
                         self.with_cache(|c| cache::put_quotes(c, &quotes, 60))?;
                         status.items = quotes.len() as i64;
                         status.not_modified = true;
-                        status.note = Some("304 Not Modified – Tabelle unverändert, Cache-Frist erneuert".into());
+                        status.note = Some(crate::i18n::tr("304 Not Modified – Tabelle unverändert, Cache-Frist erneuert", "304 Not Modified – table unchanged, cache lifetime renewed"));
                     }
                     ahledger::PriceTable::Fresh { quotes, observed, etag, .. } => {
                         if self.cancel.load(Ordering::SeqCst) {
-                            return Err(AppError::new("cancelled", "Synchronisierung abgebrochen"));
+                            return Err(AppError::new("cancelled", crate::i18n::tr("Synchronisierung abgebrochen", "Sync cancelled")));
                         }
                         self.with_cache(|c| cache::put_quotes(c, &quotes, 60))?;
                         status.items = quotes.len() as i64;
@@ -273,12 +273,12 @@ impl MarketEngine {
                     return Err(disabled("Blizzard Forever (experimentell)"));
                 }
                 let markets = self.list_markets("blizzard_forever", s, false).await?;
-                let market = markets.into_iter().find(|m| m.id == market_id).ok_or_else(|| AppError::not_found("House nicht in der Marktliste"))?;
+                let market = markets.into_iter().find(|m| m.id == market_id).ok_or_else(|| AppError::not_found(crate::i18n::tr("House nicht in der Marktliste", "House not in the market list")))?;
                 let tok = self.blizzard_token(s).await?;
                 let b = blizzard_forever::Blizzard::new(&s.blizzard_region)?;
                 let (mut agg, observed) = b.fetch_house(&self.http, &tok, &market).await?;
                 if self.cancel.load(Ordering::SeqCst) {
-                    return Err(AppError::new("cancelled", "Synchronisierung abgebrochen"));
+                    return Err(AppError::new("cancelled", crate::i18n::tr("Synchronisierung abgebrochen", "Sync cancelled")));
                 }
                 let ttl = s.blizzard_cache_minutes.clamp(5, 24 * 60) * 60;
                 let exp = iso_in(ttl);
@@ -303,8 +303,8 @@ impl MarketEngine {
                 ));
                 Ok(())
             }
-            ProviderId::AuctionhouseFyi => Err(AppError::new("unsupported", "auctionhouse.fyi: Bulk-Sync ist in V1 nicht implementiert; Preise werden pro Item abgefragt.")),
-            ProviderId::Manual => Err(AppError::new("unsupported", "Manuelle Preise werden nicht synchronisiert.")),
+            ProviderId::AuctionhouseFyi => Err(AppError::new("unsupported", crate::i18n::tr("auctionhouse.fyi: Bulk-Sync ist in V1 nicht implementiert; Preise werden pro Item abgefragt.", "auctionhouse.fyi: bulk sync is not implemented in V1; prices are fetched per item."))),
+            ProviderId::Manual => Err(AppError::new("unsupported", crate::i18n::tr("Manuelle Preise werden nicht synchronisiert.", "Manual prices are not synced."))),
         }
     }
 
@@ -375,7 +375,7 @@ impl MarketEngine {
                         }
                     }
                     if confirmed.is_empty() {
-                        Err(err.unwrap_or_else(|| AppError::new("unknown", "Keine Antwort")))
+                        Err(err.unwrap_or_else(|| AppError::new("unknown", crate::i18n::tr("Keine Antwort", "No response"))))
                     } else {
                         self.with_cache(|c| cache::put_market_list(c, pid, &confirmed, 86400))?;
                         Ok((confirmed.len(), last_obs, "GET /api/v1/ah/{6 US-Märkte}/2589".into()))

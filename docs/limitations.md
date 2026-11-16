@@ -15,19 +15,24 @@
 - Coverage: in jedem Levelband ≥ 5 Spots pro Farmziel; dünn ist Bergbau 1–10 (5) und Angeln (7–20 je Band). Siehe `coverage-report.md`.
 
 ## Karten
-- Keine echten WoW-Zonenkarten (Urheberrecht). Marker liegen auf einer 0–100-%-Koordinatenfläche. Ein Import eigener,
-  rechtmäßig vorliegender Kartenbilder ist vorbereitet (Koordinatenmathematik getestet), aber nicht als UI umgesetzt.
+- Keine mitgelieferten WoW-Zonenkarten (Urheberrecht); die App lädt auch keine herunter. Eigene, rechtmäßig vorliegende
+  Bilder (z. B. Screenshot der Ingame-Weltkarte) lassen sich im Weltatlas pro Zone oder ordnerweise importieren und per
+  Regler ausrichten. Die Ausrichtung ist Handarbeit – es gibt keine automatische Erkennung des Kartenrahmens.
+- Ohne Bild: 0–100-%-Koordinatenfläche (3:2) mit Spawndichte-Schattierung aller Forever-Spawns. Sie zeigt, wo die Zone
+  Inhalt hat, nicht Gelände, Wege oder Wasser.
 - Kein Clustering-Plugin; viele Marker werden per Canvas gerendert.
 
 ## Märkte
 - Blizzard-Adapter ist **nicht live getestet** (keine Credentials). Nur Mock-/Fixture-Tests nach Community-Schema.
 - auctionhouse.fyi: nur öffentliche Item-Snapshots, kein Bulk-Sync, keine History (feature-gated).
 - AHledger-Preisverlauf wird live angezeigt, nicht archiviert (Lizenz).
-- Preisalarme/Windows-Benachrichtigungen, Tray, Updater: nicht umgesetzt.
+- Preisalarme/Windows-Benachrichtigungen, Tray: nicht umgesetzt.
 - AH-Gebühr: konfigurierbar (Standard 5 %/15 %); Einstelldepot nicht berücksichtigt.
 
 ## App
 - Kein SavedVariables-Import (spätere Phase).
-- Kein Code-Signing-Zertifikat → unsignierter Installer.
-- UI nur Deutsch (englische Namen als Untertitel/Suchaliasse).
+- Kein Code-Signing-Zertifikat → Installer ohne Authenticode-Signatur (SmartScreen-Warnung). Updates sind mit dem
+  Projektschlüssel (minisign) signiert; der Updater nimmt nur so signierte Pakete an.
+- UI Deutsch und Englisch. Gespeicherte Hinweise im Preiscache (z. B. „304 unverändert“) bleiben in der Sprache, in der
+  sie abgerufen wurden; Quellnamen der Seed-DB sind teils nur deutsch.
 - Fensterposition/-größe werden global (Plugin window-state) gespeichert, nicht pro Profil.

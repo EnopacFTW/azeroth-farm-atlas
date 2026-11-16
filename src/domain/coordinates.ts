@@ -35,3 +35,23 @@ export function waypoint(x: number, y: number, zoneName?: string): string {
 export function distance(a: { x: number; y: number }, b: { x: number; y: number }): number {
   return Math.hypot(a.x - b.x, a.y - b.y);
 }
+
+/** Zone coordinate plane in Leaflet units. WoW zone maps are 3:2 (1002 × 668), so the plane is too. */
+export const ZONE_PLANE: MapSize = { width: 150, height: 100 };
+
+/** Where WoW 0–100 % sits inside an imported image, in image percent (left/top = x0/y0, right/bottom = x1/y1). */
+export interface MapCalibration { x0: number; y0: number; x1: number; y1: number }
+
+/**
+ * Leaflet bounds for the WHOLE image so that the calibrated rectangle lands exactly on WoW 0–100 %.
+ * Image left edge (image % = 0) corresponds to WoW x = -x0 / (x1 - x0) × 100, and so on.
+ */
+export function imageOverlayBounds(cal: MapCalibration, plane: MapSize = ZONE_PLANE): [[number, number], [number, number]] {
+  const sx = 100 / (cal.x1 - cal.x0);
+  const sy = 100 / (cal.y1 - cal.y0);
+  const left = -cal.x0 * sx;
+  const right = (100 - cal.x0) * sx;
+  const top = -cal.y0 * sy;
+  const bottom = (100 - cal.y0) * sy;
+  return [[-(bottom / 100) * plane.height, (left / 100) * plane.width], [-(top / 100) * plane.height, (right / 100) * plane.width]];
+}

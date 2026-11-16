@@ -1,7 +1,7 @@
 {
   "name": "azeroth-farm-atlas",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "license": "GPL-3.0-or-later",
   "scripts": {
@@ -21,6 +21,8 @@
     "@tauri-apps/plugin-clipboard-manager": "^2.5.0",
     "@tauri-apps/plugin-dialog": "^2.8.4",
     "@tauri-apps/plugin-opener": "^2.7.3",
+    "@tauri-apps/plugin-process": "^2.4.0",
+    "@tauri-apps/plugin-updater": "^2.14.1",
     "leaflet": "1.9",
     "lucide-react": "^1.73.0",
     "react": "^19.3.1",

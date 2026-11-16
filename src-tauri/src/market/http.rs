@@ -20,10 +20,10 @@ impl HttpResponse {
         Self { status: 200, body: body.as_bytes().to_vec(), etag: None, max_age_secs, elapsed_ms: 1, last_modified: None }
     }
     pub fn json<T: serde::de::DeserializeOwned>(&self) -> Result<T, AppError> {
-        serde_json::from_slice(&self.body).map_err(|e| AppError::new("schema", format!("Antwort hat ein unerwartetes Format: {e}")))
+        serde_json::from_slice(&self.body).map_err(|e| AppError::new("schema", crate::i18n::tr(format!("Antwort hat ein unerwartetes Format: {e}"), format!("Response has an unexpected format: {e}"))))
     }
     pub fn text(&self) -> Result<String, AppError> {
-        String::from_utf8(self.body.clone()).map_err(|_| AppError::new("schema", "Antwort ist kein UTF-8-Text"))
+        String::from_utf8(self.body.clone()).map_err(|_| AppError::new("schema", crate::i18n::tr("Antwort ist kein UTF-8-Text", "Response is not UTF-8 text")))
     }
 }
 
@@ -110,13 +110,13 @@ impl HttpClient {
                         }
                     }
                     if status == 429 {
-                        let mut e = AppError::new("rate_limited", "Anbieter-Ratelimit erreicht (429). Bitte später erneut versuchen.").with_status(429);
+                        let mut e = AppError::new("rate_limited", crate::i18n::tr("Anbieter-Ratelimit erreicht (429). Bitte später erneut versuchen.", "Provider rate limit reached (429). Please try again later.")).with_status(429);
                         e.retry_after_secs = retry_after;
                         return Err(e);
                     }
                     if let Some(len) = resp.content_length() {
                         if len as usize > max_bytes {
-                            return Err(AppError::new("too_large", format!("Antwort zu groß ({len} Bytes, Grenze {max_bytes})")));
+                            return Err(AppError::new("too_large", crate::i18n::tr(format!("Antwort zu groß ({len} Bytes, Grenze {max_bytes})"), format!("Response too large ({len} bytes, limit {max_bytes})"))));
                         }
                     }
                     let etag = headers.get("etag").and_then(|v| v.to_str().ok()).map(|s| s.to_string());
@@ -139,11 +139,11 @@ impl HttpClient {
                 continue;
             }
             return Err(if timeout {
-                AppError::new("timeout", "Zeitüberschreitung beim Anbieter")
+                AppError::new("timeout", crate::i18n::tr("Zeitüberschreitung beim Anbieter", "Provider timed out"))
             } else if retryable_err.is_connect() {
-                AppError::new("offline", "Keine Verbindung zum Anbieter (offline?)")
+                AppError::new("offline", crate::i18n::tr("Keine Verbindung zum Anbieter (offline?)", "No connection to the provider (offline?)"))
             } else {
-                AppError::new("network", format!("Netzwerkfehler: {}", redact(&retryable_err.to_string())))
+                AppError::new("network", crate::i18n::tr(format!("Netzwerkfehler: {}", redact(&retryable_err.to_string())), format!("Network error: {}", redact(&retryable_err.to_string()))))
             });
         }
     }
@@ -157,9 +157,9 @@ impl HttpClient {
 
 async fn read_limited(mut resp: reqwest::Response, max: usize) -> Result<Vec<u8>, AppError> {
     let mut buf = Vec::new();
-    while let Some(chunk) = resp.chunk().await.map_err(|e| AppError::new("network", format!("Abbruch beim Lesen: {}", redact(&e.to_string()))))? {
+    while let Some(chunk) = resp.chunk().await.map_err(|e| AppError::new("network", crate::i18n::tr(format!("Abbruch beim Lesen: {}", redact(&e.to_string())), format!("Aborted while reading: {}", redact(&e.to_string())))))? {
         if buf.len() + chunk.len() > max {
-            return Err(AppError::new("too_large", format!("Antwort überschreitet {max} Bytes")));
+            return Err(AppError::new("too_large", crate::i18n::tr(format!("Antwort überschreitet {max} Bytes"), format!("Response exceeds {max} bytes"))));
         }
         buf.extend_from_slice(&chunk);
     }
@@ -169,12 +169,12 @@ async fn read_limited(mut resp: reqwest::Response, max: usize) -> Result<Vec<u8>
 fn classify(r: HttpResponse) -> Result<HttpResponse, AppError> {
     match r.status {
         200..=299 | 304 => Ok(r),
-        401 => Err(AppError::new("unauthorized", "Anmeldung abgelehnt (401) – Zugangsdaten prüfen.").with_status(401)),
-        403 => Err(AppError::new("forbidden", "Zugriff verweigert (403) – Berechtigung/Feature/Namespace fehlt.").with_status(403)),
-        404 => Err(AppError::new("not_found", "Nicht gefunden (404).").with_status(404)),
-        s if s >= 500 => Err(AppError::new("provider_down", format!("Anbieterfehler ({s}).")).with_status(s)),
-        400 => Err(AppError::new("bad_request", format!("Anfrage abgelehnt (400){}", body_hint(&r.body))).with_status(400)),
-        s => Err(AppError::new("http", format!("Unerwarteter HTTP-Status {s}.")).with_status(s)),
+        401 => Err(AppError::new("unauthorized", crate::i18n::tr("Anmeldung abgelehnt (401) – Zugangsdaten prüfen.", "Sign-in rejected (401) – check credentials.")).with_status(401)),
+        403 => Err(AppError::new("forbidden", crate::i18n::tr("Zugriff verweigert (403) – Berechtigung/Feature/Namespace fehlt.", "Access denied (403) – permission/feature/namespace missing.")).with_status(403)),
+        404 => Err(AppError::new("not_found", crate::i18n::tr("Nicht gefunden (404).", "Not found (404).")).with_status(404)),
+        s if s >= 500 => Err(AppError::new("provider_down", crate::i18n::tr(format!("Anbieterfehler ({s})."), format!("Provider error ({s})."))).with_status(s)),
+        400 => Err(AppError::new("bad_request", crate::i18n::tr(format!("Anfrage abgelehnt (400){}", body_hint(&r.body)), format!("Request rejected (400){}", body_hint(&r.body)))).with_status(400)),
+        s => Err(AppError::new("http", crate::i18n::tr(format!("Unerwarteter HTTP-Status {s}."), format!("Unexpected HTTP status {s}."))).with_status(s)),
     }
 }
 

@@ -7,7 +7,8 @@ use rusqlite::{params, Connection, OptionalExtension};
 use serde::{Deserialize, Serialize};
 use std::path::Path;
 
-const MIGRATIONS: &[(i64, &str)] = &[(
+const MIGRATIONS: &[(i64, &str)] = &[
+    (
     1,
     r#"
 CREATE TABLE settings (key TEXT PRIMARY KEY, value TEXT NOT NULL);
@@ -28,7 +29,9 @@ CREATE TABLE session_loot (
 CREATE TABLE manual_prices (item_id INTEGER NOT NULL, market_id TEXT NOT NULL, unit_copper INTEGER NOT NULL, note TEXT, updated_at TEXT NOT NULL, PRIMARY KEY (item_id, market_id));
 CREATE TABLE watchlist (profile_id TEXT NOT NULL, item_id INTEGER NOT NULL, PRIMARY KEY (profile_id, item_id));
 "#,
-)];
+    ),
+    (2, crate::db::maps::MIGRATION_SQL),
+];
 
 pub fn open(path: &Path, backups_dir: &Path) -> AppResult<Connection> {
     let existed = path.exists();
@@ -94,16 +97,19 @@ pub fn get_settings(c: &Connection) -> AppResult<AppSettings> {
 
 pub fn save_settings(c: &Connection, s: &AppSettings) -> AppResult<()> {
     if !(0.75..=1.6).contains(&s.ui_scale) || s.stale_minutes == 0 || s.stale_minutes > 7 * 24 * 60 {
-        return Err(AppError::invalid("Ungültige Einstellungen"));
+        return Err(AppError::invalid(crate::i18n::tr("Ungültige Einstellungen", "Invalid settings")));
     }
     if !(0.0..=50.0).contains(&s.ah_cut_percent_faction) || !(0.0..=50.0).contains(&s.ah_cut_percent_neutral) {
-        return Err(AppError::invalid("AH-Gebühr außerhalb 0–50 %"));
+        return Err(AppError::invalid(crate::i18n::tr("AH-Gebühr außerhalb 0–50 %", "AH cut outside 0–50 %")));
     }
     if ![0, 5, 15, 30, 60].contains(&s.refresh_interval_min) {
-        return Err(AppError::invalid("Ungültiges Refresh-Intervall"));
+        return Err(AppError::invalid(crate::i18n::tr("Ungültiges Refresh-Intervall", "Invalid refresh interval")));
+    }
+    if !["de", "en"].contains(&s.language.as_str()) {
+        return Err(AppError::invalid(crate::i18n::tr("Sprache muss de oder en sein", "Language must be de or en")));
     }
     if !crate::market::blizzard_forever::REGIONS.contains(&s.market.blizzard_region.as_str()) {
-        return Err(AppError::invalid("Ungültige Blizzard-Region"));
+        return Err(AppError::invalid(crate::i18n::tr("Ungültige Blizzard-Region", "Invalid Blizzard region")));
     }
     c.execute("INSERT OR REPLACE INTO settings (key, value) VALUES ('app', ?1)", [serde_json::to_string(s)?])?;
     Ok(())
@@ -175,59 +181,59 @@ pub struct Profile {
 }
 
 pub fn validate_profile(p: &Profile) -> AppResult<()> {
-    let bad = |m: &str| Err(AppError::invalid(m.to_string()));
+    let bad = |m: String| Err(AppError::invalid(m));
     let name = p.name.trim();
     if name.is_empty() || name.chars().count() > 40 {
-        return bad("Profilname muss 1–40 Zeichen haben");
+        return bad(crate::i18n::tr("Profilname muss 1–40 Zeichen haben", "Profile name must have 1–40 characters"));
     }
     if !(1..=60).contains(&p.level) {
-        return bad("Level muss zwischen 1 und 60 liegen");
+        return bad(crate::i18n::tr("Level muss zwischen 1 und 60 liegen", "Level must be between 1 and 60"));
     }
     if !CLASSES.contains(&p.class.as_str()) {
-        return bad("Unbekannte Klasse");
+        return bad(crate::i18n::tr("Unbekannte Klasse", "Unknown class"));
     }
     if !["alliance", "horde"].contains(&p.faction.as_str()) {
-        return bad("Fraktion muss Allianz oder Horde sein");
+        return bad(crate::i18n::tr("Fraktion muss Allianz oder Horde sein", "Faction must be Alliance or Horde"));
     }
     if !["eu", "us", "kr", "tw", "cn"].contains(&p.region.as_str()) || !["normal", "pvp", "rp", "rppvp"].contains(&p.ruleset.as_str()) {
-        return bad("Ungültige Region/Ruleset");
+        return bad(crate::i18n::tr("Ungültige Region/Ruleset", "Invalid region/ruleset"));
     }
     if p.professions.len() > 2 {
-        return bad("Maximal zwei Primärberufe");
+        return bad(crate::i18n::tr("Maximal zwei Primärberufe", "At most two primary professions"));
     }
     let mut seen = std::collections::HashSet::new();
     for s in &p.professions {
         if !PRIMARY.contains(&s.id.as_str()) {
-            return bad("Unbekannter Primärberuf");
+            return bad(crate::i18n::tr("Unbekannter Primärberuf", "Unknown primary profession"));
         }
         if !seen.insert(&s.id) {
-            return bad("Beruf doppelt gewählt");
+            return bad(crate::i18n::tr("Beruf doppelt gewählt", "Profession selected twice"));
         }
     }
     for s in &p.secondary {
         if !SECONDARY.contains(&s.id.as_str()) {
-            return bad("Unbekannter Sekundärberuf");
+            return bad(crate::i18n::tr("Unbekannter Sekundärberuf", "Unknown secondary profession"));
         }
     }
     for s in p.professions.iter().chain(&p.secondary) {
         if s.skill > 300 || s.target_skill.map(|t| t > 300).unwrap_or(false) {
-            return bad("Skill muss zwischen 0 und 300 liegen");
+            return bad(crate::i18n::tr("Skill muss zwischen 0 und 300 liegen", "Skill must be between 0 and 300"));
         }
     }
     if p.goals.iter().any(|g| !GOALS.contains(&g.as_str())) {
-        return bad("Unbekanntes Farmziel");
+        return bad(crate::i18n::tr("Unbekanntes Farmziel", "Unknown farm goal"));
     }
     if ![15, 30, 60, 120].contains(&p.duration_min) {
-        return bad("Dauer muss 15, 30, 60 oder 120 Minuten sein");
+        return bad(crate::i18n::tr("Dauer muss 15, 30, 60 oder 120 Minuten sein", "Duration must be 15, 30, 60 or 120 minutes"));
     }
     if [p.priorities.xp, p.priorities.gold, p.priorities.profession, p.priorities.rare].iter().any(|v| *v > 100) {
-        return bad("Prioritäten 0–100");
+        return bad(crate::i18n::tr("Prioritäten 0–100", "Priorities 0–100"));
     }
     if let Some(m) = &p.market.market_id {
         crate::market::model::validate_market_id(m)?;
     }
     if serde_json::to_string(&p.ui)?.len() > 16_000 {
-        return bad("UI-Zustand zu groß");
+        return bad(crate::i18n::tr("UI-Zustand zu groß", "UI state too large"));
     }
     Ok(())
 }
@@ -311,7 +317,7 @@ pub fn save_profile(c: &Connection, mut p: Profile) -> AppResult<Profile> {
 pub fn delete_profile(c: &Connection, id: &str) -> AppResult<()> {
     let n: i64 = c.query_row("SELECT COUNT(*) FROM profiles", [], |r| r.get(0))?;
     if n <= 1 {
-        return Err(AppError::invalid("Das letzte Profil kann nicht gelöscht werden"));
+        return Err(AppError::invalid(crate::i18n::tr("Das letzte Profil kann nicht gelöscht werden", "The last profile cannot be deleted")));
     }
     c.execute("DELETE FROM favorites WHERE profile_id=?1", [id])?;
     c.execute("DELETE FROM watchlist WHERE profile_id=?1", [id])?;
@@ -323,7 +329,7 @@ pub fn delete_profile(c: &Connection, id: &str) -> AppResult<()> {
 
 pub fn toggle_favorite(c: &Connection, profile: &str, spot: &str) -> AppResult<bool> {
     if spot.len() > 200 {
-        return Err(AppError::invalid("Spot-ID zu lang"));
+        return Err(AppError::invalid(crate::i18n::tr("Spot-ID zu lang", "Spot ID too long")));
     }
     let n = c.execute("DELETE FROM favorites WHERE profile_id=?1 AND spot_id=?2", params![profile, spot])?;
     if n == 0 {
@@ -369,7 +375,7 @@ pub struct ManualPrice {
 
 pub fn set_manual_price(c: &Connection, p: &ManualPrice) -> AppResult<()> {
     if p.unit_copper < 0 || p.unit_copper > 10_000 * 100_000 {
-        return Err(AppError::invalid("Preis außerhalb des gültigen Bereichs"));
+        return Err(AppError::invalid(crate::i18n::tr("Preis außerhalb des gültigen Bereichs", "Price outside the valid range")));
     }
     crate::market::model::validate_market_id(&p.market_id)?;
     c.execute(
@@ -461,7 +467,7 @@ fn now_ms_iso() -> String {
 pub fn start_session(c: &Connection, profile: &str, spot: Option<String>, provider: Option<String>, market: Option<String>) -> AppResult<Session> {
     let running: i64 = c.query_row("SELECT COUNT(*) FROM sessions WHERE profile_id=?1 AND state!='ended'", [profile], |r| r.get(0))?;
     if running > 0 {
-        return Err(AppError::invalid("Es läuft bereits eine Session für dieses Profil"));
+        return Err(AppError::invalid(crate::i18n::tr("Es läuft bereits eine Session für dieses Profil", "A session is already running for this profile")));
     }
     let id = uuid::Uuid::new_v4().to_string();
     let now = now_ms_iso();
@@ -473,7 +479,7 @@ pub fn start_session(c: &Connection, profile: &str, spot: Option<String>, provid
 }
 
 pub fn transition(c: &Connection, id: &str, action: &str) -> AppResult<Session> {
-    let s = get_session_raw(c, id)?.ok_or_else(|| AppError::not_found("Session nicht gefunden"))?;
+    let s = get_session_raw(c, id)?.ok_or_else(|| AppError::not_found(crate::i18n::tr("Session nicht gefunden", "Session not found")))?;
     let now = now_ms_iso();
     let running_ms = |s: &Session| s.last_resumed_at.as_deref().map(|r| ms_between(r, &now)).unwrap_or(0);
     match (s.state.as_str(), action) {
@@ -487,7 +493,7 @@ pub fn transition(c: &Connection, id: &str, action: &str) -> AppResult<Session> 
             let add = if s.state == "running" { running_ms(&s) } else { 0 };
             c.execute("UPDATE sessions SET state='ended', active_ms=active_ms+?2, last_resumed_at=NULL, ended_at=?3 WHERE id=?1", params![id, add, now])?;
         }
-        _ => return Err(AppError::invalid(format!("Aktion '{action}' im Zustand '{}' nicht möglich", s.state))),
+        _ => return Err(AppError::invalid(crate::i18n::tr(format!("Aktion '{action}' im Zustand '{}' nicht möglich", s.state), format!("Action '{action}' not possible in state '{}'", s.state)))),
     }
     get_session(c, id)?.ok_or_else(|| AppError::not_found("Session"))
 }
@@ -495,7 +501,7 @@ pub fn transition(c: &Connection, id: &str, action: &str) -> AppResult<Session> 
 pub fn patch_session(c: &mut Connection, id: &str, p: SessionPatch) -> AppResult<Session> {
     let nonneg = [p.kills, p.xp_gained, p.raw_copper, p.vendor_copper, p.realized_auction_copper, p.repairs_copper, p.purchases_copper, p.deaths];
     if nonneg.iter().flatten().any(|v| *v < 0 || *v > 1_000_000_000_000) {
-        return Err(AppError::invalid("Werte müssen ≥ 0 sein"));
+        return Err(AppError::invalid(crate::i18n::tr("Werte müssen ≥ 0 sein", "Values must be ≥ 0")));
     }
     let tx = c.transaction()?;
     tx.execute(

@@ -4,6 +4,7 @@
 //!   market_cache.db – third-party price cache with expiry (see market::cache)
 
 pub mod game;
+pub mod maps;
 pub mod user;
 
 use crate::error::{AppError, AppResult};
@@ -18,6 +19,7 @@ pub struct DataPaths {
     pub user_db: PathBuf,
     pub cache_db: PathBuf,
     pub backups_dir: PathBuf,
+    pub maps_dir: PathBuf,
 }
 
 impl DataPaths {
@@ -27,6 +29,7 @@ impl DataPaths {
             user_db: data_dir.join("user.db"),
             cache_db: data_dir.join("market_cache.db"),
             backups_dir: data_dir.join("backups"),
+            maps_dir: data_dir.join("maps"),
             data_dir,
         }
     }
@@ -48,7 +51,7 @@ pub fn install_seed(seed: &Path, manifest: &Path, paths: &DataPaths) -> AppResul
         return Ok(false);
     }
     if !seed.exists() {
-        return Err(AppError::new("seed_missing", format!("Seed-Datenbank fehlt: {}", seed.display())));
+        return Err(AppError::new("seed_missing", crate::i18n::tr(format!("Seed-Datenbank fehlt: {}", seed.display()), format!("Seed database missing: {}", seed.display()))));
     }
     let tmp = paths.data_dir.join("game.db.tmp");
     std::fs::copy(seed, &tmp)?;
@@ -57,7 +60,7 @@ pub fn install_seed(seed: &Path, manifest: &Path, paths: &DataPaths) -> AppResul
         let c = Connection::open_with_flags(&tmp, OpenFlags::SQLITE_OPEN_READ_ONLY)?;
         let n: i64 = c.query_row("SELECT COUNT(*) FROM spots", [], |r| r.get(0))?;
         if n == 0 {
-            return Err(AppError::new("seed_invalid", "Seed-Datenbank enthält keine Spots"));
+            return Err(AppError::new("seed_invalid", crate::i18n::tr("Seed-Datenbank enthält keine Spots", "Seed database contains no spots")));
         }
     }
     let old = paths.data_dir.join("game.db.old");

@@ -1,8 +1,10 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
-  "description": "Least-privilege capability set for the main window. No fs, shell or http plugin: all file and network access goes through validated Rust commands. The opener may only open https links (provider attribution / documentation) in the default browser.",
-  "windows": ["main"],
+  "description": "Least-privilege capability set for the main window. No fs, shell or http plugin: all file and network access goes through validated Rust commands. The opener may only open https links (provider attribution / documentation) in the default browser. The updater only installs releases signed with the project key.",
+  "windows": [
+    "main"
+  ],
   "permissions": [
     "core:default",
     "core:window:allow-set-always-on-top",
@@ -10,7 +12,13 @@
     "window-state:default",
     {
       "identifier": "opener:allow-open-url",
-      "allow": [{ "url": "https://*" }]
-    }
+      "allow": [
+        {
+          "url": "https://*"
+        }
+      ]
+    },
+    "updater:default",
+    "process:allow-restart"
   ]
 }

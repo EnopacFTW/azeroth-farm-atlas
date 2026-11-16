@@ -172,7 +172,7 @@ pub fn parse_prices(r: &HttpResponse, item_id: u32) -> Result<(MarketQuote, Pric
         q.observed_at = l.observed_at;
         q.data_source_note = l.source;
     } else {
-        q.data_source_note = Some("Kein Scan für diesen Markt (latest = null)".into());
+        q.data_source_note = Some(crate::i18n::tr("Kein Scan für diesen Markt (latest = null)", "No scan for this market (latest = null)"));
     }
     q.estimated_units_sold_per_day = p.sales.and_then(|s| s.estimated_per_day);
     let series = PriceSeries {
@@ -209,13 +209,13 @@ pub fn parse_tooltip(r: &HttpResponse, market_id: &str) -> Result<Vec<MarketQuot
 /// `item:median:minBuyout:quantity:median7d:median30d:low30d:high30d:soldPerDay*10`, empty field = unknown.
 pub fn parse_pricetable(text: &str, market_id: &str, max_age: Option<u64>) -> Result<(Vec<MarketQuote>, Option<String>), AppError> {
     let mut lines = text.lines();
-    let header = lines.next().ok_or_else(|| AppError::new("schema", "Leere Preistabelle"))?;
+    let header = lines.next().ok_or_else(|| AppError::new("schema", crate::i18n::tr("Leere Preistabelle", "Empty price table")))?;
     let h: Vec<&str> = header.split('|').collect();
     if h.len() < 4 || h[0] != "AHL1" {
-        return Err(AppError::new("schema", "Unbekanntes Preistabellen-Format (erwartet AHL1)"));
+        return Err(AppError::new("schema", crate::i18n::tr("Unbekanntes Preistabellen-Format (erwartet AHL1)", "Unknown price table format (expected AHL1)")));
     }
     if h[1].replace('/', ".") != market_id {
-        return Err(AppError::new("schema", format!("Preistabelle gehört zu {} statt {market_id}", h[1])));
+        return Err(AppError::new("schema", crate::i18n::tr(format!("Preistabelle gehört zu {} statt {market_id}", h[1]), format!("Price table belongs to {} instead of {market_id}", h[1]))));
     }
     let observed = h[2]
         .parse::<i64>()
@@ -245,7 +245,7 @@ pub fn parse_pricetable(text: &str, market_id: &str, max_age: Option<u64>) -> Re
     }
     let declared: usize = h[3].parse().unwrap_or(0);
     if declared > 0 && out.len() * 10 < declared * 9 {
-        return Err(AppError::new("schema", format!("Preistabelle unvollständig ({} von {declared} Zeilen)", out.len())));
+        return Err(AppError::new("schema", crate::i18n::tr(format!("Preistabelle unvollständig ({} von {declared} Zeilen)", out.len()), format!("Price table incomplete ({} of {declared} rows)", out.len()))));
     }
     Ok((out, observed))
 }
@@ -267,7 +267,7 @@ impl Ahledger {
     pub async fn prices(&self, http: &HttpClient, market: &str, item: u32, range: &str) -> Result<Option<(MarketQuote, PriceSeries)>, AppError> {
         validate_market_id(market)?;
         if !["24h", "7d", "30d", "90d"].contains(&range) {
-            return Err(AppError::invalid("Ungültiger Zeitraum"));
+            return Err(AppError::invalid(crate::i18n::tr("Ungültiger Zeitraum", "Invalid range")));
         }
         match http.get(&format!("{}/v1/prices/{market}/{item}?range={range}", self.base), self.opts()).await {
             Ok(r) => Ok(Some(parse_prices(&r, item)?)),
@@ -292,7 +292,7 @@ impl Ahledger {
         validate_market_id(market)?;
         const PROFESSIONS: &[&str] = &["Alchemy", "Blacksmithing", "Cooking", "Enchanting", "Engineering", "First Aid", "Leatherworking", "Tailoring"];
         if !PROFESSIONS.contains(&profession) {
-            return Err(AppError::invalid("Beruf ohne Rezepte bei AHledger"));
+            return Err(AppError::invalid(crate::i18n::tr("Beruf ohne Rezepte bei AHledger", "Profession has no recipes at AHledger")));
         }
         let mut o = self.opts();
         o.max_bytes = Some(4 * 1024 * 1024);

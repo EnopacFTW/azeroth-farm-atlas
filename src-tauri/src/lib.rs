@@ -2,6 +2,7 @@
 
 pub mod commands {
     pub mod farm;
+    pub mod maps;
     pub mod markets;
     pub mod profiles;
     pub mod sessions;
@@ -9,6 +10,7 @@ pub mod commands {
 }
 pub mod db;
 pub mod error;
+pub mod i18n;
 pub mod market;
 pub mod security {
     pub mod credentials;
@@ -24,13 +26,21 @@ pub fn run() {
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_clipboard_manager::init())
         .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_updater::Builder::new().build())
+        .plugin(tauri_plugin_process::init())
         .setup(|app| {
             let data_dir = app.path().app_data_dir()?;
             let seed = app.path().resolve("resources/seed.db", tauri::path::BaseDirectory::Resource)?;
             let manifest = app.path().resolve("resources/data-manifest.json", tauri::path::BaseDirectory::Resource)?;
             match state::AppState::init(data_dir, &seed, &manifest) {
                 Ok(s) => {
+                    // imported map images are served via the asset protocol – only from this one folder, not recursive
+                    let _ = std::fs::create_dir_all(&s.paths.maps_dir);
+                    if let Err(e) = app.asset_protocol_scope().allow_directory(&s.paths.maps_dir, false) {
+                        eprintln!("asset scope for maps not set: {e}");
+                    }
                     if let Ok(settings) = db::user::get_settings(&*s.user()?) {
+                        i18n::set_language(&settings.language);
                         if let Some(w) = app.get_webview_window("main") {
                             let _ = w.set_always_on_top(settings.always_on_top);
                         }
@@ -41,9 +51,9 @@ pub fn run() {
                 Err(e) => {
                     use tauri_plugin_dialog::{DialogExt, MessageDialogKind};
                     app.dialog()
-                        .message(format!("Azeroth Farm Atlas konnte die lokalen Daten nicht öffnen:\n\n{}\n\nDatenordner: %APPDATA%\\de.azerothfarmatlas.desktop", e.message))
+                        .message(crate::i18n::tr(format!("Azeroth Farm Atlas konnte die lokalen Daten nicht öffnen:\n\n{}\n\nDatenordner: %APPDATA%\\de.azerothfarmatlas.desktop", e.message), format!("Azeroth Farm Atlas could not open its local data:\n\n{}\n\nData folder: %APPDATA%\\de.azerothfarmatlas.desktop", e.message)))
                         .kind(MessageDialogKind::Error)
-                        .title("Startfehler")
+                        .title(crate::i18n::tr("Startfehler", "Startup error"))
                         .blocking_show();
                     Err(Box::new(e))
                 }
@@ -60,6 +70,13 @@ pub fn run() {
             commands::farm::zone_layer,
             commands::farm::list_sources,
             commands::farm::get_coverage,
+            commands::maps::zone_density,
+            commands::maps::get_map_asset,
+            commands::maps::list_map_assets,
+            commands::maps::import_map_image,
+            commands::maps::import_map_folder,
+            commands::maps::set_map_calibration,
+            commands::maps::delete_map_asset,
             commands::profiles::list_profiles,
             commands::profiles::save_profile,
             commands::profiles::delete_profile,

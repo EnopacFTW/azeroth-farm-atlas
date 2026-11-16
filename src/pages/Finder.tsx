@@ -10,6 +10,7 @@ import { rankSpots, type SortKey } from '@/domain/scoring';
 import { api } from '@/services/tauri';
 import { useActiveProfile } from '@/services/hooks';
 import { useUi } from '@/store/ui';
+import { nm, title, titleAlt, tr } from '@/i18n';
 
 function useSplit(key: string, initial: number) {
   const [w, setW] = useState(() => {
@@ -59,11 +60,11 @@ export function FinderPage() {
     return detail.data.points.map(([t, id, x, y], i) => {
       if (t === 'npc') {
         const n = npcName.get(id)!;
-        return { key: `${i}`, x, y, kind: n.rank && [1, 2, 3].includes(n.rank) ? 'elite' : n.rank === 4 ? 'rare' : 'npc', label: n.nameDe ?? n.nameEn,
-          lines: [`Level ${n.levelMin}–${n.levelMax} · NPC ${id}`, n.canSkin === 1 ? `Kürschnern ab ${n.skinMin} (Classic-Formel)` : n.canSkin === 0 ? 'nicht kürschnerbar (Classic)' : 'Kürschnerbarkeit unbekannt', 'Quelle: QuestieDB Forever'] } satisfies MapMarker;
+        return { key: `${i}`, x, y, kind: n.rank && [1, 2, 3].includes(n.rank) ? 'elite' : n.rank === 4 ? 'rare' : 'npc', label: nm(n),
+          lines: [`Level ${n.levelMin}–${n.levelMax} · NPC ${id}`, n.canSkin === 1 ? tr(`Kürschnern ab ${n.skinMin} (Classic-Formel)`, `Skinning from ${n.skinMin} (Classic formula)`) : n.canSkin === 0 ? tr('nicht kürschnerbar (Classic)', 'not skinnable (Classic)') : tr('Kürschnerbarkeit unbekannt', 'Skinnability unknown'), tr('Quelle: QuestieDB Forever', 'Source: QuestieDB Forever')] } satisfies MapMarker;
       }
       const o = objName.get(id)!;
-      return { key: `${i}`, x, y, kind: o.nodeType, label: o.nameDe ?? o.nameEn, lines: [o.requiredSkill != null ? `Skill ${o.requiredSkill} (Classic-Regel)` : 'Skill unbekannt', 'Quelle: QuestieDB Forever'] } satisfies MapMarker;
+      return { key: `${i}`, x, y, kind: o.nodeType, label: nm(o), lines: [o.requiredSkill != null ? `Skill ${o.requiredSkill} ${tr('(Classic-Regel)', '(Classic rule)')}` : tr('Skill unbekannt', 'Skill unknown'), tr('Quelle: QuestieDB Forever', 'Source: QuestieDB Forever')] } satisfies MapMarker;
     });
   }, [detail.data]);
 
@@ -80,19 +81,19 @@ export function FinderPage() {
         <section style={{ width: w }} className="flex shrink-0 flex-col border-r border-line">
           <div className="flex items-center gap-2 border-b border-line px-3 py-2 text-[12.5px]">
             <span className="font-semibold text-ink num">{ranked.length}</span>
-            <span className="text-muted">passende Spots</span>
-            {ranked.length > visible.length && <span className="text-faint">(zeige {visible.length})</span>}
+            <span className="text-muted">{tr('passende Spots', 'matching spots')}</span>
+            {ranked.length > visible.length && <span className="text-faint">({tr('zeige', 'showing')} {visible.length})</span>}
             {cand.isFetching && <Spinner label="" />}
             <div className="ml-auto">
-              <Select<SortKey> ariaLabel="Sortieren" value={sort} onChange={setSort} className="h-7"
-                options={[{ value: 'fit', label: 'Sortieren: Eignung' }, { value: 'level', label: 'Moblevel' }, { value: 'density', label: 'Spawndichte' }, { value: 'vendor', label: 'Händlerwert/Kill (Modell)' }]} />
+              <Select<SortKey> ariaLabel={tr('Sortieren', 'Sort')} value={sort} onChange={setSort} className="h-7"
+                options={[{ value: 'fit', label: tr('Sortieren: Eignung', 'Sort: fit') }, { value: 'level', label: tr('Moblevel', 'Mob level') }, { value: 'density', label: tr('Spawndichte', 'Spawn density') }, { value: 'vendor', label: tr('Händlerwert/Kill (Modell)', 'Vendor value/kill (model)') }]} />
             </div>
           </div>
           <div ref={listRef} className="min-h-0 flex-1 space-y-2 overflow-y-auto p-3">
             {cand.error && <ErrorBox error={cand.error} />}
             {cand.isLoading && <Spinner />}
             {!cand.isLoading && ranked.length === 0 && (
-              <Empty>Keine Spots für diese Kombination. Prüfe Farmziel, Berufe/Skill oder aktiviere „Noch nicht farmbar anzeigen“.</Empty>
+              <Empty>{tr('Keine Spots für diese Kombination. Prüfe Farmziel, Berufe/Skill oder aktiviere „Noch nicht farmbar anzeigen“.', 'No spots for this combination. Check farm goal, professions/skill or enable “Show not-yet-farmable”.')}</Empty>
             )}
             {visible.map((s) => (
               <SpotCard key={s.spot.id} s={s} active={s.spot.id === selected?.spot.id} favorite={!!favs.data?.includes(s.spot.id)} inCompare={compare.includes(s.spot.id)}
@@ -100,33 +101,33 @@ export function FinderPage() {
             ))}
           </div>
         </section>
-        <div onMouseDown={drag} className="w-1 shrink-0 cursor-col-resize bg-line/40 hover:bg-gold/40" role="separator" aria-label="Breite anpassen" />
+        <div onMouseDown={drag} className="w-1 shrink-0 cursor-col-resize bg-line/40 hover:bg-gold/40" role="separator" aria-label={tr('Breite anpassen', 'Resize')} />
         <section className="flex min-w-0 flex-1 flex-col">
           {selected ? (
             <>
-              <WorldMap className="min-h-[320px] flex-[3]" zoneName={selected.spot.zone.nameDe ?? selected.spot.zone.nameEn} uiMapId={selected.spot.zone.uiMapId} markers={markers}
+              <WorldMap className="min-h-[320px] flex-[3]" zoneId={selected.spot.zoneId} zoneName={nm(selected.spot.zone)} uiMapId={selected.spot.zone.uiMapId} markers={markers}
                 hull={detail.data?.spot.hull} route={detail.data?.spot.route}
                 focus={selected.spot.centerX != null ? { x: selected.spot.centerX, y: selected.spot.centerY!, r: selected.spot.radius ?? 6 } : null} />
               <div className="flex-[2] overflow-y-auto border-t border-line p-4">
                 <div className="flex items-start gap-3">
                   <div className="min-w-0">
-                    <h2 className="text-[15px] font-semibold text-ink">{selected.spot.titleDe}</h2>
-                    <p className="text-[12px] text-faint">{selected.spot.titleEn}</p>
+                    <h2 className="text-[15px] font-semibold text-ink">{title(selected.spot)}</h2>
+                    <p className="text-[12px] text-faint">{titleAlt(selected.spot)}</p>
                   </div>
-                  <Link to={`/spots/${encodeURIComponent(selected.spot.id)}`} className="ml-auto shrink-0 rounded-md border border-line bg-panel-3 px-3 py-1 text-[12.5px] text-gold hover:bg-line-2">Alle Details & AH-Preise →</Link>
+                  <Link to={`/spots/${encodeURIComponent(selected.spot.id)}`} className="ml-auto shrink-0 rounded-md border border-line bg-panel-3 px-3 py-1 text-[12.5px] text-gold hover:bg-line-2">{tr('Alle Details & AH-Preise →', 'All details & AH prices →')}</Link>
                 </div>
                 <div className="mt-3 grid gap-4 md:grid-cols-3">
-                  <Reasons title="Warum empfohlen?" icon={<CheckCircle2 className="size-4 text-ok" />} items={selected.why} empty="—" />
-                  <Reasons title="Warum nicht?" icon={<CircleSlash className="size-4 text-warn" />} items={selected.whyNot} empty="Keine Einschränkungen gefunden." />
-                  <Reasons title="Welche Daten fehlen?" icon={<Info className="size-4 text-info" />} items={selected.missing} empty="—" />
+                  <Reasons title={tr('Warum empfohlen?', 'Why recommended?')} icon={<CheckCircle2 className="size-4 text-ok" />} items={selected.why} empty="—" />
+                  <Reasons title={tr('Warum nicht?', 'Why not?')} icon={<CircleSlash className="size-4 text-warn" />} items={selected.whyNot} empty={tr('Keine Einschränkungen gefunden.', 'No restrictions found.')} />
+                  <Reasons title={tr('Welche Daten fehlen?', 'What data is missing?')} icon={<Info className="size-4 text-info" />} items={selected.missing} empty="—" />
                 </div>
                 <div className="mt-3 text-[11.5px] text-faint">
-                  Eignung {selected.fitScore}/100 aus: {selected.factors.map((f) => `${f.label} ${Math.round(f.value * 100)} % (Gewicht ${Math.round(f.weight)})`).join(' · ')}
+                  {tr('Eignung', 'Fit')} {selected.fitScore}/100 {tr('aus', 'from')}: {selected.factors.map((f) => `${f.label} ${Math.round(f.value * 100)} % (${tr('Gewicht', 'weight')} ${Math.round(f.weight)})`).join(' · ')}
                 </div>
               </div>
             </>
           ) : (
-            <div className="grid h-full place-items-center text-[13px] text-faint">Spot auswählen, um ihn auf der Karte zu sehen.</div>
+            <div className="grid h-full place-items-center text-[13px] text-faint">{tr('Spot auswählen, um ihn auf der Karte zu sehen.', 'Select a spot to see it on the map.')}</div>
           )}
         </section>
       </div>

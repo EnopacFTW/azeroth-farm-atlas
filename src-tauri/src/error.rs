@@ -1,6 +1,6 @@
 use serde::Serialize;
 
-/// Error sent to the frontend. `code` is stable and machine readable, `message` is German UI text.
+/// Error sent to the frontend. `code` is stable and machine readable, `message` is UI text in the current language (see i18n.rs).
 #[derive(Debug, thiserror::Error, Serialize, Clone)]
 #[serde(rename_all = "camelCase")]
 #[error("{code}: {message}")]
@@ -31,19 +31,19 @@ impl AppError {
 
 impl From<rusqlite::Error> for AppError {
     fn from(e: rusqlite::Error) -> Self {
-        AppError::new("database", format!("Datenbankfehler: {e}"))
+        AppError::new("database", crate::i18n::tr(format!("Datenbankfehler: {e}"), format!("Database error: {e}")))
     }
 }
 
 impl From<serde_json::Error> for AppError {
     fn from(e: serde_json::Error) -> Self {
-        AppError::new("json", format!("Ungültiges JSON: {e}"))
+        AppError::new("json", crate::i18n::tr(format!("Ungültiges JSON: {e}"), format!("Invalid JSON: {e}")))
     }
 }
 
 impl From<std::io::Error> for AppError {
     fn from(e: std::io::Error) -> Self {
-        AppError::new("io", format!("Dateifehler: {e}"))
+        AppError::new("io", crate::i18n::tr(format!("Dateifehler: {e}"), format!("File error: {e}")))
     }
 }
 

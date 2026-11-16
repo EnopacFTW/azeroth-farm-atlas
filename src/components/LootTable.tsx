@@ -2,6 +2,7 @@ import type { LootContext, LootRow, MarketQuote } from '@/domain/types';
 import { formatCopper } from '@/domain/money';
 import { ContextLabel, ItemName, PriceCell, Rate, SourceBadge } from './data';
 import { Empty } from './ui';
+import { tr } from '@/i18n';
 
 const ORDER: LootContext[] = ['normal_kill', 'skinning', 'mining_node', 'herb_node', 'fishing', 'quest'];
 
@@ -9,7 +10,7 @@ const ORDER: LootContext[] = ['normal_kill', 'skinning', 'mining_node', 'herb_no
 export function LootTables({ rows, quotes, quotesLoading, quotesError, onPick }: {
   rows: LootRow[]; quotes: MarketQuote[]; quotesLoading?: boolean; quotesError?: boolean; onPick?: (row: LootRow) => void;
 }) {
-  if (!rows.length) return <Empty>Keine Loot-Daten in der lokalen Datenbank.</Empty>;
+  if (!rows.length) return <Empty>{tr('Keine Loot-Daten in der lokalen Datenbank.', 'No loot data in the local database.')}</Empty>;
   const q = new Map(quotes.map((x) => [x.itemId, x]));
   // collapse Forever relation rows (no rate) into a flag on the Classic row of the same item/context
   const merged = new Map<string, LootRow & { forever: boolean; classic: boolean }>();
@@ -35,11 +36,11 @@ export function LootTables({ rows, quotes, quotesLoading, quotesError, onPick }:
                 <tr className="border-b border-line">
                   <th className="py-1 pr-2 font-medium">Item</th>
                   <th className="py-1 pr-2 font-medium">ID</th>
-                  <th className="py-1 pr-2 text-right font-medium">Chance</th>
-                  <th className="py-1 pr-2 text-right font-medium">Menge</th>
-                  <th className="py-1 pr-2 text-right font-medium">Händler</th>
-                  <th className="py-1 pr-2 font-medium">AH-Preis (Stück)</th>
-                  <th className="py-1 font-medium">Quelle</th>
+                  <th className="py-1 pr-2 text-right font-medium">{tr('Chance', 'Chance')}</th>
+                  <th className="py-1 pr-2 text-right font-medium">{tr('Menge', 'Qty')}</th>
+                  <th className="py-1 pr-2 text-right font-medium">{tr('Händler', 'Vendor')}</th>
+                  <th className="py-1 pr-2 font-medium">{tr('AH-Preis (Stück)', 'AH price (each)')}</th>
+                  <th className="py-1 font-medium">{tr('Quelle', 'Source')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -49,7 +50,7 @@ export function LootTables({ rows, quotes, quotesLoading, quotesError, onPick }:
                     <td className="py-1 pr-2 num text-faint">{r.itemId}</td>
                     <td className="py-1 pr-2 text-right"><Rate rate={r.rate} /></td>
                     <td className="py-1 pr-2 text-right num text-muted">{r.minQty != null ? (r.minQty === r.maxQty ? r.minQty : `${r.minQty}–${r.maxQty}`) : '?'}</td>
-                    <td className="py-1 pr-2 text-right num text-muted" title={r.vendorSell != null ? 'Classic-Händlerpreis (cmangos)' : 'unbekannt'}>{formatCopper(r.vendorSell)}</td>
+                    <td className="py-1 pr-2 text-right num text-muted" title={r.vendorSell != null ? tr('Classic-Händlerpreis (cmangos)', 'Classic vendor price (cmangos)') : tr('unbekannt', 'unknown')}>{formatCopper(r.vendorSell)}</td>
                     <td className="py-1 pr-2"><PriceCell compact quote={q.get(r.itemId)} loading={quotesLoading} error={quotesError} /></td>
                     <td className="py-1">
                       <span className="inline-flex gap-1">
@@ -61,7 +62,7 @@ export function LootTables({ rows, quotes, quotesLoading, quotesError, onPick }:
                 ))}
               </tbody>
             </table>
-            {g.rows.length > 40 && <p className="mt-1 text-[11.5px] text-faint">… {g.rows.length - 40} weitere (seltene) Einträge</p>}
+            {g.rows.length > 40 && <p className="mt-1 text-[11.5px] text-faint">… {g.rows.length - 40} {tr('weitere (seltene) Einträge', 'more (rare) entries')}</p>}
           </div>
         </div>
       ))}

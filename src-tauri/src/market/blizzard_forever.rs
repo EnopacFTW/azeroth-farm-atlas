@@ -10,7 +10,9 @@ use sha2::{Digest, Sha256};
 use std::collections::BTreeMap;
 use std::time::Duration;
 
-pub const ATTRIBUTION: &str = "Daten: Blizzard Battle.net API (experimentell, inoffiziell für Forever)";
+pub fn attribution() -> String {
+    crate::i18n::tr("Daten: Blizzard Battle.net API (experimentell, inoffiziell für Forever)", "Data: Blizzard Battle.net API (experimental, unofficial for Forever)")
+}
 pub const OAUTH_URL: &str = "https://oauth.battle.net/token";
 pub const REGIONS: &[&str] = &["eu", "us", "kr", "tw"];
 
@@ -64,7 +66,7 @@ pub struct Aggregated {
 impl Blizzard {
     pub fn new(region: &str) -> Result<Self, AppError> {
         if !REGIONS.contains(&region) {
-            return Err(AppError::invalid("Region für Blizzard-API nicht unterstützt"));
+            return Err(AppError::invalid(crate::i18n::tr("Region für Blizzard-API nicht unterstützt", "Region not supported by the Blizzard API")));
         }
         Ok(Self { region: region.into(), api_base: format!("https://{region}.api.blizzard.com"), oauth_url: OAUTH_URL.into() })
     }
@@ -84,7 +86,7 @@ impl Blizzard {
                 },
             )
             .await
-            .map_err(|e| if e.code == "unauthorized" || e.http_status == Some(400) { AppError::new("unauthorized", "Blizzard-Client-ID oder -Secret ungültig.") } else { e })?;
+            .map_err(|e| if e.code == "unauthorized" || e.http_status == Some(400) { AppError::new("unauthorized", crate::i18n::tr("Blizzard-Client-ID oder -Secret ungültig.", "Blizzard client ID or secret invalid.")) } else { e })?;
         r.json()
     }
 
@@ -108,7 +110,7 @@ impl Blizzard {
                 Err(e) => return Err(e),
             }
         }
-        Err(last.unwrap_or_else(|| AppError::not_found("Kein Auktionshaus-Index gefunden")))
+        Err(last.unwrap_or_else(|| AppError::not_found(crate::i18n::tr("Kein Auktionshaus-Index gefunden", "No auction house index found"))))
     }
 
     pub async fn markets(&self, http: &HttpClient, token: &str) -> Result<Vec<Market>, AppError> {
@@ -134,8 +136,8 @@ impl Blizzard {
 
     /// Downloads listings + commodities of one house and aggregates per item (can be ~10 MB each).
     pub async fn fetch_house(&self, http: &HttpClient, token: &str, market: &Market) -> Result<(Aggregated, Option<String>), AppError> {
-        let house = market.house_id.ok_or_else(|| AppError::invalid("Markt ohne House-ID"))?;
-        let ruleset: u32 = market.id.split('.').nth(2).and_then(|s| s.parse().ok()).ok_or_else(|| AppError::invalid("Markt-ID ohne Ruleset"))?;
+        let house = market.house_id.ok_or_else(|| AppError::invalid(crate::i18n::tr("Markt ohne House-ID", "Market without house ID")))?;
+        let ruleset: u32 = market.id.split('.').nth(2).and_then(|s| s.parse().ok()).ok_or_else(|| AppError::invalid(crate::i18n::tr("Markt-ID ohne Ruleset", "Market ID without ruleset")))?;
         let big = RequestOptions { bearer: Some(token.into()), timeout: Some(Duration::from_secs(180)), max_bytes: Some(96 * 1024 * 1024), ..Default::default() };
         let base = format!("{}/data/wow/ruleset/{ruleset}/auctions/{house}", self.api_base);
         let listings = http.get(&format!("{base}?namespace={}", self.ns()), big.clone()).await?;
@@ -176,7 +178,7 @@ pub fn parse_named_list(r: &HttpResponse, keys: &[&str]) -> Result<Vec<NamedId>,
     let arr = keys
         .iter()
         .find_map(|k| v.get(*k).and_then(|a| a.as_array()))
-        .ok_or_else(|| AppError::new("schema", "Blizzard-Antwort ohne erwartete Liste (Schema geändert?)"))?;
+        .ok_or_else(|| AppError::new("schema", crate::i18n::tr("Blizzard-Antwort ohne erwartete Liste (Schema geändert?)", "Blizzard response without the expected list (schema changed?)")))?;
     Ok(arr
         .iter()
         .filter_map(|e| {
@@ -263,9 +265,9 @@ pub fn aggregate(market: &Market, listings: &HttpResponse, commodities: &HttpRes
                 cache_expires_at: None,
                 is_live_snapshot: false,
                 source_url: None,
-                attribution_text: ATTRIBUTION.into(),
+                attribution_text: attribution(),
                 attribution_url: Some("https://develop.battle.net/".into()),
-                data_source_note: Some(format!("House {} · Einheitspreis = Sofortkauf / Menge; Gebote ohne Sofortkauf ausgeschlossen", market.house_id.unwrap_or(0))),
+                data_source_note: Some(crate::i18n::tr(format!("House {} · Einheitspreis = Sofortkauf / Menge; Gebote ohne Sofortkauf ausgeschlossen", market.house_id.unwrap_or(0)), format!("House {} · unit price = buyout / quantity; bids without buyout excluded", market.house_id.unwrap_or(0)))),
                 from_cache: false,
             }
         })

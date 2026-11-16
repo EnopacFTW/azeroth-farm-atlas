@@ -12,6 +12,7 @@ pub async fn get_settings(state: State<'_, AppState>) -> AppResult<AppSettings> 
 #[tauri::command]
 pub async fn save_settings(app: AppHandle, state: State<'_, AppState>, settings: AppSettings) -> AppResult<AppSettings> {
     user::save_settings(&*state.user()?, &settings)?;
+    crate::i18n::set_language(&settings.language);
     if let Some(w) = app.get_webview_window("main") {
         let _ = w.set_always_on_top(settings.always_on_top);
     }
@@ -45,7 +46,7 @@ pub async fn backup_user_data(app: AppHandle, state: State<'_, AppState>) -> App
     let Some(path) = app.dialog().file().add_filter("SQLite", &["db"]).set_file_name(&name).blocking_save_file() else {
         return Ok(None);
     };
-    let path = path.into_path().map_err(|_| AppError::invalid("Ungültiger Pfad"))?;
+    let path = path.into_path().map_err(|_| AppError::invalid(crate::i18n::tr("Ungültiger Pfad", "Invalid path")))?;
     if path.exists() {
         std::fs::remove_file(&path)?;
     }
@@ -56,8 +57,8 @@ pub async fn backup_user_data(app: AppHandle, state: State<'_, AppState>) -> App
 /// Deletes all local user data, the price cache and stored credentials. Requires the confirmation word.
 #[tauri::command]
 pub async fn reset_local_data(state: State<'_, AppState>, confirm: String) -> AppResult<()> {
-    if confirm != "LÖSCHEN" {
-        return Err(AppError::invalid("Bestätigungswort fehlt"));
+    if confirm != "LÖSCHEN" && confirm != "DELETE" {
+        return Err(AppError::invalid(crate::i18n::tr("Bestätigungswort fehlt", "Confirmation word missing")));
     }
     {
         let c = state.user()?;
@@ -65,6 +66,8 @@ pub async fn reset_local_data(state: State<'_, AppState>, confirm: String) -> Ap
         let p = user::save_profile(&c, user::demo_profile())?;
         let s = AppSettings { active_profile_id: Some(p.id), ..Default::default() };
         user::save_settings(&c, &s)?;
+        crate::i18n::set_language(&s.language);
+        crate::db::maps::delete_all(&c, &state.paths.maps_dir)?;
     }
     state.market.clear_cache()?;
     for n in crate::security::credentials::ALLOWED {

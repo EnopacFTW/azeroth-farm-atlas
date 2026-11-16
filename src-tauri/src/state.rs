@@ -35,10 +35,10 @@ impl AppState {
     }
 
     pub fn game(&self) -> AppResult<MutexGuard<'_, Connection>> {
-        self.game.lock().map_err(|_| AppError::new("lock", "Spieldatenbank gesperrt"))
+        self.game.lock().map_err(|_| AppError::new("lock", crate::i18n::tr("Spieldatenbank gesperrt", "Game database locked")))
     }
     pub fn user(&self) -> AppResult<MutexGuard<'_, Connection>> {
-        self.user.lock().map_err(|_| AppError::new("lock", "Benutzerdatenbank gesperrt"))
+        self.user.lock().map_err(|_| AppError::new("lock", crate::i18n::tr("Benutzerdatenbank gesperrt", "User database locked")))
     }
     pub fn market_settings(&self) -> AppResult<crate::market::MarketSettings> {
         Ok(db::user::get_settings(&*self.user()?)?.market)

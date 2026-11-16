@@ -4,7 +4,7 @@
 WebView2 (React/TS/Vite, Tailwind, TanStack Query, Zustand, Zod, Leaflet CRS.Simple)
   src/domain     reine, getestete Logik: scoring, market, economics, coordinates, professionRules, probability, sessionMath
   src/services   typisierte invoke()-Wrapper – das UI ruft nie selbst Anbieter-URLs auf
-        │ Tauri IPC (47 Commands, Payloads in Rust validiert)
+        │ Tauri IPC (54 Commands, Payloads in Rust validiert)
 Rust (src-tauri/src)
   db/game.rs     read-only game.db (Seed), JSON-Aufbau in SQLite, FTS5-Suche (DE/EN)
   db/user.rs     user.db: Migrationen (transaktional, Backup vorher), Profile, Sessions, Favoriten, Settings, manuelle Preise

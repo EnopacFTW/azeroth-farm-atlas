@@ -1,6 +1,7 @@
 import type { FarmObjective, Profile, ProfessionId, SpotCandidate } from './types';
-import { conColor, grayLevel, hasProfession, PROFESSION_LABEL, skillOf, USES } from './professionRules';
+import { conColor, grayLevel, hasProfession, professionLabel, skillOf, USES } from './professionRules';
 import { formatCopper } from './money';
+import { getLang, nm, tr } from '@/i18n';
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Filters (hard constraints) and transparent fit scoring. Documented in docs/architecture.md#scoring.
@@ -53,10 +54,12 @@ export interface ScoredSpot {
   vendorPerKillCopper: number | null;
 }
 
-const OBJ_LABEL: Record<FarmObjective, string> = {
-  xp: 'XP', gold: 'Gold', cloth: 'Stoff', skinning: 'Kürschnerei', mining: 'Bergbau', herbalism: 'Kräuterkunde', fishing: 'Angeln',
-  rare: 'Rares', materials: 'Materialien', professions: 'Berufe',
+const OBJ_LABEL: Record<FarmObjective, [string, string]> = {
+  xp: ['XP', 'XP'], gold: ['Gold', 'Gold'], cloth: ['Stoff', 'Cloth'], skinning: ['Kürschnerei', 'Skinning'], mining: ['Bergbau', 'Mining'],
+  herbalism: ['Kräuterkunde', 'Herbalism'], fishing: ['Angeln', 'Fishing'], rare: ['Rares', 'Rares'], materials: ['Materialien', 'Materials'],
+  professions: ['Berufe', 'Professions'],
 };
+const objLabel = (o: FarmObjective) => tr(...OBJ_LABEL[o]);
 
 const GATHER: Record<string, ProfessionId> = { mining: 'mining', herbalism: 'herbalism', fishing: 'fishing', skinning: 'skinning' };
 
@@ -120,19 +123,19 @@ export function scoreSpot(profile: Profile, spot: SpotCandidate, filters: Finder
     const lost = classicOnlyTags.filter((t) => objectives.includes(t));
     if (lost.length) {
       availability = 'incomplete_data';
-      whyNot.push(`${lost.map((t) => OBJ_LABEL[t]).join(', ')} nur über Classic-Fallback belegt (Forever-only aktiv)`);
+      whyNot.push(`${lost.map(objLabel).join(', ')}${tr(' nur über Classic-Fallback belegt (Forever-only aktiv)', ' only backed by Classic fallback data (Forever-only is on)')}`);
     } else {
-      whyNot.push(`Passt zu keinem gewählten Farmziel (${objectives.map((o) => OBJ_LABEL[o]).join(', ')})`);
+      whyNot.push(`${tr('Passt zu keinem gewählten Farmziel', 'Matches none of the selected farm goals')} (${objectives.map(objLabel).join(', ')})`);
     }
   }
 
   // ---- hard: elites / instances / solo
-  if (spot.hasElite && (filters.noElites || filters.soloOnly)) { excluded = true; whyNot.push('Elite-Gegner (Filter „Keine Elites“/„Nur solo“)'); }
-  if (spot.isInstance && (filters.noInstances || filters.soloOnly)) { excluded = true; whyNot.push('Instanz (Filter „Keine Instanzen“)'); }
+  if (spot.hasElite && (filters.noElites || filters.soloOnly)) { excluded = true; whyNot.push(tr('Elite-Gegner (Filter „Keine Elites“/„Nur solo“)', 'Elite enemies (filter “No elites”/“Solo only”)')); }
+  if (spot.isInstance && (filters.noInstances || filters.soloOnly)) { excluded = true; whyNot.push(tr('Instanz (Filter „Keine Instanzen“)', 'Instance (filter “No instances”)')); }
 
   // ---- PvP risk (derived only from zone control + ruleset)
   const risk = pvpRisk(profile, spot);
-  if (filters.lowPvpRisk && risk === 'high') { excluded = true; whyNot.push('Feindliches Gebiet auf PvP-Ruleset'); }
+  if (filters.lowPvpRisk && risk === 'high') { excluded = true; whyNot.push(tr('Feindliches Gebiet auf PvP-Ruleset', 'Enemy territory on a PvP ruleset')); }
 
   // ---- levels
   let skinnableShare: number | null = null;
@@ -141,20 +144,21 @@ export function scoreSpot(profile: Profile, spot: SpotCandidate, filters: Finder
     if (spot.levelMin > L + filters.maxAbove) {
       excluded = true;
       if (availability === 'ready') availability = 'too_high';
-      whyNot.push(`Mobs Level ${spot.levelMin}–${spot.levelMax} sind zu hoch (max. ${L + filters.maxAbove})`);
+      whyNot.push(tr(`Mobs Level ${spot.levelMin}–${spot.levelMax} sind zu hoch (max. ${L + filters.maxAbove})`, `Mobs level ${spot.levelMin}–${spot.levelMax} are too high (max. ${L + filters.maxAbove})`));
     }
     if (spot.levelMax <= gray) {
-      whyNot.push(`Mobs grau (≤ ${gray}): keine XP mehr (Classic-Regel)`);
+      whyNot.push(tr(`Mobs grau (≤ ${gray}): keine XP mehr (Classic-Regel)`, `Mobs are gray (≤ ${gray}): no more XP (Classic rule)`));
       if (filters.requireXp || (objectives.length === 1 && objectives[0] === 'xp')) excluded = true;
       tags.delete('xp');
     }
-    factors.push({ key: 'level', label: 'Level-Eignung', weight: 30 * (0.5 + pr.xp / 100), value: levelFit(L, spot.levelMin, spot.levelMax) });
-    why.push(`Mobs Level ${spot.levelMin}–${spot.levelMax} (dein Level: ${L}, Farbe: ${conColorDe(conColor(L, spot.levelMax))})`);
+    factors.push({ key: 'level', label: tr('Level-Eignung', 'Level fit'), weight: 30 * (0.5 + pr.xp / 100), value: levelFit(L, spot.levelMin, spot.levelMax) });
+    const color = conColorName(conColor(L, spot.levelMax));
+    why.push(tr(`Mobs Level ${spot.levelMin}–${spot.levelMax} (dein Level: ${L}, Farbe: ${color})`, `Mobs level ${spot.levelMin}–${spot.levelMax} (your level: ${L}, color: ${color})`));
   } else if (!isMob && spot.zone.levelMax != null) {
     // gathering: danger from zone mobs
     const danger = spot.zone.levelMax - L;
-    if (danger > 5) whyNot.push(`Zonen-Mobs bis Level ${spot.zone.levelMax} (abgeleitet) – gefährlich auf Level ${L}`);
-    factors.push({ key: 'zone', label: 'Zonen-Gefahr', weight: 15, value: danger <= 0 ? 1 : Math.max(0, 1 - danger / 10) });
+    if (danger > 5) whyNot.push(tr(`Zonen-Mobs bis Level ${spot.zone.levelMax} (abgeleitet) – gefährlich auf Level ${L}`, `Zone mobs up to level ${spot.zone.levelMax} (derived) – dangerous at level ${L}`));
+    factors.push({ key: 'zone', label: tr('Zonen-Gefahr', 'Zone danger'), weight: 15, value: danger <= 0 ? 1 : Math.max(0, 1 - danger / 10) });
   }
 
   // ---- skills
@@ -169,7 +173,7 @@ export function scoreSpot(profile: Profile, spot: SpotCandidate, filters: Finder
         if (i >= 0) matched.splice(i, 1);
       };
       if (skill == null) {
-        if (objectives.includes('skinning')) whyNot.push('Kein Kürschner – Kürschnerbeute nicht verfügbar');
+        if (objectives.includes('skinning')) whyNot.push(tr('Kein Kürschner – Kürschnerbeute nicht verfügbar', 'Not a skinner – skinning loot unavailable'));
         dropSkinningMatch();
         if (objectives.includes('skinning') && matched.length === 0) { excluded = true; availability = 'profession_missing'; }
       } else {
@@ -178,31 +182,31 @@ export function scoreSpot(profile: Profile, spot: SpotCandidate, filters: Finder
         const reqMin = Math.min(...skinnable.map((n) => n.skinMin ?? 999));
         const reqMax = Math.max(...skinnable.map((n) => n.skinMax ?? 0));
         if (ok.length === 0) {
-          whyNot.push(`Noch nicht kürschnerbar: benötigt ${reqMin}–${reqMax}, du hast ${skill} (Classic-Formel)`);
+          whyNot.push(tr(`Noch nicht kürschnerbar: benötigt ${reqMin}–${reqMax}, du hast ${skill} (Classic-Formel)`, `Not skinnable yet: needs ${reqMin}–${reqMax}, you have ${skill} (Classic formula)`));
           dropSkinningMatch();
           if (objectives.includes('skinning') && matched.length === 0) { excluded = true; availability = 'skill_missing'; }
         } else {
-          why.push(`Kürschnerbar mit ${skill}: ${ok.length} von ${skinnable.length} Mob-Typen (benötigt ${reqMin}–${reqMax}, Classic-Formel)`);
-          factors.push({ key: 'skill', label: 'Kürschner-Skill passt', weight: 20 * (0.5 + pr.profession / 100), value: skinnableShare });
+          why.push(tr(`Kürschnerbar mit ${skill}: ${ok.length} von ${skinnable.length} Mob-Typen (benötigt ${reqMin}–${reqMax}, Classic-Formel)`, `Skinnable with ${skill}: ${ok.length} of ${skinnable.length} mob types (needs ${reqMin}–${reqMax}, Classic formula)`));
+          factors.push({ key: 'skill', label: tr('Kürschner-Skill passt', 'Skinning skill fits'), weight: 20 * (0.5 + pr.profession / 100), value: skinnableShare });
         }
       }
     } else {
       const req = spot.reqSkill;
-      const label = PROFESSION_LABEL[prof];
+      const label = professionLabel(prof);
       if (skill == null) {
         excluded = true;
         availability = 'profession_missing';
-        whyNot.push(`${label} nicht erlernt${req != null ? ` (benötigt ${req})` : ''}`);
+        whyNot.push(tr(`${label} nicht erlernt${req != null ? ` (benötigt ${req})` : ''}`, `${label} not learned${req != null ? ` (needs ${req})` : ''}`));
       } else if (req == null) {
-        missing.push(`Benötigter ${label}-Skill unbekannt`);
+        missing.push(tr(`Benötigter ${label}-Skill unbekannt`, `Required ${label} skill unknown`));
       } else if (skill < req) {
         excluded = true;
         availability = 'skill_missing';
-        whyNot.push(`Skill fehlt: ${label} ${req} benötigt, du hast ${skill}`);
+        whyNot.push(tr(`Skill fehlt: ${label} ${req} benötigt, du hast ${skill}`, `Skill missing: ${label} ${req} required, you have ${skill}`));
       } else {
         const margin = skill - req;
-        why.push(`${label} ${skill} ≥ ${req} – sofort farmbar${margin < 50 ? ' (gibt noch Skillpunkte)' : ''}`);
-        factors.push({ key: 'skill', label: `${label}-Skill passt`, weight: 20 * (0.5 + pr.profession / 100), value: margin < 25 ? 1 : margin < 50 ? 0.85 : margin < 100 ? 0.6 : 0.35 });
+        why.push(tr(`${label} ${skill} ≥ ${req} – sofort farmbar${margin < 50 ? ' (gibt noch Skillpunkte)' : ''}`, `${label} ${skill} ≥ ${req} – farmable now${margin < 50 ? ' (still gives skill-ups)' : ''}`));
+        factors.push({ key: 'skill', label: tr(`${label}-Skill passt`, `${label} skill fits`), weight: 20 * (0.5 + pr.profession / 100), value: margin < 25 ? 1 : margin < 50 ? 0.85 : margin < 100 ? 0.6 : 0.35 });
       }
     }
   }
@@ -213,10 +217,11 @@ export function scoreSpot(profile: Profile, spot: SpotCandidate, filters: Finder
   if (usable.length) {
     const p = usable[0];
     const mat = spot.items.find((i) => (p.uses === 'skinning' ? i.context === 'skinning' : p.uses === 'cloth' ? i.isCloth : true));
-    why.push(`${PROFESSION_LABEL[p.prof]} verwertet ${mat ? `${mat.nameDe ?? mat.nameEn}${mat.rate != null ? ` (${pct(mat.rate)})` : ''}` : 'diese Materialien'}`);
+    const matText = mat ? `${nm(mat)}${mat.rate != null ? ` (${pct(mat.rate)})` : ''}` : tr('diese Materialien', 'these materials');
+    why.push(tr(`${professionLabel(p.prof)} verwertet ${matText}`, `${professionLabel(p.prof)} uses ${matText}`));
   } else if (filters.usableForMe) {
     excluded = true;
-    whyNot.push('Keine Materialien für deine Handwerksberufe');
+    whyNot.push(tr('Keine Materialien für deine Handwerksberufe', 'No materials for your crafting professions'));
   }
 
   // ---- objective / density / risk factors
@@ -224,26 +229,27 @@ export function scoreSpot(profile: Profile, spot: SpotCandidate, filters: Finder
     const prioW = (o: FarmObjective) => (o === 'xp' ? pr.xp : o === 'gold' ? pr.gold : o === 'rare' ? pr.rare : pr.profession) + 1;
     const total = objectives.reduce((a, o) => a + prioW(o), 0);
     const got = matched.reduce((a, o) => a + prioW(o), 0);
-    factors.push({ key: 'objective', label: 'Farmziel-Treffer', weight: 25, value: got / total });
-    if (matched.length) why.push(`Erfüllt: ${matched.map((m) => OBJ_LABEL[m]).join(', ')}`);
+    factors.push({ key: 'objective', label: tr('Farmziel-Treffer', 'Farm goal match'), weight: 25, value: got / total });
+    if (matched.length) why.push(`${tr('Erfüllt', 'Matches')}: ${matched.map(objLabel).join(', ')}`);
   }
-  if (spot.spawnCount > 0) factors.push({ key: 'density', label: 'Spawndichte', weight: 15, value: densityFit(spot.spawnCount) });
+  if (spot.spawnCount > 0) factors.push({ key: 'density', label: tr('Spawndichte', 'Spawn density'), weight: 15, value: densityFit(spot.spawnCount) });
   factors.push({
-    key: 'risk', label: 'Solo/Risiko', weight: 10,
+    key: 'risk', label: tr('Solo/Risiko', 'Solo/risk'), weight: 10,
     value: (spot.hasElite ? 0.3 : 1) * (spot.isInstance ? 0.5 : 1) * (risk === 'high' ? 0.4 : risk === 'medium' ? 0.8 : 1),
   });
-  if (spot.hasRare && objectives.includes('rare')) why.push('Enthält Rare-Mob oder seltene Drops (Rate siehe Details)');
+  if (spot.hasRare && objectives.includes('rare')) why.push(tr('Enthält Rare-Mob oder seltene Drops (Rate siehe Details)', 'Contains a rare mob or rare drops (rate in details)'));
 
   // ---- economics: Classic vendor model per kill (never a Gold/h)
   const vendorPerKill = isMob && profile.allowClassicFallback && !filters.foreverOnly ? spot.modelVendorCopperPerKill : null;
   if (vendorPerKill != null) {
-    why.push(`Händlerwert ≈ ${formatCopper(vendorPerKill)}/Kill (Modell aus Classic-Dropchancen${spot.modelVendorPartial ? ', unvollständig' : ''})`);
+    const v = formatCopper(vendorPerKill);
+    why.push(tr(`Händlerwert ≈ ${v}/Kill (Modell aus Classic-Dropchancen${spot.modelVendorPartial ? ', unvollständig' : ''})`, `Vendor value ≈ ${v}/kill (model from Classic drop rates${spot.modelVendorPartial ? ', incomplete' : ''})`));
   }
-  missing.push('Gold/h: keine belastbaren Daten ohne gemessene Killrate (Farmtracker nutzen)');
-  if (isMob && spot.items.some((i) => i.rate != null)) missing.push('Dropchancen stammen aus Classic-Emulator-Daten (cmangos), nicht Forever-gemessen');
-  if (spot.npcs.some((n) => !n.inClassic)) missing.push('Einige Forever-NPCs fehlen in Classic-Daten: Typ/Loot unbekannt');
-  if (spot.routeCurated === 0 && spot.routeKind) missing.push('Route ist eine Luftlinien-Punktfolge (Terrain nicht berücksichtigt)');
-  if (spot.generated) missing.push('Spot automatisch aus Forever-Spawnpunkten gruppiert');
+  missing.push(tr('Gold/h: keine belastbaren Daten ohne gemessene Killrate (Farmtracker nutzen)', 'Gold/h: no reliable data without a measured kill rate (use the farm tracker)'));
+  if (isMob && spot.items.some((i) => i.rate != null)) missing.push(tr('Dropchancen stammen aus Classic-Emulator-Daten (cmangos), nicht Forever-gemessen', 'Drop rates come from Classic emulator data (cmangos), not measured on Forever'));
+  if (spot.npcs.some((n) => !n.inClassic)) missing.push(tr('Einige Forever-NPCs fehlen in Classic-Daten: Typ/Loot unbekannt', 'Some Forever NPCs are missing from Classic data: type/loot unknown'));
+  if (spot.routeCurated === 0 && spot.routeKind) missing.push(tr('Route ist eine Luftlinien-Punktfolge (Terrain nicht berücksichtigt)', 'Route is a straight-line point sequence (terrain not considered)'));
+  if (spot.generated) missing.push(tr('Spot automatisch aus Forever-Spawnpunkten gruppiert', 'Spot grouped automatically from Forever spawn points'));
 
   // ---- fit score from known factors only
   const wsum = factors.reduce((a, f) => a + f.weight, 0);
@@ -271,11 +277,12 @@ export function rankSpots(profile: Profile, spots: SpotCandidate[], filters: Fin
   return scored.sort((a, b) => (a.availability === 'ready' ? 0 : 1) - (b.availability === 'ready' ? 0 : 1) || cmp[sort](a, b));
 }
 
-function conColorDe(c: string): string {
-  return ({ gray: 'grau', green: 'grün', yellow: 'gelb', orange: 'orange', red: 'rot' } as Record<string, string>)[c] ?? c;
+function conColorName(c: string): string {
+  return tr(({ gray: 'grau', green: 'grün', yellow: 'gelb', orange: 'orange', red: 'rot' } as Record<string, string>)[c] ?? c, c);
 }
 
 export function pct(rate: number): string {
   const p = rate * 100;
-  return `${p >= 10 ? p.toFixed(0) : p >= 1 ? p.toFixed(1) : p.toFixed(2)} %`.replace('.', ',');
+  const v = `${p >= 10 ? p.toFixed(0) : p >= 1 ? p.toFixed(1) : p.toFixed(2)} %`;
+  return getLang() === 'en' ? v : v.replace('.', ',');
 }

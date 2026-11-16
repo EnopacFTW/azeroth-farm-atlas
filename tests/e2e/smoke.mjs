@@ -44,6 +44,8 @@ const go = (hash) => page.evaluate((h) => { location.hash = h; }, hash);
 await check('App startet und Farmfinder zeigt Spots (Level 28, Demo-Profil)', async () => {
   await go('#/finder');
   await page.getByText('passende Spots').waitFor();
+  // the counter renders before the candidate query has finished
+  await page.waitForFunction(() => Number(document.querySelector('section span.font-semibold.num')?.textContent) > 0, null, { timeout: 30_000 }).catch(() => {});
   const n = Number(await page.locator('section span.font-semibold.num').first().textContent());
   if (!(n > 0)) throw new Error(`0 Spots`);
   return `${n} Spots`;
@@ -66,9 +68,12 @@ await check('Spot-Klick zentriert Karte, zeigt Mobs & Begründung (Test 6)', asy
   await page.locator('article').nth(1).click();
   await page.getByText('Warum empfohlen?').first().waitFor();
   await page.locator('.leaflet-container canvas, .leaflet-container path').first().waitFor();
-  const label = await page.locator('text=Koordinatenfläche – kein Kartenbild').first().isVisible();
+  const label = await page.getByText(/Koordinatenfläche \+ Spawndichte – kein Kartenbild|Eigenes Kartenbild/).first().isVisible();
   if (!label) throw new Error('Kartenhinweis fehlt');
-  return 'Karte + Begründung sichtbar';
+  // base layer: grid + spawn density (or an imported image)
+  await page.waitForFunction(() => document.querySelectorAll('.leaflet-image-layer').length >= 1);
+  const layers = await page.locator('.leaflet-image-layer').count();
+  return `Karte + Begründung sichtbar, ${layers} Kartenebenen`;
 });
 
 await check('Suche DE und EN → gleiche Item-ID 2319 (Test 13)', async () => {
@@ -163,6 +168,18 @@ await check('Atlas: Bergbau-Ebene filtert nach Skill (Test 3)', async () => {
   await page.getByLabel(/Alle Ressourcen zeigen/).uncheck();
   if (!(withAll > without)) throw new Error(`${without} vs ${withAll}`);
   return `${without} Marker ohne Bergbau, ${withAll} mit „Alle Ressourcen“`;
+});
+
+await check('Sprache EN ↔ DE: Oberfläche und Namen wechseln', async () => {
+  await go('#/finder');
+  await page.getByRole('button', { name: 'en', exact: true }).click();
+  await page.getByText('matching spots').waitFor();
+  await page.getByText('Why recommended?').first().waitFor();
+  const nav = await page.getByRole('navigation').innerText();
+  if (!/Farm finder/.test(nav) || !/Settings/.test(nav)) throw new Error('Navigation nicht englisch');
+  await page.getByRole('button', { name: 'de', exact: true }).click();
+  await page.getByText('passende Spots').waitFor();
+  return 'EN-Texte sichtbar, zurück auf DE';
 });
 
 await go('#/finder');

@@ -47,17 +47,36 @@ npm run test:e2e
 
 ## Installer bauen
 
+Der Auto-Updater verlangt signierte Update-Pakete. Der private Schlüssel liegt **nur** auf dem Build-Rechner
+(`%USERPROFILE%\.tauri\azeroth-farm-atlas.key`, nicht im Repo – sichern! Ohne ihn können installierte Apps keine
+Updates mehr annehmen). Der öffentliche Schlüssel steht in `tauri.conf.json → plugins.updater.pubkey`.
+
 ```powershell
+$env:TAURI_SIGNING_PRIVATE_KEY="$env:USERPROFILE\.tauri\azeroth-farm-atlas.key"
+$env:TAURI_SIGNING_PRIVATE_KEY_PASSWORD=""
 npm run tauri build
 ```
 
-Ergebnis:
+Ergebnis (Version aus `tauri.conf.json`):
 
-- `src-tauri\target\release\azeroth-farm-atlas.exe` (portable, benötigt WebView2)
-- `src-tauri\target\release\bundle\nsis\Azeroth Farm Atlas_0.1.0_x64-setup.exe` (bevorzugt; Installation pro Benutzer, DE/EN)
-- `src-tauri\target\release\bundle\msi\Azeroth Farm Atlas_0.1.0_x64_de-DE.msi` (+ en-US)
+- `src-tauri\target\release\bundle\nsis\Azeroth Farm Atlas_<version>_x64-setup.exe` (bevorzugt; pro Benutzer, DE/EN) + `.sig`
+- `src-tauri\target\release\bundle\msi\Azeroth Farm Atlas_<version>_x64_de-DE.msi` (+ en-US, je mit `.sig`)
 
-Die Builds sind **nicht signiert** (kein Zertifikat vorhanden) → Windows SmartScreen zeigt „Unbekannter Herausgeber“.
+Die Installer sind **nicht Authenticode-signiert** (kein Code-Signing-Zertifikat) → SmartScreen zeigt „Unbekannter
+Herausgeber“. Die Update-Signatur (minisign) ist davon unabhängig und schützt nur den Updater-Kanal.
+
+## Release & Auto-Update
+
+Die App prüft beim Start `https://github.com/EnopacFTW/azeroth-farm-atlas/releases/latest/download/latest.json`
+und bietet ein neues Release mit „Installieren & neu starten“ an (NSIS im Passiv-Modus, Benutzerdaten bleiben).
+
+Neues Release:
+
+1. Version in `package.json`, `src-tauri/Cargo.toml` und `src-tauri/tauri.conf.json` erhöhen.
+2. Signiert bauen (oben).
+3. `node scripts/release-manifest.mjs` schreibt `src-tauri/target/release/bundle/latest.json` (Version, Datum, URL und
+   Signatur der NSIS-Setup-EXE).
+4. GitHub-Release `v<version>` mit Setup-EXE, `.sig` und `latest.json` als Assets veröffentlichen.
 
 ## Installation / Daten / Deinstallation
 
@@ -65,7 +84,8 @@ Die Builds sind **nicht signiert** (kein Zertifikat vorhanden) → Windows Smart
 - Benutzerdaten: `%APPDATA%\de.azerothfarmatlas.desktop\` – `game.db` (Kopie der Seed-DB), `user.db` (Profile, Sessions,
   Favoriten, Einstellungen, manuelle Preise), `market_cache.db` (Fremdpreis-Cache mit Ablauf), `backups\`.
 - Zugangsdaten: Windows-Anmeldeinformationsverwaltung, Einträge „AzerothFarmAtlas“.
-- Update: neue Setup-EXE drüber installieren; `game.db` wird bei geänderter Seed-Prüfsumme atomar ersetzt, `user.db` bleibt.
+- Update: per Auto-Updater in der App oder neue Setup-EXE drüber installieren; `game.db` wird bei geänderter
+  Seed-Prüfsumme atomar ersetzt, `user.db` und `maps\` (eigene Kartenbilder) bleiben.
 - Deinstallation über „Apps & Features“. Benutzerdaten bleiben erhalten (Ordner oben manuell löschen oder in der App
   „Einstellungen → Zurücksetzen“).
 

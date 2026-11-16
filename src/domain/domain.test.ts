@@ -145,3 +145,47 @@ describe('session math (gold/h measured)', () => {
     expect(st.netGoldPerHour).toBeNull();
   });
 });
+
+describe('imported map calibration', () => {
+  it('full calibration maps the image exactly onto the 3:2 plane', async () => {
+    const { imageOverlayBounds, ZONE_PLANE, wowToLatLng } = await import('./coordinates');
+    // + 0 normalises -0 (Leaflet treats both the same)
+    expect(imageOverlayBounds({ x0: 0, y0: 0, x1: 100, y1: 100 }).map((p) => p.map((v) => v + 0))).toEqual([[-100, 0], [0, 150]]);
+    expect(wowToLatLng(100, 100, ZONE_PLANE)).toEqual([-100, 150]);
+  });
+
+  it('a cropped screenshot moves WoW 0/0 and 100/100 onto the calibrated image corners', async () => {
+    const { imageOverlayBounds, ZONE_PLANE, wowToLatLng } = await import('./coordinates');
+    const cal = { x0: 10, y0: 20, x1: 90, y1: 80 };
+    const [[south, west], [north, east]] = imageOverlayBounds(cal);
+    // image pixel at x0 % / y0 % must land on WoW 0/0, the one at x1 % / y1 % on WoW 100/100
+    const imgToLatLng = (u: number, v: number): [number, number] => [north + (south - north) * (v / 100), west + (east - west) * (u / 100)];
+    const [la0, lo0] = imgToLatLng(cal.x0, cal.y0);
+    const [la1, lo1] = imgToLatLng(cal.x1, cal.y1);
+    const [ea0, eo0] = wowToLatLng(0, 0, ZONE_PLANE);
+    const [ea1, eo1] = wowToLatLng(100, 100, ZONE_PLANE);
+    expect(la0).toBeCloseTo(ea0, 9); expect(lo0).toBeCloseTo(eo0, 9);
+    expect(la1).toBeCloseTo(ea1, 9); expect(lo1).toBeCloseTo(eo1, 9);
+  });
+});
+
+describe('i18n', () => {
+  it('switches texts, names, number and money formats', async () => {
+    const { setLang, tr, nm, nmAlt } = await import('@/i18n');
+    const item = { nameDe: 'Mittleres Leder', nameEn: 'Medium Leather' };
+    try {
+      setLang('en');
+      expect(tr('Spot nicht gefunden', 'Spot not found')).toBe('Spot not found');
+      expect(nm(item)).toBe('Medium Leather');
+      expect(nmAlt(item)).toBe('Mittleres Leder');
+      expect(nm({ nameDe: null, nameEn: 'Devilsaur' })).toBe('Devilsaur');
+      expect(formatCopper(1_234_567)).toBe('123g 45s 67c');
+      setLang('de');
+      expect(nm(item)).toBe('Mittleres Leder');
+      expect(formatCopper(1_234_567)).toBe('123g 45s 67k');
+      expect(parseCopper('5c')).toBe(5);
+    } finally {
+      setLang('de');
+    }
+  });
+});

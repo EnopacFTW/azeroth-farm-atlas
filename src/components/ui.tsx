@@ -1,6 +1,7 @@
 import { type ButtonHTMLAttributes, type ReactNode, forwardRef } from 'react';
 import { AlertTriangle, Loader2 } from 'lucide-react';
 import { errorText } from '@/services/tauri';
+import { tr } from '@/i18n';
 
 export function cx(...c: (string | false | null | undefined)[]) {
   return c.filter(Boolean).join(' ');
@@ -108,7 +109,7 @@ export function Select<T extends string>({ value, onChange, options, className, 
   );
 }
 
-export function ErrorBox({ error, title = 'Fehler' }: { error: unknown; title?: string }) {
+export function ErrorBox({ error, title = tr('Fehler', 'Error') }: { error: unknown; title?: string }) {
   return (
     <div role="alert" className="flex items-start gap-2 rounded-md border border-bad/40 bg-bad/10 px-3 py-2 text-[12.5px] text-bad">
       <AlertTriangle className="mt-0.5 size-4 shrink-0" />
@@ -124,7 +125,7 @@ export function Empty({ children }: { children: ReactNode }) {
   return <div className="rounded-md border border-dashed border-line px-4 py-6 text-center text-[13px] text-faint">{children}</div>;
 }
 
-export function Spinner({ label = 'Lade…' }: { label?: string }) {
+export function Spinner({ label = tr('Lade…', 'Loading…') }: { label?: string }) {
   return (
     <div className="flex items-center gap-2 text-[13px] text-muted">
       <Loader2 className="size-4 animate-spin" /> {label}

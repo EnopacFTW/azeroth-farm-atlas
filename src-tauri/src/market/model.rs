@@ -146,5 +146,5 @@ pub fn iso_in(secs: u64) -> String {
 
 pub fn validate_market_id(id: &str) -> Result<(), crate::error::AppError> {
     let ok = !id.is_empty() && id.len() <= 64 && id.chars().all(|c| c.is_ascii_lowercase() || c.is_ascii_digit() || c == '.' || c == '-' || c == '_');
-    if ok { Ok(()) } else { Err(crate::error::AppError::invalid("Ungültige Markt-ID")) }
+    if ok { Ok(()) } else { Err(crate::error::AppError::invalid(crate::i18n::tr("Ungültige Markt-ID", "Invalid market ID"))) }
 }

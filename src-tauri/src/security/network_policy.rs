@@ -32,14 +32,14 @@ impl NetworkPolicy {
     }
 
     pub fn check(&self, raw: &str) -> Result<Url, AppError> {
-        let url = Url::parse(raw).map_err(|_| AppError::new("blocked_url", "Ungültige URL"))?;
+        let url = Url::parse(raw).map_err(|_| AppError::new("blocked_url", crate::i18n::tr("Ungültige URL", "Invalid URL")))?;
         let host = url.host_str().unwrap_or_default().to_ascii_lowercase();
         let scheme_ok = url.scheme() == "https" || (self.allow_http_loopback && url.scheme() == "http" && host == "127.0.0.1");
         if !scheme_ok || !self.hosts.iter().any(|h| h == &host) {
-            return Err(AppError::new("blocked_host", format!("Host nicht freigegeben: {host}")));
+            return Err(AppError::new("blocked_host", crate::i18n::tr(format!("Host nicht freigegeben: {host}"), format!("Host not allowed: {host}"))));
         }
         if url.username() != "" || url.password().is_some() {
-            return Err(AppError::new("blocked_url", "URL mit Zugangsdaten abgelehnt"));
+            return Err(AppError::new("blocked_url", crate::i18n::tr("URL mit Zugangsdaten abgelehnt", "URL with credentials rejected")));
         }
         Ok(url)
     }

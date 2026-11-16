@@ -9,17 +9,17 @@ pub const ALLOWED: &[&str] = &["blizzard_client_id", "blizzard_client_secret", "
 
 fn entry(name: &str) -> Result<keyring::Entry, AppError> {
     if !ALLOWED.contains(&name) {
-        return Err(AppError::invalid("Unbekannter Schlüsselname"));
+        return Err(AppError::invalid(crate::i18n::tr("Unbekannter Schlüsselname", "Unknown key name")));
     }
-    keyring::Entry::new(SERVICE, name).map_err(|e| AppError::new("credential_store", format!("Windows-Anmeldeinformationsverwaltung nicht verfügbar: {e}")))
+    keyring::Entry::new(SERVICE, name).map_err(|e| AppError::new("credential_store", crate::i18n::tr(format!("Windows-Anmeldeinformationsverwaltung nicht verfügbar: {e}"), format!("Windows Credential Manager unavailable: {e}"))))
 }
 
 pub fn set(name: &str, value: &str) -> Result<(), AppError> {
     let v = value.trim();
     if v.is_empty() || v.len() > 512 {
-        return Err(AppError::invalid("Wert leer oder zu lang"));
+        return Err(AppError::invalid(crate::i18n::tr("Wert leer oder zu lang", "Value empty or too long")));
     }
-    entry(name)?.set_password(v).map_err(|e| AppError::new("credential_store", format!("Speichern fehlgeschlagen: {e}")))
+    entry(name)?.set_password(v).map_err(|e| AppError::new("credential_store", crate::i18n::tr(format!("Speichern fehlgeschlagen: {e}"), format!("Saving failed: {e}"))))
 }
 
 pub fn get(name: &str) -> Option<String> {
@@ -29,7 +29,7 @@ pub fn get(name: &str) -> Option<String> {
 pub fn delete(name: &str) -> Result<(), AppError> {
     match entry(name)?.delete_credential() {
         Ok(()) | Err(keyring::Error::NoEntry) => Ok(()),
-        Err(e) => Err(AppError::new("credential_store", format!("Löschen fehlgeschlagen: {e}"))),
+        Err(e) => Err(AppError::new("credential_store", crate::i18n::tr(format!("Löschen fehlgeschlagen: {e}"), format!("Deleting failed: {e}")))),
     }
 }
 

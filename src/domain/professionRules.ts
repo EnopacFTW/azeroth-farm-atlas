@@ -1,4 +1,5 @@
 import type { Profile, ProfessionId } from './types';
+import { tr } from '@/i18n';
 
 // Classic rules (cmangos Formulas.h / Wowpedia). Not verified against Forever – shown as classic_fallback in the UI.
 
@@ -35,11 +36,17 @@ export function hasProfession(profile: Profile, id: ProfessionId): boolean {
   return skillOf(profile, id) != null;
 }
 
-export const PROFESSION_LABEL: Record<ProfessionId, string> = {
-  skinning: 'Kürschnerei', mining: 'Bergbau', herbalism: 'Kräuterkunde', leatherworking: 'Lederverarbeitung', tailoring: 'Schneiderei',
-  engineering: 'Ingenieurskunst', alchemy: 'Alchemie', blacksmithing: 'Schmiedekunst', enchanting: 'Verzauberkunst',
-  cooking: 'Kochkunst', first_aid: 'Erste Hilfe', fishing: 'Angeln',
+const PROFESSION_LABEL: Record<ProfessionId, [string, string]> = {
+  skinning: ['Kürschnerei', 'Skinning'], mining: ['Bergbau', 'Mining'], herbalism: ['Kräuterkunde', 'Herbalism'],
+  leatherworking: ['Lederverarbeitung', 'Leatherworking'], tailoring: ['Schneiderei', 'Tailoring'], engineering: ['Ingenieurskunst', 'Engineering'],
+  alchemy: ['Alchemie', 'Alchemy'], blacksmithing: ['Schmiedekunst', 'Blacksmithing'], enchanting: ['Verzauberkunst', 'Enchanting'],
+  cooking: ['Kochkunst', 'Cooking'], first_aid: ['Erste Hilfe', 'First Aid'], fishing: ['Angeln', 'Fishing'],
 };
+
+export function professionLabel(id: ProfessionId): string {
+  const l = PROFESSION_LABEL[id];
+  return l ? tr(...l) : id;
+}
 
 /** Which gathered materials a crafting profession actually uses ("bei mir verwertbar"). */
 export const USES: Partial<Record<ProfessionId, ('skinning' | 'cloth' | 'mining' | 'herbalism' | 'fishing')[]>> = {

@@ -1,16 +1,18 @@
 // Typed wrappers around the native Rust commands. The UI never calls a provider URL itself.
-import { invoke } from '@tauri-apps/api/core';
+import { convertFileSrc, invoke } from '@tauri-apps/api/core';
 import { writeText } from '@tauri-apps/plugin-clipboard-manager';
 import { openUrl } from '@tauri-apps/plugin-opener';
 import type {
   AppError, AppSettings, FarmSession, Market, MarketQuote, PriceSeries, Profile, ProviderHealth, SessionLoot, SpotCandidate, SpotDetail, SyncStatus,
 } from '@/domain/types';
+import type { MapCalibration } from '@/domain/coordinates';
+import { tr } from '@/i18n';
 
 export const isDesktop = typeof window !== 'undefined' && '__TAURI_INTERNALS__' in window;
 
 async function call<T>(cmd: string, args?: Record<string, unknown>): Promise<T> {
   if (!isDesktop) {
-    const e: AppError = { code: 'no_desktop', message: 'Diese Ansicht läuft nur in der Windows-App (Tauri). Bitte „npm run tauri dev“ verwenden.' };
+    const e: AppError = { code: 'no_desktop', message: tr('Diese Ansicht läuft nur in der Windows-App (Tauri). Bitte „npm run tauri dev“ verwenden.', 'This view only runs in the Windows app (Tauri). Please use “npm run tauri dev”.') };
     throw e;
   }
   try {
@@ -42,6 +44,12 @@ export interface CraftingResponse {
   market: string; marketStatus: string; pricesAsOf: string | null; generatedAt: string; fetchedAt: string; notes: string;
   attribution: { text: string; url: string }; recipes: CraftingRecipe[];
 }
+export interface MapAsset { zoneId: number; fileName: string; path: string; width: number; height: number; calibration: MapCalibration; originalName: string | null; importedAt: string }
+export interface ZoneDensity { zoneId: number; cols: number; rows: number; total: number; max: number; cells: number[] }
+
+/** URL for an imported map image (asset protocol, scope $APPDATA/maps/*). */
+export const mapImageUrl = (a: MapAsset) => convertFileSrc(a.path);
+
 export interface CandidateQuery { level: number; below?: number; above?: number; zoneId?: number | null; includeInstances?: boolean }
 
 export const api = {
@@ -55,6 +63,13 @@ export const api = {
   zoneLayer: (zoneId: number) => call<any>('zone_layer', { zoneId }),
   listSources: () => call<any[]>('list_sources'),
   getCoverage: () => call<any>('get_coverage'),
+  zoneDensity: (zoneId: number) => call<ZoneDensity>('zone_density', { zoneId }),
+  getMapAsset: (zoneId: number) => call<MapAsset | null>('get_map_asset', { zoneId }),
+  listMapAssets: () => call<MapAsset[]>('list_map_assets'),
+  importMapImage: (zoneId: number) => call<MapAsset | null>('import_map_image', { zoneId }),
+  importMapFolder: () => call<{ imported: MapAsset[]; skipped: string[] } | null>('import_map_folder'),
+  setMapCalibration: (zoneId: number, calibration: MapCalibration) => call<MapAsset>('set_map_calibration', { zoneId, calibration }),
+  deleteMapAsset: (zoneId: number) => call<void>('delete_map_asset', { zoneId }),
 
   listProfiles: () => call<Profile[]>('list_profiles'),
   saveProfile: (profile: Profile) => call<Profile>('save_profile', { profile }),

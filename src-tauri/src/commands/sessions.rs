@@ -12,7 +12,7 @@ pub async fn start_session(state: State<'_, AppState>, profile_id: String, spot_
 #[tauri::command]
 pub async fn session_action(state: State<'_, AppState>, id: String, action: String) -> AppResult<Session> {
     if !["pause", "resume", "end"].contains(&action.as_str()) {
-        return Err(AppError::invalid("Unbekannte Aktion"));
+        return Err(AppError::invalid(crate::i18n::tr("Unbekannte Aktion", "Unknown action")));
     }
     user::transition(&*state.user()?, &id, &action)
 }
@@ -73,12 +73,12 @@ pub async fn export_sessions(app: AppHandle, state: State<'_, AppState>, profile
     let (ext, body) = match format.as_str() {
         "csv" => ("csv", sessions_csv(&sessions).into_bytes()),
         "json" => ("json", serde_json::to_vec_pretty(&serde_json::json!({ "format": "azeroth-farm-atlas.sessions", "version": 1, "sessions": sessions }))?),
-        _ => return Err(AppError::invalid("Format muss csv oder json sein")),
+        _ => return Err(AppError::invalid(crate::i18n::tr("Format muss csv oder json sein", "Format must be csv or json"))),
     };
     let Some(path) = app.dialog().file().add_filter(ext, &[ext]).set_file_name(&format!("farm-sessions.{ext}")).blocking_save_file() else {
         return Ok(None);
     };
-    let path = path.into_path().map_err(|_| AppError::invalid("Ungültiger Pfad"))?;
+    let path = path.into_path().map_err(|_| AppError::invalid(crate::i18n::tr("Ungültiger Pfad", "Invalid path")))?;
     std::fs::write(&path, body)?;
     Ok(Some(path.display().to_string()))
 }

@@ -1,6 +1,6 @@
 [package]
 name = "azeroth-farm-atlas"
-version = "0.1.0"
+version = "0.2.0"
 description = "Azeroth Farm Atlas – WoW Forever Farmfinder (Windows)"
 authors = ["Azeroth Farm Atlas contributors"]
 license = "GPL-3.0-or-later"
@@ -23,10 +23,12 @@ rusqlite = { version = "0.40.2", features = ["bundled"] }
 serde = { version = "1.0.229", features = ["derive"] }
 serde_json = "1.0.154"
 sha2 = "0.10.9"
-tauri = { version = "2", features = [] }
+tauri = { version = "2", features = ["protocol-asset"] }
 tauri-plugin-clipboard-manager = "2"
 tauri-plugin-dialog = "2"
 tauri-plugin-opener = "2"
+tauri-plugin-process = "2"
+tauri-plugin-updater = "2"
 tauri-plugin-window-state = "2"
 thiserror = "2"
 tokio = { version = "1.53.3", features = ["time", "sync", "macros", "rt-multi-thread"] }

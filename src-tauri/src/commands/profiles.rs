@@ -29,7 +29,7 @@ pub async fn delete_profile(state: State<'_, AppState>, id: String) -> AppResult
 #[tauri::command]
 pub async fn duplicate_profile(state: State<'_, AppState>, id: String) -> AppResult<Profile> {
     let c = state.user()?;
-    let mut p = user::get_profile(&c, &id)?.ok_or_else(|| AppError::not_found("Profil nicht gefunden"))?;
+    let mut p = user::get_profile(&c, &id)?.ok_or_else(|| AppError::not_found(crate::i18n::tr("Profil nicht gefunden", "Profile not found")))?;
     p.id = String::new();
     p.created_at = None;
     p.name = format!("{} (Kopie)", p.name).chars().take(40).collect();
@@ -39,7 +39,7 @@ pub async fn duplicate_profile(state: State<'_, AppState>, id: String) -> AppRes
 #[tauri::command]
 pub async fn set_active_profile(state: State<'_, AppState>, id: String) -> AppResult<()> {
     let c = state.user()?;
-    user::get_profile(&c, &id)?.ok_or_else(|| AppError::not_found("Profil nicht gefunden"))?;
+    user::get_profile(&c, &id)?.ok_or_else(|| AppError::not_found(crate::i18n::tr("Profil nicht gefunden", "Profile not found")))?;
     let mut s = user::get_settings(&c)?;
     s.active_profile_id = Some(id);
     user::save_settings(&c, &s)
@@ -48,12 +48,12 @@ pub async fn set_active_profile(state: State<'_, AppState>, id: String) -> AppRe
 /// Export contains only profile data – never credentials (those live in the Windows Credential Manager).
 #[tauri::command]
 pub async fn export_profile(app: AppHandle, state: State<'_, AppState>, id: String) -> AppResult<Option<String>> {
-    let p = user::get_profile(&*state.user()?, &id)?.ok_or_else(|| AppError::not_found("Profil nicht gefunden"))?;
+    let p = user::get_profile(&*state.user()?, &id)?.ok_or_else(|| AppError::not_found(crate::i18n::tr("Profil nicht gefunden", "Profile not found")))?;
     let file_name = format!("{}.profile.json", p.name.replace(|c: char| !c.is_alphanumeric(), "_"));
     let Some(path) = app.dialog().file().add_filter("JSON", &["json"]).set_file_name(&file_name).blocking_save_file() else {
         return Ok(None);
     };
-    let path = path.into_path().map_err(|_| AppError::invalid("Ungültiger Pfad"))?;
+    let path = path.into_path().map_err(|_| AppError::invalid(crate::i18n::tr("Ungültiger Pfad", "Invalid path")))?;
     let doc = serde_json::json!({ "format": "azeroth-farm-atlas.profile", "version": 1, "profile": p });
     std::fs::write(&path, serde_json::to_vec_pretty(&doc)?)?;
     Ok(Some(path.display().to_string()))
@@ -64,16 +64,16 @@ pub async fn import_profile(app: AppHandle, state: State<'_, AppState>) -> AppRe
     let Some(path) = app.dialog().file().add_filter("JSON", &["json"]).blocking_pick_file() else {
         return Ok(None);
     };
-    let path = path.into_path().map_err(|_| AppError::invalid("Ungültiger Pfad"))?;
+    let path = path.into_path().map_err(|_| AppError::invalid(crate::i18n::tr("Ungültiger Pfad", "Invalid path")))?;
     if std::fs::metadata(&path)?.len() > 256 * 1024 {
-        return Err(AppError::invalid("Datei zu groß für ein Profil"));
+        return Err(AppError::invalid(crate::i18n::tr("Datei zu groß für ein Profil", "File too large for a profile")));
     }
     let v: serde_json::Value = serde_json::from_slice(&std::fs::read(&path)?)?;
     if v.get("format").and_then(|f| f.as_str()) != Some("azeroth-farm-atlas.profile") {
-        return Err(AppError::invalid("Keine Azeroth-Farm-Atlas-Profildatei"));
+        return Err(AppError::invalid(crate::i18n::tr("Keine Azeroth-Farm-Atlas-Profildatei", "Not an Azeroth Farm Atlas profile file")));
     }
     let mut p: Profile = serde_json::from_value(v.get("profile").cloned().unwrap_or_default())
-        .map_err(|e| AppError::invalid(format!("Profil ungültig: {e}")))?;
+        .map_err(|e| AppError::invalid(crate::i18n::tr(format!("Profil ungültig: {e}"), format!("Invalid profile: {e}"))))?;
     p.id = String::new();
     p.created_at = None;
     Ok(Some(user::save_profile(&*state.user()?, p)?))

@@ -1,5 +1,6 @@
 import type { PriceSeries } from '@/domain/types';
 import { formatCopper } from '@/domain/money';
+import { date, tr } from '@/i18n';
 
 /** Small dependency-free SVG chart: median (gold) and min buyout (blue) over the provider's own history window. */
 export function PriceChart({ series }: { series: PriceSeries }) {
@@ -14,17 +15,17 @@ export function PriceChart({ series }: { series: PriceSeries }) {
   const path = (k: 'median' | 'min') => pts.filter((p) => p[k] != null).map((p, i) => `${i ? 'L' : 'M'}${x(p.t).toFixed(1)},${y(p[k]!).toFixed(1)}`).join(' ');
   return (
     <figure>
-      <svg viewBox={`0 0 ${W} ${H}`} className="w-full max-w-[760px]" role="img" aria-label="Preisverlauf">
+      <svg viewBox={`0 0 ${W} ${H}`} className="w-full max-w-[760px]" role="img" aria-label={tr('Preisverlauf', 'Price history')}>
         <line x1={P} x2={W - P} y1={H - P} y2={H - P} stroke="#2a3242" />
         <text x={4} y={y(hi) + 4} fill="#6b7487" fontSize="10">{formatCopper(hi)}</text>
         <text x={4} y={y(lo) + 4} fill="#6b7487" fontSize="10">{formatCopper(lo)}</text>
         <path d={path('min')} fill="none" stroke="#6fa8dc" strokeWidth="1.2" opacity="0.8" />
         <path d={path('median')} fill="none" stroke="#d6b25e" strokeWidth="1.8" />
-        <text x={P} y={H - 8} fill="#6b7487" fontSize="10">{new Date(pts[0].t).toLocaleDateString('de-DE')}</text>
-        <text x={W - P} y={H - 8} fill="#6b7487" fontSize="10" textAnchor="end">{new Date(pts[pts.length - 1].t).toLocaleDateString('de-DE')}</text>
+        <text x={P} y={H - 8} fill="#6b7487" fontSize="10">{date(pts[0].t)}</text>
+        <text x={W - P} y={H - 8} fill="#6b7487" fontSize="10" textAnchor="end">{date(pts[pts.length - 1].t)}</text>
       </svg>
       <figcaption className="text-[11px] text-faint">
-        <span className="text-gold">━ Median</span> · <span className="text-info">━ Min-Sofortkauf</span> · Verlauf {series.range} laut Anbieter (nicht lokal archiviert)
+        <span className="text-gold">━ Median</span> · <span className="text-info">━ {tr('Min-Sofortkauf', 'Min buyout')}</span> · {tr(`Verlauf ${series.range} laut Anbieter (nicht lokal archiviert)`, `${series.range} history from the provider (not archived locally)`)}
       </figcaption>
     </figure>
   );

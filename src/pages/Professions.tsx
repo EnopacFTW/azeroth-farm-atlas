@@ -5,10 +5,11 @@ import { Attribution } from '@/components/data';
 import { Badge, Chip, cx, Empty, ErrorBox, inputCls, Panel, Spinner } from '@/components/ui';
 import { api } from '@/services/tauri';
 import { useActiveProfile, useMarketSelection } from '@/services/hooks';
-import { gatherSkillColor, PROFESSION_LABEL } from '@/domain/professionRules';
+import { gatherSkillColor, professionLabel } from '@/domain/professionRules';
 import { DEFAULT_FILTERS, rankSpots } from '@/domain/scoring';
 import { formatCopper } from '@/domain/money';
 import type { FarmObjective, ProfessionId } from '@/domain/types';
+import { dateTime, nm, nmAlt, title, tr } from '@/i18n';
 
 const AHL_NAME: Partial<Record<ProfessionId, string>> = {
   leatherworking: 'Leatherworking', tailoring: 'Tailoring', engineering: 'Engineering', alchemy: 'Alchemy', blacksmithing: 'Blacksmithing',
@@ -26,11 +27,11 @@ export function ProfessionsPage() {
   return (
     <div className="h-full overflow-y-auto">
       <div className="mx-auto max-w-[1300px] space-y-4 p-5">
-        <h1 className="font-display text-[20px] font-semibold">Berufsplaner</h1>
-        <p className="text-[12.5px] text-muted">Forever hat zwei Primärberufe plus Kochkunst, Erste Hilfe und Angeln (Skill bis 300). Rezepte kommen live von AHledger (Forever-Rezeptliste), Spawns aus QuestieDB Forever.</p>
-        {profs.length === 0 ? <Empty>Im Profil sind keine Berufe eingetragen – im Farmfinder oben auswählen.</Empty> : (
+        <h1 className="font-display text-[20px] font-semibold">{tr('Berufsplaner', 'Profession planner')}</h1>
+        <p className="text-[12.5px] text-muted">{tr('Forever hat zwei Primärberufe plus Kochkunst, Erste Hilfe und Angeln (Skill bis 300). Rezepte kommen live von AHledger (Forever-Rezeptliste), Spawns aus QuestieDB Forever.', 'Forever has two primary professions plus Cooking, First Aid and Fishing (skill up to 300). Recipes come live from AHledger (Forever recipe list), spawns from QuestieDB Forever.')}</p>
+        {profs.length === 0 ? <Empty>{tr('Im Profil sind keine Berufe eingetragen – im Farmfinder oben auswählen.', 'No professions in the profile – choose them at the top of the farm finder.')}</Empty> : (
           <div className="flex flex-wrap gap-1.5">
-            {profs.map((p) => <Chip key={p.id} active={active?.id === p.id} onClick={() => setSel(p.id as ProfessionId)}>{PROFESSION_LABEL[p.id as ProfessionId]} {p.skill}{p.targetSkill ? ` → ${p.targetSkill}` : ''}</Chip>)}
+            {profs.map((p) => <Chip key={p.id} active={active?.id === p.id} onClick={() => setSel(p.id as ProfessionId)}>{professionLabel(p.id as ProfessionId)} {p.skill}{p.targetSkill ? ` → ${p.targetSkill}` : ''}</Chip>)}
           </div>
         )}
         {active && (GATHER[active.id as ProfessionId]
@@ -46,32 +47,33 @@ function GatheringPlan({ id, skill }: { id: ProfessionId; skill: number }) {
   const cand = useQuery({ queryKey: ['candidates-all', profile!.level], queryFn: () => api.searchSpots({ level: profile!.level, above: 8, below: 20 }) });
   const objective = GATHER[id]!;
   const nodes = useMemo(() => {
-    const m = new Map<string, { name: string; nameEn: string; req: number | null; spots: number; spawns: number }>();
+    const m = new Map<string, { name: string; alt: string | null; req: number | null; spots: number; spawns: number }>();
     for (const s of cand.data ?? []) for (const o of s.objects) {
       if ((id === 'mining' && o.nodeType !== 'ore') || (id === 'herbalism' && o.nodeType !== 'herb')) continue;
       const k = o.nameEn;
-      const e = m.get(k) ?? { name: o.nameDe ?? o.nameEn, nameEn: o.nameEn, req: o.requiredSkill, spots: 0, spawns: 0 };
+      const e = m.get(k) ?? { name: nm(o), alt: nmAlt(o), req: o.requiredSkill, spots: 0, spawns: 0 };
       e.spots++; e.spawns += o.spawns;
       m.set(k, e);
     }
-    return [...m.values()].sort((a, b) => (a.req ?? 999) - (b.req ?? 999));
+    return [...m.entries()].sort((a, b) => (a[1].req ?? 999) - (b[1].req ?? 999));
   }, [cand.data, id]);
   const ranked = useMemo(() => (profile && cand.data ? rankSpots(profile, cand.data, { ...DEFAULT_FILTERS, objectives: [objective] }).slice(0, 12) : []), [profile, cand.data, objective]);
+  const colorName = (c: keyof typeof COLOR_CLS) => ({ red: tr('Skill fehlt', 'Skill missing'), orange: 'orange', yellow: tr('gelb', 'yellow'), green: tr('grün', 'green'), gray: tr('grau', 'gray') })[c];
   return (
     <div className="grid gap-4 lg:grid-cols-2">
       {(id === 'mining' || id === 'herbalism') && (
-        <Panel title={`${PROFESSION_LABEL[id]}: Vorkommen nach Skill (du: ${skill})`}>
+        <Panel title={tr(`${professionLabel(id)}: Vorkommen nach Skill (du: ${skill})`, `${professionLabel(id)}: nodes by skill (you: ${skill})`)}>
           {cand.isLoading ? <Spinner /> : (
             <table className="w-full text-[12.5px]">
-              <thead className="text-left text-[11px] uppercase text-faint"><tr className="border-b border-line"><th className="py-1">Knoten</th><th>Skill</th><th>Farbe</th><th className="text-right">Zonen</th><th className="text-right">Spawns</th></tr></thead>
+              <thead className="text-left text-[11px] uppercase text-faint"><tr className="border-b border-line"><th className="py-1">{tr('Knoten', 'Node')}</th><th>Skill</th><th>{tr('Farbe', 'Color')}</th><th className="text-right">{tr('Zonen', 'Zones')}</th><th className="text-right">Spawns</th></tr></thead>
               <tbody>
-                {nodes.map((n) => {
+                {nodes.map(([key, n]) => {
                   const c = n.req != null ? gatherSkillColor(skill, n.req) : null;
                   return (
-                    <tr key={n.nameEn} className="border-b border-line/50">
-                      <td className="py-1" title={n.nameEn}>{n.name}</td>
+                    <tr key={key} className="border-b border-line/50">
+                      <td className="py-1" title={n.alt ?? undefined}>{n.name}</td>
                       <td className="num">{n.req ?? '?'}</td>
-                      <td className={c ? COLOR_CLS[c] : 'text-faint'}>{c ? ({ red: 'Skill fehlt', orange: 'orange', yellow: 'gelb', green: 'grün', gray: 'grau' } as const)[c] : 'unbekannt'}</td>
+                      <td className={c ? COLOR_CLS[c] : 'text-faint'}>{c ? colorName(c) : tr('unbekannt', 'unknown')}</td>
                       <td className="text-right num text-muted">{n.spots}</td>
                       <td className="text-right num text-muted">{n.spawns}</td>
                     </tr>
@@ -80,15 +82,15 @@ function GatheringPlan({ id, skill }: { id: ProfessionId; skill: number }) {
               </tbody>
             </table>
           )}
-          <p className="mt-2 text-[11.5px] text-faint">Skillgrenzen und Farben: Classic-Regeln (orange &lt; +25, gelb &lt; +50, grün &lt; +100). Nicht gegen Forever geprüft.</p>
+          <p className="mt-2 text-[11.5px] text-faint">{tr('Skillgrenzen und Farben: Classic-Regeln (orange < +25, gelb < +50, grün < +100). Nicht gegen Forever geprüft.', 'Skill thresholds and colors: Classic rules (orange < +25, yellow < +50, green < +100). Not checked against Forever.')}</p>
         </Panel>
       )}
-      <Panel title="Passende Farmspots jetzt">
-        {ranked.length === 0 ? <Empty>Keine sofort farmbaren Spots für dein Level/Skill.</Empty> : (
+      <Panel title={tr('Passende Farmspots jetzt', 'Matching farm spots now')}>
+        {ranked.length === 0 ? <Empty>{tr('Keine sofort farmbaren Spots für dein Level/Skill.', 'No spots farmable right now for your level/skill.')}</Empty> : (
           <ul className="space-y-1 text-[12.5px]">
             {ranked.map((r) => (
               <li key={r.spot.id} className="flex items-center gap-2">
-                <Link to={`/spots/${encodeURIComponent(r.spot.id)}`} className="min-w-0 flex-1 truncate text-ink hover:underline">{r.spot.titleDe}</Link>
+                <Link to={`/spots/${encodeURIComponent(r.spot.id)}`} className="min-w-0 flex-1 truncate text-ink hover:underline">{title(r.spot)}</Link>
                 {r.spot.reqSkill != null && <span className="num text-faint">Skill {r.spot.reqSkill}</span>}
                 <span className="num text-gold-2">{r.fitScore}</span>
               </li>
@@ -117,29 +119,29 @@ function CraftingPlan({ id, skill, target }: { id: ProfessionId; skill: number; 
     }
     return [...m.values()].sort((a, b) => b.recipes - a.recipes);
   }, [recipes]);
-  if (!name) return <Empty>Für {PROFESSION_LABEL[id]} gibt es keine Rezeptdaten.</Empty>;
+  if (!name) return <Empty>{tr(`Für ${professionLabel(id)} gibt es keine Rezeptdaten.`, `There is no recipe data for ${professionLabel(id)}.`)}</Empty>;
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center gap-3 text-[12.5px] text-muted">
         <span>Skill {skill} →</span>
-        <input type="number" min={skill} max={300} value={to} onChange={(e) => setTo(Math.min(300, Math.max(skill, Number(e.target.value))))} className={cx(inputCls, 'w-20')} aria-label="Zielskill" />
-        {!ahMarket && <Badge tone="warn">Rezeptdaten benötigen AHledger als Preisanbieter</Badge>}
-        {q.data && <span className="text-faint">Preise Stand {q.data.pricesAsOf ? new Date(q.data.pricesAsOf).toLocaleString('de-DE') : 'unbekannt'} · {q.data.market} · <Attribution text={q.data.attribution?.text ?? 'Prices from AHledger'} url={q.data.attribution?.url ?? 'https://ahledger.com'} /></span>}
+        <input type="number" min={skill} max={300} value={to} onChange={(e) => setTo(Math.min(300, Math.max(skill, Number(e.target.value))))} className={cx(inputCls, 'w-20')} aria-label={tr('Zielskill', 'Target skill')} />
+        {!ahMarket && <Badge tone="warn">{tr('Rezeptdaten benötigen AHledger als Preisanbieter', 'Recipe data needs AHledger as price provider')}</Badge>}
+        {q.data && <span className="text-faint">{tr('Preise Stand', 'Prices as of')} {q.data.pricesAsOf ? dateTime(q.data.pricesAsOf) : tr('unbekannt', 'unknown')} · {q.data.market} · <Attribution text={q.data.attribution?.text ?? 'Prices from AHledger'} url={q.data.attribution?.url ?? 'https://ahledger.com'} /></span>}
       </div>
-      {q.isLoading && <Spinner label="Rezepte werden von AHledger geladen…" />}
-      {q.error && <ErrorBox title="Rezeptdaten nicht verfügbar" error={q.error} />}
+      {q.isLoading && <Spinner label={tr('Rezepte werden von AHledger geladen…', 'Loading recipes from AHledger…')} />}
+      {q.error && <ErrorBox title={tr('Rezeptdaten nicht verfügbar', 'Recipe data unavailable')} error={q.error} />}
       {q.data && (
         <div className="grid gap-4 lg:grid-cols-[1.4fr_1fr]">
-          <Panel title={`Rezepte bis Skill ${to} (${recipes.length})`} bodyClass="p-0">
+          <Panel title={tr(`Rezepte bis Skill ${to} (${recipes.length})`, `Recipes up to skill ${to} (${recipes.length})`)} bodyClass="p-0">
             <div className="max-h-[560px] overflow-y-auto">
               <table className="w-full text-[12.5px]">
-                <thead className="sticky top-0 bg-panel text-left text-[11px] uppercase text-faint"><tr className="border-b border-line"><th className="px-3 py-1.5">Skill</th><th>Rezept</th><th>Erwerb</th><th>Reagenzien</th><th className="pr-3 text-right">Kosten</th></tr></thead>
+                <thead className="sticky top-0 bg-panel text-left text-[11px] uppercase text-faint"><tr className="border-b border-line"><th className="px-3 py-1.5">Skill</th><th>{tr('Rezept', 'Recipe')}</th><th>{tr('Erwerb', 'Source')}</th><th>{tr('Reagenzien', 'Reagents')}</th><th className="pr-3 text-right">{tr('Kosten', 'Cost')}</th></tr></thead>
                 <tbody>
                   {recipes.map((r) => (
                     <tr key={r.recipe.spellId} className="border-b border-line/50 align-top">
                       <td className="px-3 py-1 num">{r.recipe.skillRequired}</td>
                       <td className="py-1"><Link to={`/items/${r.result.id}`} className="hover:underline">{r.recipe.name}</Link></td>
-                      <td className="py-1 text-muted">{r.recipe.acquisition === 'trainer' ? 'Lehrer' : 'unbekannt'}</td>
+                      <td className="py-1 text-muted">{r.recipe.acquisition === 'trainer' ? tr('Lehrer', 'Trainer') : tr('unbekannt', 'unknown')}</td>
                       <td className="py-1 text-muted">{r.reagents.map((g) => <span key={g.id} className="mr-2 inline-block"><Link to={`/items/${g.id}`} className="hover:underline">{g.qty}× {g.name}</Link></span>)}</td>
                       <td className="py-1 pr-3 text-right num">{formatCopper(r.cost)}</td>
                     </tr>
@@ -148,17 +150,17 @@ function CraftingPlan({ id, skill, target }: { id: ProfessionId; skill: number; 
               </table>
             </div>
           </Panel>
-          <Panel title="Benötigte Materialien – farmen oder kaufen">
+          <Panel title={tr('Benötigte Materialien – farmen oder kaufen', 'Required materials – farm or buy')}>
             <ul className="space-y-1 text-[12.5px]">
               {reagents.slice(0, 30).map((g) => (
                 <li key={g.id} className="flex items-center gap-2">
-                  <Link to={`/items/${g.id}`} className="min-w-0 flex-1 truncate text-ink hover:underline" title="Bezugsquellen & Farmspots anzeigen">{g.name}</Link>
-                  <span className="text-faint">{g.recipes} Rezepte</span>
-                  <span className="num text-muted" title="AHledger-Preis pro Stück">{formatCopper(g.price)}</span>
+                  <Link to={`/items/${g.id}`} className="min-w-0 flex-1 truncate text-ink hover:underline" title={tr('Bezugsquellen & Farmspots anzeigen', 'Show sources & farm spots')}>{g.name}</Link>
+                  <span className="text-faint">{g.recipes} {tr('Rezepte', 'recipes')}</span>
+                  <span className="num text-muted" title={tr('AHledger-Preis pro Stück', 'AHledger price each')}>{formatCopper(g.price)}</span>
                 </li>
               ))}
             </ul>
-            <p className="mt-2 text-[11.5px] text-faint">Skill-up-Farben je Rezept liefert die API nicht – die Liste zeigt die Mindest-Skillstufe. Klick auf ein Material zeigt belegte Farmquellen.</p>
+            <p className="mt-2 text-[11.5px] text-faint">{tr('Skill-up-Farben je Rezept liefert die API nicht – die Liste zeigt die Mindest-Skillstufe. Klick auf ein Material zeigt belegte Farmquellen.', 'The API does not provide skill-up colors per recipe – the list shows the minimum skill. Click a material to see documented farm sources.')}</p>
           </Panel>
         </div>
       )}
