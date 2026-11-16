@@ -85,7 +85,7 @@ Neues Release:
   Favoriten, Einstellungen, manuelle Preise), `market_cache.db` (Fremdpreis-Cache mit Ablauf), `backups\`.
 - Zugangsdaten: Windows-Anmeldeinformationsverwaltung, Einträge „AzerothFarmAtlas“.
 - Update: per Auto-Updater in der App oder neue Setup-EXE drüber installieren; `game.db` wird bei geänderter
-  Seed-Prüfsumme atomar ersetzt, `user.db` und `maps\` (eigene Kartenbilder) bleiben.
+  Seed-Prüfsumme atomar ersetzt, `user.db` und `maps\` (übernommene/eigene Kartenbilder) bleiben.
 - Deinstallation über „Apps & Features“. Benutzerdaten bleiben erhalten (Ordner oben manuell löschen oder in der App
   „Einstellungen → Zurücksetzen“).
 

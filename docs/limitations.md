@@ -15,9 +15,15 @@
 - Coverage: in jedem Levelband ≥ 5 Spots pro Farmziel; dünn ist Bergbau 1–10 (5) und Angeln (7–20 je Band). Siehe `coverage-report.md`.
 
 ## Karten
-- Keine mitgelieferten WoW-Zonenkarten (Urheberrecht); die App lädt auch keine herunter. Eigene, rechtmäßig vorliegende
-  Bilder (z. B. Screenshot der Ingame-Weltkarte) lassen sich im Weltatlas pro Zone oder ordnerweise importieren und per
-  Regler ausrichten. Die Ausrichtung ist Handarbeit – es gibt keine automatische Erkennung des Kartenrahmens.
+- Keine mitgelieferten WoW-Zonenkarten (Urheberrecht); die App lädt auch keine herunter.
+- Ist WoW: Forever oder Classic Era installiert, übernimmt „Alle Zonenkarten übernehmen“ (Weltatlas → Kartenbilder bzw.
+  Button auf leeren Karten) die Weltkarten aller 49 Zonen/Städte/Schlachtfelder direkt aus dem lokalen Client – exakt
+  ausgerichtet (Kartenbereich 1002 × 668 der 4 × 3 Kacheln = 0–100 %). Es ist die Grundkarte **ohne** die Einblendungen
+  „erkundeter Gebiete“ (Ortschaften, Wege), wie eine unerkundete Ingame-Karte. Dungeons/Raids haben keine Zonenkarte.
+- Gelesen werden nur unverschlüsselte, lokal vorhandene Dateien; der Kartenordner je Zone ist fest hinterlegt
+  (`src-tauri/src/wowclient/mod.rs`). Ändert Blizzard das Speicherformat, schlägt die Übernahme mit einer Meldung fehl.
+- Eigene Bilder (z. B. Screenshot der Ingame-Weltkarte) lassen sich weiterhin importieren und per Regler ausrichten;
+  sie werden bei der Client-Übernahme nicht überschrieben.
 - Ohne Bild: 0–100-%-Koordinatenfläche (3:2) mit Spawndichte-Schattierung aller Forever-Spawns. Sie zeigt, wo die Zone
   Inhalt hat, nicht Gelände, Wege oder Wasser.
 - Kein Clustering-Plugin; viele Marker werden per Canvas gerendert.

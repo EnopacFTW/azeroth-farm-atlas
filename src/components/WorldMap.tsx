@@ -4,7 +4,8 @@ import { useQuery } from '@tanstack/react-query';
 import L from 'leaflet';
 import { ImagePlus, Maximize2, Minimize2 } from 'lucide-react';
 import { imageOverlayBounds, mapBounds, waypoint, wowToLatLng, ZONE_PLANE, type MapCalibration } from '@/domain/coordinates';
-import { api, copyText, mapImageUrl, type ZoneDensity } from '@/services/tauri';
+import { api, copyText, isClientMap, mapImageUrl, type ZoneDensity } from '@/services/tauri';
+import { ClientMapsButton } from './ClientMaps';
 import { tr } from '@/i18n';
 import { cx } from './ui';
 
@@ -175,7 +176,9 @@ export function WorldMap({ zoneId, zoneName, uiMapId, markers, hull, route, rout
     if (attribution.current) m.attributionControl.removeAttribution(attribution.current);
     if (a) {
       image.current = L.imageOverlay(mapImageUrl(a), imageOverlayBounds(calibrationOverride ?? a.calibration, PLANE), { opacity: imageOpacity }).addTo(g);
-      attribution.current = tr('Eigenes Kartenbild (lokal importiert) · Spawns: QuestieDB Forever', 'Own map image (imported locally) · spawns: QuestieDB Forever');
+      attribution.current = isClientMap(a)
+        ? tr('Karte © Blizzard Entertainment, aus deinem lokalen WoW-Client · Spawns: QuestieDB Forever', 'Map © Blizzard Entertainment, from your local WoW client · spawns: QuestieDB Forever')
+        : tr('Eigenes Kartenbild (lokal importiert) · Spawns: QuestieDB Forever', 'Own map image (imported locally) · spawns: QuestieDB Forever');
     } else {
       L.imageOverlay(grid, mapBounds(PLANE)).addTo(g);
       if (densityUrl) L.imageOverlay(densityUrl, mapBounds(PLANE), { opacity: 0.9 }).addTo(g);
@@ -244,12 +247,13 @@ export function WorldMap({ zoneId, zoneName, uiMapId, markers, hull, route, rout
         <span className="font-semibold text-ink">{zoneName}</span>
         {uiMapId ? <span className="ml-1.5 text-faint">UiMap {uiMapId}</span> : null}
         {a
-          ? <span className="ml-1.5 text-ok/90">{tr('Eigenes Kartenbild', 'Own map image')}</span>
+          ? <span className="ml-1.5 text-ok/90" title={a.originalName ?? undefined}>{isClientMap(a) ? tr('Spielkarte (lokaler WoW-Client)', 'Game map (local WoW client)') : tr('Eigenes Kartenbild', 'Own map image')}</span>
           : <span className="ml-1.5 text-warn/90" title={tr('Grün schattiert: Dichte aller Forever-Spawns der Zone (kein Gelände)', 'Green shading: density of all Forever spawns in the zone (not terrain)')}>
               {tr('Koordinatenfläche + Spawndichte – kein Kartenbild', 'Coordinate plane + spawn density – no map image')}
             </span>}
       </div>
-      <div className="absolute right-2 top-2 z-[500] flex gap-1.5">
+      <div className="absolute right-2 top-2 z-[500] flex items-start gap-1.5">
+        {zoneId != null && uiMapId && asset.isSuccess && !a && !calibrationOverride && <ClientMapsButton />}
         {zoneId != null && !calibrationOverride && (
           <button
             type="button"

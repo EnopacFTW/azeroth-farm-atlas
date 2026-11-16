@@ -65,10 +65,10 @@ export function SourcesPage() {
               ))}
               <tr className="border-b border-line/50 align-top">
                 <td className="py-1.5 pr-2">{tr('Kartenbilder', 'Map images')}</td>
-                <td className="pr-2"><Badge>{tr('vom Nutzer importiert', 'imported by the user')}</Badge></td>
-                <td className="pr-2 text-muted">{tr('Rechte beim Nutzer / Blizzard', 'rights with the user / Blizzard')}</td>
+                <td className="pr-2"><Badge>{tr('lokaler WoW-Client oder Nutzer-Import', 'local WoW client or user import')}</Badge></td>
+                <td className="pr-2 text-muted">{tr('© Blizzard Entertainment / Nutzer', '© Blizzard Entertainment / user')}</td>
                 <td className="pr-2 text-faint">{tr('lokal, Ordner „maps“', 'local, “maps” folder')}</td>
-                <td className="text-muted">{tr('Die App liefert keine Kartenbilder mit und lädt keine herunter. Ohne Import: Koordinatenfläche mit Spawndichte.', 'The app ships and downloads no map images. Without an import: coordinate plane with spawn density.')}</td>
+                <td className="text-muted">{tr('Die App liefert keine Kartenbilder mit und lädt keine herunter. Auf Wunsch liest sie die Weltkarten aus deiner installierten WoW-Version (nur lesend). Ohne Karte: Koordinatenfläche mit Spawndichte.', 'The app ships and downloads no map images. On request it reads the world maps from your installed WoW client (read-only). Without a map: coordinate plane with spawn density.')}</td>
               </tr>
               <tr className="align-top">
                 <td className="py-1.5 pr-2">{tr('AH-Preise', 'AH prices')}</td>
@@ -111,7 +111,7 @@ export function SourcesPage() {
 
         <Panel title={tr('Bekannte Grenzen', 'Known limitations')}>
           <ul className="list-disc space-y-1 pl-5 text-[12.5px] text-muted">
-            <li>{tr('Keine mitgelieferten Blizzard-Kartenbilder (Urheberrecht). Eigene Bilder lassen sich im Weltatlas importieren und ausrichten; sonst Koordinatenfläche mit Spawndichte und echten Markern.', 'No bundled Blizzard map images (copyright). Your own images can be imported and aligned in the world atlas; otherwise a coordinate plane with spawn density and real markers.')}</li>
+            <li>{tr('Keine mitgelieferten Blizzard-Kartenbilder (Urheberrecht). Zonenkarten werden aus deiner lokalen WoW-Installation übernommen (Grundkarte ohne Ortschafts-Einblendungen) oder als eigene Bilder importiert; sonst Koordinatenfläche mit Spawndichte.', 'No bundled Blizzard map images (copyright). Zone maps are taken from your local WoW installation (base map without town overlays) or imported as your own images; otherwise a coordinate plane with spawn density.')}</li>
             <li>{tr('Dropchancen, Kürschnerbarkeit, Münzloot und Händlerpreise stammen aus Classic-Emulator-Daten (cmangos), nicht aus Forever-Messungen.', 'Drop rates, skinnability, coin loot and vendor prices come from Classic emulator data (cmangos), not Forever measurements.')}</li>
             <li>{tr('Weltdrops (Referenz-Loottabellen) sind nicht einzelnen Spots zugeordnet.', 'World drops (reference loot tables) are not assigned to spots.')}</li>
             <li>{tr('Forever-neue NPCs ohne Classic-Eintrag haben unbekannten Typ/Loot.', 'NPCs new in Forever without a Classic entry have unknown type/loot.')}</li>

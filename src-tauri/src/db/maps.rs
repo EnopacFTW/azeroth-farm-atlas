@@ -1,6 +1,7 @@
 //! User-supplied zone map images (e.g. own screenshots of the in-game world map).
 //! Files are copied into `<app data>/maps/`; the calibration says where WoW 0–100 % sits inside the image.
-//! No map image is shipped, downloaded or hotlinked by the app.
+//! No map image is shipped, downloaded or hotlinked by the app; maps can also be read from the user's own
+//! local WoW installation (crate::wowclient), which stay on this PC as well.
 
 use crate::error::{AppError, AppResult};
 use crate::i18n::tr;
@@ -158,13 +159,26 @@ pub fn import(c: &Connection, maps_dir: &Path, zone_id: u32, source: &Path) -> A
     let bytes = std::fs::read(source)?;
     let (kind, width, height) = sniff_image(&bytes)
         .ok_or_else(|| AppError::invalid(tr("Kein gültiges PNG-, JPEG- oder WebP-Bild", "Not a valid PNG, JPEG or WebP image")))?;
+    let original = source.file_name().map(|n| n.to_string_lossy().chars().take(200).collect::<String>());
+    store(c, maps_dir, zone_id, &bytes, kind, width, height, original)
+}
+
+/// Name prefix of maps read from the local WoW client (see crate::wowclient).
+pub const CLIENT_PREFIX: &str = "WoW-Client";
+
+pub fn is_client_map(original_name: Option<&str>) -> bool {
+    original_name.is_some_and(|n| n.starts_with(CLIENT_PREFIX))
+}
+
+/// Writes an already validated image atomically and replaces the previous image of the zone.
+#[allow(clippy::too_many_arguments)]
+pub fn store(c: &Connection, maps_dir: &Path, zone_id: u32, bytes: &[u8], kind: ImageKind, width: u32, height: u32, original: Option<String>) -> AppResult<MapAsset> {
     std::fs::create_dir_all(maps_dir)?;
     let file_name = format!("zone-{zone_id}-{}.{}", chrono::Utc::now().timestamp_millis(), kind.ext());
     let tmp = maps_dir.join(format!("{file_name}.tmp"));
-    std::fs::write(&tmp, &bytes)?;
+    std::fs::write(&tmp, bytes)?;
     std::fs::rename(&tmp, maps_dir.join(&file_name))?;
     let old: Option<String> = c.query_row("SELECT file_name FROM map_assets WHERE zone_id = ?1", [zone_id], |r| r.get(0)).optional()?;
-    let original = source.file_name().map(|n| n.to_string_lossy().chars().take(200).collect::<String>());
     let cal = MapCalibration::FULL;
     c.execute(
         "INSERT OR REPLACE INTO map_assets (zone_id, file_name, width, height, x0, y0, x1, y1, original_name, imported_at)

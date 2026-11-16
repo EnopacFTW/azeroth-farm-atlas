@@ -17,6 +17,7 @@ pub mod security {
     pub mod network_policy;
 }
 pub mod state;
+pub mod wowclient;
 
 use tauri::Manager;
 
@@ -77,6 +78,9 @@ pub fn run() {
             commands::maps::import_map_folder,
             commands::maps::set_map_calibration,
             commands::maps::delete_map_asset,
+            commands::maps::detect_wow_clients,
+            commands::maps::pick_wow_client,
+            commands::maps::import_client_maps,
             commands::profiles::list_profiles,
             commands::profiles::save_profile,
             commands::profiles::delete_profile,

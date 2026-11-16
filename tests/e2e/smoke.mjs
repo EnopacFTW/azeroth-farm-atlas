@@ -68,7 +68,7 @@ await check('Spot-Klick zentriert Karte, zeigt Mobs & Begründung (Test 6)', asy
   await page.locator('article').nth(1).click();
   await page.getByText('Warum empfohlen?').first().waitFor();
   await page.locator('.leaflet-container canvas, .leaflet-container path').first().waitFor();
-  const label = await page.getByText(/Koordinatenfläche \+ Spawndichte – kein Kartenbild|Eigenes Kartenbild/).first().isVisible();
+  const label = await page.getByText(/Koordinatenfläche \+ Spawndichte – kein Kartenbild|Eigenes Kartenbild|Spielkarte \(lokaler WoW-Client\)/).first().isVisible();
   if (!label) throw new Error('Kartenhinweis fehlt');
   // base layer: grid + spawn density (or an imported image)
   await page.waitForFunction(() => document.querySelectorAll('.leaflet-image-layer').length >= 1);

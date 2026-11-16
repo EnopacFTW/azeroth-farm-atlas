@@ -47,6 +47,11 @@ export interface CraftingResponse {
 export interface MapAsset { zoneId: number; fileName: string; path: string; width: number; height: number; calibration: MapCalibration; originalName: string | null; importedAt: string }
 export interface ZoneDensity { zoneId: number; cols: number; rows: number; total: number; max: number; cells: number[] }
 
+export interface WowClient { root: string; product: string; label: string; version: string }
+export interface ClientMapImport { imported: number; keptOwn: number; missing: number[]; source: string }
+/** Maps read from the local WoW client carry this prefix in originalName. */
+export const isClientMap = (a: MapAsset | null | undefined) => !!a?.originalName?.startsWith('WoW-Client');
+
 /** URL for an imported map image (asset protocol, scope $APPDATA/maps/*). */
 export const mapImageUrl = (a: MapAsset) => convertFileSrc(a.path);
 
@@ -70,6 +75,9 @@ export const api = {
   importMapFolder: () => call<{ imported: MapAsset[]; skipped: string[] } | null>('import_map_folder'),
   setMapCalibration: (zoneId: number, calibration: MapCalibration) => call<MapAsset>('set_map_calibration', { zoneId, calibration }),
   deleteMapAsset: (zoneId: number) => call<void>('delete_map_asset', { zoneId }),
+  detectWowClients: () => call<WowClient[]>('detect_wow_clients'),
+  pickWowClient: () => call<WowClient[] | null>('pick_wow_client'),
+  importClientMaps: (c: WowClient, replaceOwn: boolean) => call<ClientMapImport>('import_client_maps', { root: c.root, product: c.product, replaceOwn }),
 
   listProfiles: () => call<Profile[]>('list_profiles'),
   saveProfile: (profile: Profile) => call<Profile>('save_profile', { profile }),

@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { FolderOpen, ImagePlus, Trash2 } from 'lucide-react';
+import { FolderOpen, FolderSearch, Gamepad2, ImagePlus, Trash2 } from 'lucide-react';
+import { useImportClientMaps, useWowClients } from '@/components/ClientMaps';
 import { WorldMap, type MapMarker } from '@/components/WorldMap';
 import { Badge, Button, Chip, cx, ErrorBox, inputCls, Spinner } from '@/components/ui';
-import { api, errorText } from '@/services/tauri';
+import { api, errorText, isClientMap, type WowClient } from '@/services/tauri';
 import { useActiveProfile } from '@/services/hooks';
 import { skillOf } from '@/domain/professionRules';
 import type { MapCalibration } from '@/domain/coordinates';
@@ -177,7 +178,8 @@ function MapImagePanel({ zoneId, zoneName, uiMapId, draft, setDraft, opacity, se
           )}
         </div>
       </div>
-      {a && cal && (
+      <ClientMapsRow />
+      {a && cal && !isClientMap(a) && (
         <div className="space-y-1.5 rounded-md border border-line bg-panel px-3 py-2">
           <div className="text-[11.5px] text-faint">
             {tr('Ausrichten: Wo liegen WoW-Koordinate 0/0 (oben links) und 100/100 (unten rechts) im Bild? Angaben in % der Bildbreite/-höhe. Die Erz-, Kräuter- und Spot-Marker dienen als Referenz – verschieben, bis sie auf Wegen, Minen und Lagern sitzen.',
@@ -206,11 +208,55 @@ function MapImagePanel({ zoneId, zoneName, uiMapId, draft, setDraft, opacity, se
       <details className="text-[11.5px] text-faint">
         <summary className="cursor-pointer text-muted">{tr('Woher bekomme ich Kartenbilder?', 'Where do I get map images?')}</summary>
         <ul className="mt-1 list-disc space-y-0.5 pl-5">
+          <li>{tr('Am einfachsten: „Alle Zonenkarten übernehmen“ liest die Weltkarten direkt aus deiner installierten WoW-Forever- oder Classic-Era-Version (nur lesend, nichts wird heruntergeladen). Sie passen ohne Ausrichten.', 'Easiest: “Take over all zone maps” reads the world maps straight from your installed WoW Forever or Classic Era client (read-only, nothing is downloaded). They fit without alignment.')}</li>
           <li>{tr('Im Spiel die Weltkarte (M) der Zone öffnen und einen Screenshot machen (Druck-Taste, landet im WoW-Ordner „Screenshots“). Am besten auf die Karte zuschneiden.', 'Open the world map (M) of the zone in game and take a screenshot (Print Screen key, saved to the WoW “Screenshots” folder). Ideally crop it to the map.')}</li>
           <li>{tr(`Für den Ordner-Import Dateien nach UiMap-ID (hier ${uiMapId ?? '?'}), Zonen-ID (${zoneId}) oder Zonennamen (DE/EN) benennen, z. B. „${zoneName}.png“.`, `For the folder import, name files by UiMap ID (here ${uiMapId ?? '?'}), zone ID (${zoneId}) or zone name (EN/DE), e.g. “${zoneName}.png”.`)}</li>
           <li>{tr('Die App lädt keine Karten aus dem Internet: Blizzard-Kartenbilder sind urheberrechtlich geschützt. Bilder bleiben lokal in deinem Datenordner (Ordner „maps“).', 'The app does not download maps: Blizzard map art is copyrighted. Images stay local in your data folder (“maps” folder).')}</li>
         </ul>
       </details>
+    </div>
+  );
+}
+
+/** Take the world maps of all zones over from a local WoW installation. */
+function ClientMapsRow() {
+  const clients = useWowClients();
+  const imp = useImportClientMaps();
+  const [picked, setPicked] = useState<WowClient[] | null>(null);
+  const list = picked ?? clients.data ?? [];
+  const [sel, setSel] = useState(0);
+  const c = list[Math.min(sel, list.length - 1)];
+  const pick = async () => {
+    imp.setMsg(null);
+    try {
+      const r = await api.pickWowClient();
+      if (r) { setPicked(r); setSel(0); }
+    } catch (e) {
+      imp.setMsg({ tone: 'bad', text: errorText(e) });
+    }
+  };
+  return (
+    <div className="flex flex-wrap items-center gap-2 rounded-md border border-line bg-panel px-3 py-2">
+      <Gamepad2 className="size-4 text-gold" />
+      <span className="text-muted">{tr('Aus deiner WoW-Installation', 'From your WoW installation')}:</span>
+      {clients.isLoading ? <Spinner /> : list.length === 0 ? (
+        <span className="text-faint">{tr('nicht automatisch gefunden', 'not found automatically')}</span>
+      ) : list.length === 1 ? (
+        <span className="text-ink">{c.label} {c.version} <span className="text-faint">· {c.root}</span></span>
+      ) : (
+        <select className={cx(inputCls, 'h-7')} value={sel} onChange={(e) => setSel(Number(e.target.value))}>
+          {list.map((i, n) => <option key={i.root + i.product} value={n}>{i.label} {i.version} · {i.root}</option>)}
+        </select>
+      )}
+      <div className="ml-auto flex flex-wrap gap-2">
+        <Button size="sm" variant="ghost" onClick={pick}><FolderSearch className="size-3.5" /> {tr('WoW-Ordner wählen …', 'Choose WoW folder …')}</Button>
+        {c && (
+          <Button size="sm" variant="primary" busy={imp.busy} onClick={() => imp.run(c)} title={tr('Eigene importierte Bilder bleiben erhalten.', 'Your own imported images are kept.')}>
+            {tr('Alle Zonenkarten übernehmen', 'Take over all zone maps')}
+          </Button>
+        )}
+      </div>
+      {imp.msg && <div className={cx('w-full', imp.msg.tone === 'ok' ? 'text-ok' : 'text-bad')}>{imp.msg.text}</div>}
     </div>
   );
 }

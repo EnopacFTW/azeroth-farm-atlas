@@ -12,8 +12,11 @@
 | Blizzard Battle.net API | Blizzard Developer API Terms | optional, experimentell, mit eigenen Credentials | standardmäßig aus |
 | World of Warcraft Namen/Daten | © Blizzard Entertainment | Spielnamen | Fanprojekt, nicht mit Blizzard verbunden |
 
-**Karten:** Es werden **keine** Blizzard-Kartenbilder ausgeliefert oder geladen. Karten sind selbst erzeugte
-Koordinatenflächen (SVG-Raster). Item-Icons werden nicht geladen.
+**Karten:** Es werden **keine** Blizzard-Kartenbilder ausgeliefert, heruntergeladen oder im Repository gespeichert.
+Auf Wunsch liest die App die Weltkarten (© Blizzard Entertainment) aus der **lokal installierten** WoW-Forever- bzw.
+Classic-Era-Installation des Nutzers (nur lesend, lokaler CASC-Speicher, kein CDN, kein Spielprozess) und legt sie nur
+im lokalen Datenordner ab. Ohne Client: selbst erzeugte Koordinatenflächen mit Spawndichte oder eigene importierte Bilder.
+Item-Icons werden nicht geladen.
 
 **Laufzeit-Bibliotheken:** Tauri (MIT/Apache-2.0), React (MIT), Leaflet (BSD-2), TanStack Query (MIT), Zustand (MIT),
 Zod (MIT), lucide-react (ISC), rusqlite/SQLite (MIT/Public Domain), reqwest (MIT/Apache-2.0), keyring (MIT/Apache-2.0).
