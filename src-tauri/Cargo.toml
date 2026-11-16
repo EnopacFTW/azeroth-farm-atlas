@@ -1,0 +1,44 @@
+[package]
+name = "azeroth-farm-atlas"
+version = "0.1.0"
+description = "Azeroth Farm Atlas – WoW Forever Farmfinder (Windows)"
+authors = ["Azeroth Farm Atlas contributors"]
+license = "GPL-3.0-or-later"
+edition = "2021"
+rust-version = "1.80"
+
+[lib]
+name = "azeroth_farm_atlas_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+chrono = { version = "0.4.45", features = ["serde"] }
+keyring = { version = "3.6.3", features = ["windows-native"] }
+rand = "0.9.5"
+reqwest = { version = "0.13.3", default-features = false, features = ["native-tls", "gzip", "json", "query", "form"] }
+rusqlite = { version = "0.40.2", features = ["bundled"] }
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1.0.154"
+sha2 = "0.10.9"
+tauri = { version = "2", features = [] }
+tauri-plugin-clipboard-manager = "2"
+tauri-plugin-dialog = "2"
+tauri-plugin-opener = "2"
+tauri-plugin-window-state = "2"
+thiserror = "2"
+tokio = { version = "1.53.3", features = ["time", "sync", "macros", "rt-multi-thread"] }
+url = "2.5.8"
+uuid = { version = "1.20.0", features = ["v4"] }
+
+[dev-dependencies]
+mockito = "1.7.2"
+tempfile = "3.27.0"
+
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = "s"
+strip = true

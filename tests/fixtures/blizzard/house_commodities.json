@@ -1,0 +1,6 @@
+{"_links":{},"auctions":[
+ {"id":8001,"item":{"id":2589},"quantity":20,"unit_price":23,"time_left":"LONG"},
+ {"id":8002,"item":{"id":2589},"quantity":20,"unit_price":25,"time_left":"LONG"},
+ {"id":8003,"item":{"id":2589},"quantity":20,"unit_price":40,"time_left":"SHORT"},
+ {"id":8004,"item":{"id":2319},"quantity":5,"unit_price":99,"time_left":"LONG"}
+]}

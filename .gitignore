@@ -1,0 +1,9 @@
+node_modules/
+dist/
+data-raw/
+src-tauri/target/
+src-tauri/gen/schemas/
+*.log
+.env
+.env.local
+src-tauri/resources/seed.db

@@ -1,0 +1,71 @@
+{
+ "market": "forever.normal.alliance.eu",
+ "item": {
+  "id": 2589,
+  "name": "Linen Cloth",
+  "quality": "COMMON",
+  "url": "https://ahledger.com/items/2589-linen-cloth/forever.normal.alliance.eu?utm_source=ahledger_api&utm_medium=api&utm_campaign=prices",
+  "chartUrl": "https://ahledger.com/items/2589-linen-cloth/forever.normal.alliance.eu?utm_source=ahledger_api&utm_medium=api&utm_campaign=prices#price-history"
+ },
+ "attribution": {
+  "text": "Prices from AHledger",
+  "url": "https://ahledger.com/items/2589-linen-cloth/forever.normal.alliance.eu?utm_source=ahledger_api&utm_medium=api&utm_campaign=prices",
+  "html": "<a href=\"https://ahledger.com/items/2589-linen-cloth/forever.normal.alliance.eu?utm_source=ahledger_api&amp;utm_medium=api&amp;utm_campaign=prices\">Prices from AHledger</a>"
+ },
+ "latest": {
+  "observedAt": "2026-11-15T17:56:28.000Z",
+  "source": "Addon scan",
+  "minBuyout": 26,
+  "median": 27,
+  "quantity": 39173,
+  "auctions": 968,
+  "median7d": 30,
+  "median30d": 30,
+  "median90d": 30
+ },
+ "sales": {
+  "estimatedPerDay": 17833,
+  "windowDays": 7,
+  "coveredHours": 107.4,
+  "method": "https://ahledger.com/glossary#estimated-sales"
+ },
+ "range": "7d",
+ "series": [
+  {
+   "t": "2026-11-08T19:00:00.000Z",
+   "min": 18,
+   "median": 30,
+   "p25": 26,
+   "p75": 50,
+   "quantity": 27172,
+   "auctions": 904
+  },
+  {
+   "t": "2026-11-08T20:00:00.000Z",
+   "min": 7,
+   "median": 30,
+   "p25": 26,
+   "p75": 50,
+   "quantity": 35907,
+   "auctions": 1156
+  },
+  {
+   "t": "2026-11-08T21:00:00.000Z",
+   "min": 17,
+   "median": 30,
+   "p25": 26,
+   "p75": 50,
+   "quantity": 30307,
+   "auctions": 984
+  },
+  {
+   "t": "2026-11-08T22:00:00.000Z",
+   "min": 20,
+   "median": 30,
+   "p25": 26,
+   "p75": 50,
+   "quantity": 30189,
+   "auctions": 1015
+  }
+ ]
+}

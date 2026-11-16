@@ -1,0 +1,5 @@
+{"_links":{"self":{"href":"https://eu.api.blizzard.com/data/wow/ruleset/index?namespace=dynamic-forever-eu"}},
+ "rulesets":[{"key":{"href":"https://eu.api.blizzard.com/data/wow/ruleset/1?namespace=dynamic-forever-eu"},"name":"PvP","id":1},
+  {"key":{"href":"https://eu.api.blizzard.com/data/wow/ruleset/2?namespace=dynamic-forever-eu"},"name":"Normal","id":2},
+  {"key":{"href":"https://eu.api.blizzard.com/data/wow/ruleset/3?namespace=dynamic-forever-eu"},"name":"Roleplay","id":3},
+  {"key":{"href":"https://eu.api.blizzard.com/data/wow/ruleset/15?namespace=dynamic-forever-eu"},"name":"Roleplay PvP","id":15}]}

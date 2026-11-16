@@ -1,0 +1,60 @@
+@import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
+
+@theme {
+  --font-sans: "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
+  --font-display: "Segoe UI Variable Display", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "Cascadia Mono", Consolas, ui-monospace, monospace;
+
+  --color-bg: #0e1117;
+  --color-panel: #151a22;
+  --color-panel-2: #1b212c;
+  --color-panel-3: #232a37;
+  --color-line: #2a3242;
+  --color-line-2: #364053;
+  --color-ink: #e7e9ef;
+  --color-muted: #9aa3b5;
+  --color-faint: #6b7487;
+  --color-gold: #d6b25e;
+  --color-gold-2: #f1d58a;
+  --color-gold-dim: #7d6630;
+  --color-ok: #5cc98a;
+  --color-warn: #e9a54e;
+  --color-bad: #e06c6c;
+  --color-info: #6fa8dc;
+  --color-q0: #9d9d9d;
+  --color-q1: #e7e9ef;
+  --color-q2: #1eff00;
+  --color-q3: #2f8cff;
+  --color-q4: #b048f8;
+  --color-q5: #ff8000;
+}
+
+html, body, #root { height: 100%; }
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+}
+input, textarea, select, .selectable { user-select: text; }
+::selection { background: color-mix(in oklab, var(--color-gold) 40%, transparent); }
+* { scrollbar-width: thin; scrollbar-color: var(--color-line-2) transparent; }
+
+.num { font-variant-numeric: tabular-nums; }
+
+/* Leaflet on a coordinate plane (no Blizzard map tiles) */
+.leaflet-container { background: #10151d; font-family: var(--font-sans); }
+.leaflet-popup-content-wrapper, .leaflet-popup-tip { background: var(--color-panel-2); color: var(--color-ink); border: 1px solid var(--color-line-2); box-shadow: 0 8px 24px rgb(0 0 0 / .45); }
+.leaflet-popup-content { margin: 10px 12px; font-size: 12.5px; line-height: 1.45; }
+.leaflet-container a.leaflet-popup-close-button { color: var(--color-muted); }
+.leaflet-bar a { background: var(--color-panel-2); color: var(--color-ink); border-color: var(--color-line); }
+.leaflet-bar a:hover { background: var(--color-panel-3); }
+.leaflet-control-attribution { background: rgb(14 17 23 / .8) !important; color: var(--color-faint) !important; font-size: 10px; }
+.leaflet-control-attribution a { color: var(--color-muted) !important; }
+.leaflet-tooltip { background: var(--color-panel-2); color: var(--color-ink); border: 1px solid var(--color-line-2); box-shadow: none; font-size: 12px; }
+.leaflet-tooltip-top:before { border-top-color: var(--color-line-2); }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }

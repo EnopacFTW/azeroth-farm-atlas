@@ -1,0 +1,6 @@
+{"_links":{},"auctions":[
+ {"id":9001,"item":{"id":15211},"buyout":50000,"quantity":2,"time_left":"LONG"},
+ {"id":9002,"item":{"id":15211},"buyout":30000,"quantity":1,"time_left":"SHORT"},
+ {"id":9003,"item":{"id":15211,"bonus_lists":[1046]},"buyout":41000,"quantity":1,"time_left":"LONG"},
+ {"id":9004,"item":{"id":4306},"bid":1200,"quantity":20,"time_left":"MEDIUM"}
+]}

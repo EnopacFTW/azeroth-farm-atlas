@@ -1,0 +1,55 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Azeroth Farm Atlas",
+  "version": "0.1.0",
+  "identifier": "de.azerothfarmatlas.desktop",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "devUrl": "http://127.0.0.1:1420",
+    "beforeBuildCommand": "npm run build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "Azeroth Farm Atlas",
+        "width": 1440,
+        "height": 900,
+        "minWidth": 1100,
+        "minHeight": 700,
+        "resizable": true,
+        "alwaysOnTop": false,
+        "center": true
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; img-src 'self' data: blob: asset: http://asset.localhost https://render.worldofwarcraft.com; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src ipc: http://ipc.localhost; font-src 'self' data:",
+      "assetProtocol": { "enable": false }
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["nsis", "msi"],
+    "publisher": "Azeroth Farm Atlas contributors",
+    "copyright": "GPL-3.0-or-later. World of Warcraft names and data © Blizzard Entertainment.",
+    "category": "Utility",
+    "shortDescription": "WoW Forever Farmfinder (Level 1–60) mit AH-Preisen",
+    "longDescription": "Offline-fähiger Farmfinder für World of Warcraft: Forever mit belegten Spawndaten, Beruf-Skillprüfung, Farmsessions und Auktionshauspreisen über AHledger, auctionhouse.fyi und optional die Blizzard-API.",
+    "icon": ["icons/32x32.png", "icons/128x128.png", "icons/128x128@2x.png", "icons/icon.ico"],
+    "resources": {
+      "resources/seed.db": "resources/seed.db",
+      "resources/data-manifest.json": "resources/data-manifest.json"
+    },
+    "licenseFile": "../LICENSE",
+    "windows": {
+      "webviewInstallMode": { "type": "downloadBootstrapper", "silent": true },
+      "nsis": {
+        "installMode": "currentUser",
+        "languages": ["German", "English"],
+        "displayLanguageSelector": false
+      },
+      "wix": { "language": ["de-DE", "en-US"] }
+    }
+  }
+}
