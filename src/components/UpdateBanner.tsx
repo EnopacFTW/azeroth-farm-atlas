@@ -29,9 +29,19 @@ export function UpdateBanner() {
 
 export function UpdatePanel() {
   const [state, setState] = useState<string | null>(null);
+  const run = async () => {
+    try {
+      const u = isDesktop ? await check() : null;
+      setState(u
+        ? tr(`Version ${u.version} verfügbar – oben „Installieren & neu starten“.`, `Version ${u.version} available – use “Install & restart” at the top.`)
+        : tr('Du hast die neueste Version.', 'You have the latest version.'));
+    } catch (e) {
+      setState(tr(`Prüfung fehlgeschlagen (offline?): ${String(e)}`, `Check failed (offline?): ${String(e)}`));
+    }
+  };
   return (
     <Panel title={tr('Updates', 'Updates')}>
-      <Button size="sm" onClick={async () => { const u = await findUpdate(); setState(u ? tr(`Version ${u.version} verfügbar`, `Version ${u.version} available`) : tr('Kein Update gefunden (oder Updater noch nicht eingerichtet).', 'No update found (or updater not set up yet).')); }}>
+      <Button size="sm" onClick={run}>
         {tr('Nach Updates suchen', 'Check for updates')}
       </Button>
       {state && <p className="mt-2 text-[12px] text-muted">{state}</p>}
