@@ -14,6 +14,17 @@
 - **Gold/h und XP/h** gibt es nur aus eigenen gemessenen Sessions; die App enthält keine Community-Messungen.
 - Coverage: in jedem Levelband ≥ 5 Spots pro Farmziel; dünn ist Bergbau 1–10 (5) und Angeln (7–20 je Band). Siehe `coverage-report.md`.
 
+## XP, Tooltips, Community-Spots
+- XP pro Kill folgt der Classic-Formel (cmangos/Wowpedia) inkl. Elite ×2, Ausgeruht ×2 und Kreatur-XP-Faktor; Gruppen-XP
+  ist vereinfacht (gleichmäßige Teilung). Forever-Änderungen an der XP-Kurve sind nicht berücksichtigt.
+- Item-Tooltips zeigen lokale Daten (Qualität, Itemlevel, Händlerpreis, beste Quellen) und den gecachten AH-Preis; Werte
+  der Forever-Itemisierung (neue Stats) sind nicht enthalten → dafür der Wowhead-Link.
+- Community-Spots stammen überwiegend aus Classic-Guides; sie sind gegen Forever-Spawns aufgelöst, aber nicht im Spiel
+  geprüft. Instanz-Spots haben keine Karte (keine Spawnkoordinaten in den Forever-Daten).
+- Neutrale Mobs (QuestieDB „freundlich zu A und H“) gelten als angreifbar, wenn sie keine Humanoiden sind und Classic-Loot
+  haben. Mobs, die nur einer Fraktion feindlich sind (z. B. Bauern in Hillsbrad), erscheinen nur, wenn ein Guide sie nennt,
+  und dann nur für die passende Fraktion.
+
 ## Karten
 - Keine mitgelieferten WoW-Zonenkarten (Urheberrecht); die App lädt auch keine herunter.
 - Ist WoW: Forever oder Classic Era installiert, übernimmt „Alle Zonenkarten übernehmen“ (Weltatlas → Kartenbilder bzw.

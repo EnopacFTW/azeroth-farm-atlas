@@ -39,6 +39,8 @@ export type Profile = z.infer<typeof ProfileSchema>;
 export interface CandidateNpc {
   id: number; nameEn: string; nameDe: string | null; levelMin: number | null; levelMax: number | null; rank: number | null;
   canSkin: 0 | 1 | null; skinMin: number | null; skinMax: number | null; creatureType: string | null; inClassic: 0 | 1; spawns: number;
+  /** Classic creature XP multiplier, null = unknown (treated as 1). */
+  xpMult?: number | null;
 }
 export interface CandidateObject { id: number; nameEn: string; nameDe: string | null; nodeType: 'ore' | 'herb' | 'fishing_pool'; requiredSkill: number | null; spawns: number }
 export interface SpotItem {
@@ -46,7 +48,7 @@ export interface SpotItem {
   foreverConfirmed: 0 | 1; vendorSell: number | null; isCloth: 0 | 1;
 }
 export type LootContext = 'normal_kill' | 'skinning' | 'herb_node' | 'mining_node' | 'fishing' | 'quest';
-export type SpotKind = 'mob_cluster' | 'mob_scattered' | 'rare_mob' | 'node_zone' | 'fishing_pool' | 'fishing_zone';
+export type SpotKind = 'mob_cluster' | 'mob_scattered' | 'rare_mob' | 'node_zone' | 'fishing_pool' | 'fishing_zone' | 'instance_run';
 
 export interface ZoneRef {
   nameEn: string; nameDe: string | null; kind: string; control: 'alliance' | 'horde' | 'contested' | 'sanctuary' | null;
@@ -60,6 +62,10 @@ export interface SpotCandidate {
   reqSkillType: 'skinning' | 'mining' | 'herbalism' | 'fishing' | null; reqSkill: number | null;
   avgCoinCopper: number | null; modelVendorCopperPerKill: number | null; modelVendorPartial: 0 | 1 | null;
   routeKind: string | null; routeCurated: 0 | 1; generated: 0 | 1; srcCore: string;
+  /** null = both factions; otherwise the mobs are hostile to this faction only. */
+  farmableBy?: 'alliance' | 'horde' | null;
+  /** Number of community guides recommending this spot (0 = generated only). */
+  communitySources?: number;
   npcs: CandidateNpc[]; objects: CandidateObject[]; items: SpotItem[];
 }
 
@@ -69,6 +75,8 @@ export interface LootRow {
   sourceId: string; reliability: Reliability;
 }
 
+export interface SpotSource { site: string; title: string; url: string; forever: 0 | 1; noteEn: string | null; noteDe: string | null }
+
 export interface SpotDetail {
   spot: Omit<SpotCandidate, 'zone' | 'npcs' | 'objects' | 'items'> & { hull: [number, number][] | null; route: [number, number][] | null };
   zone: ZoneRef & { id: number; continent: string; srcMeta: string; srcMap: string | null };
@@ -76,6 +84,7 @@ export interface SpotDetail {
     srcCore: string; srcCombat: string | null; loot: LootRow[] })[];
   objects: (CandidateObject & { skillSource: string | null; srcCore: string; loot: LootRow[] })[];
   zoneLoot: LootRow[];
+  sources: SpotSource[];
   points: ['npc' | 'object', number, number, number][];
 }
 

@@ -8,15 +8,22 @@ import { useSettings } from '@/services/hooks';
 import { openExternal } from '@/services/tauri';
 import { dateTime, nm, nmAlt, num, tr } from '@/i18n';
 import { Badge, cx } from './ui';
+import { HoverCard, ItemTooltipBody } from './ItemTooltip';
 
 const QUALITY_CLS = ['text-q0', 'text-q1', 'text-q2', 'text-q3', 'text-q4', 'text-q5'];
 
+/** Item link with a hover tooltip (local data, AH price, Wowhead link). */
 export function ItemName({ id, nameDe, nameEn, quality, className }: { id: number; nameDe?: string | null; nameEn: string; quality?: number | null; className?: string }) {
-  const alt = nmAlt({ nameDe, nameEn });
   return (
-    <Link to={`/items/${id}`} title={`${alt ? `${alt} · ` : ''}Item-ID ${id}`} className={cx('hover:underline', QUALITY_CLS[quality ?? 1] ?? 'text-ink', className)}>
-      {nm({ nameDe, nameEn })}
-    </Link>
+    <HoverCard
+      trigger={
+        <Link to={`/items/${id}`} className={cx('hover:underline', QUALITY_CLS[quality ?? 1] ?? 'text-ink', className)}>
+          {nm({ nameDe, nameEn })}
+        </Link>
+      }
+    >
+      {() => <ItemTooltipBody id={id} />}
+    </HoverCard>
   );
 }
 
@@ -35,6 +42,7 @@ function sourceInfo(source: string): { label: string; tone: 'ok' | 'warn' | 'inf
     case 'cmangos_classic': return { label: tr('Classic-Fallback', 'Classic fallback'), tone: 'warn', title: tr('cmangos classic-db 1.12 – nicht für Forever verifiziert (classic_fallback)', 'cmangos classic-db 1.12 – not verified for Forever (classic_fallback)') };
     case 'classic_rules': return { label: tr('Classic-Regel', 'Classic rule'), tone: 'warn', title: tr('Classic-Formel/Skillgrenze (Wowpedia/cmangos), nicht Forever-geprüft', 'Classic formula/skill threshold (Wowpedia/cmangos), not checked on Forever') };
     case 'manual_zone_meta': return { label: tr('Manuell', 'Manual'), tone: 'neutral', title: tr('Manuell kuratierte Zonen-Metadaten (manual_unverified)', 'Manually curated zone metadata (manual_unverified)') };
+    case 'community_guides': return { label: 'Community', tone: 'info', title: tr('Empfehlung aus recherchierten Farmguides, gegen Forever-Spawndaten aufgelöst', 'Recommendation from researched farming guides, resolved against Forever spawn data') };
     case 'atlas_clustering': return { label: tr('Auto-gruppiert', 'Auto-grouped'), tone: 'info', title: tr('Spot automatisch aus Forever-Spawnpunkten gruppiert', 'Spot grouped automatically from Forever spawn points') };
     case 'forever_client_data': return { label: 'Forever', tone: 'ok', title: 'forever_client_data' };
     case 'classic_fallback': return { label: tr('Classic-Fallback', 'Classic fallback'), tone: 'warn', title: 'classic_fallback' };

@@ -15,10 +15,12 @@ CREATE TABLE zones (
 CREATE TABLE npcs (
   id INTEGER PRIMARY KEY, name_en TEXT NOT NULL, name_de TEXT, sub_name TEXT, level_min INTEGER, level_max INTEGER,
   rank INTEGER, classification TEXT, creature_type TEXT, family INTEGER, zone_id INTEGER, friendly_to TEXT,
-  hostile INTEGER NOT NULL, min_coin INTEGER, max_coin INTEGER,
+  hostile INTEGER NOT NULL,       -- 1 = attackable mob (hostile to both, or neutral non-humanoid with loot)
+  min_coin INTEGER, max_coin INTEGER,
   can_skin INTEGER,               -- NULL = unknown (NPC not in Classic DB)
   skinning_skill_min INTEGER, skinning_skill_max INTEGER,
   in_classic INTEGER NOT NULL,
+  xp_mult REAL,                   -- creature_template.ExperienceMultiplier (Classic), NULL = unknown
   src_core TEXT NOT NULL REFERENCES sources(id),   -- name/level/rank/spawns
   src_combat TEXT REFERENCES sources(id)           -- type/skinning/coin/loot
 );
@@ -66,7 +68,8 @@ CREATE TABLE spots (
   hull_json TEXT, route_json TEXT, route_kind TEXT, route_curated INTEGER NOT NULL, generated INTEGER NOT NULL,
   -- Classic-fallback model per kill (spawn-weighted over NPCs with Classic loot tables); NULL = not computable
   avg_coin_copper INTEGER, model_vendor_copper_per_kill INTEGER, model_vendor_partial INTEGER,
-  src_core TEXT NOT NULL REFERENCES sources(id)
+  src_core TEXT NOT NULL REFERENCES sources(id),
+  farmable_by TEXT                -- NULL = both factions, 'alliance' / 'horde' = mobs are hostile to that faction only
 );
 -- Main drops per spot (precomputed for the result list). rate = spawn-weighted Classic rate, NULL = unknown.
 CREATE TABLE spot_items (
@@ -86,6 +89,10 @@ CREATE INDEX idx_spot_objects_spot ON spot_objects(spot_id);
 CREATE INDEX idx_spot_objects_obj ON spot_objects(object_id);
 CREATE TABLE spot_points (spot_id TEXT NOT NULL, entity_type TEXT NOT NULL, entity_id INTEGER NOT NULL, x REAL NOT NULL, y REAL NOT NULL);
 CREATE INDEX idx_spot_points_spot ON spot_points(spot_id);
+-- Where a community spot comes from (guides); notes are own wording, facts only.
+CREATE TABLE spot_sources (spot_id TEXT NOT NULL, site TEXT NOT NULL, title TEXT NOT NULL, url TEXT NOT NULL, forever INTEGER NOT NULL,
+  note_en TEXT, note_de TEXT);
+CREATE INDEX idx_spot_sources_spot ON spot_sources(spot_id);
 
 CREATE VIRTUAL TABLE search_fts USING fts5(kind UNINDEXED, entity_id UNINDEXED, name_en, name_de, tokenize = 'unicode61 remove_diacritics 2');
 

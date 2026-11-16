@@ -1,14 +1,16 @@
 import { useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowLeft, Copy, Play, Skull } from 'lucide-react';
+import { ArrowLeft, Copy, ExternalLink, Play, Skull, Users } from 'lucide-react';
 import { WorldMap, type MapMarker } from '@/components/WorldMap';
 import { LootTables } from '@/components/LootTable';
 import { Attribution, LevelRange, NpcName, providerName, Rate, SourceBadge } from '@/components/data';
 import { gatherSkillName } from '@/components/SpotCard';
 import { classificationLabel } from './NpcDetail';
 import { Badge, Button, ErrorBox, inputCls, Panel, Spinner, Stat } from '@/components/ui';
-import { api, copyText, errorText } from '@/services/tauri';
+import { XpPanel } from '@/components/XpPanel';
+import { killXpRange } from '@/domain/xp';
+import { api, copyText, errorText, openExternal } from '@/services/tauri';
 import { useActiveProfile, useMarketSelection, useQuotes } from '@/services/hooks';
 import { scoreSpot, pct } from '@/domain/scoring';
 import { perKillModel } from '@/domain/economics';
@@ -19,7 +21,7 @@ import { measuredKillsPerHour } from '@/domain/sessionMath';
 import { skillOf } from '@/domain/professionRules';
 import { useUi } from '@/store/ui';
 import type { LootRow, SpotCandidate, SpotItem } from '@/domain/types';
-import { nm, num, title, titleAlt, tr } from '@/i18n';
+import { getLang, nm, num, title, titleAlt, tr } from '@/i18n';
 
 export function SpotDetailPage() {
   const { id = '' } = useParams();
@@ -96,6 +98,8 @@ export function SpotDetailPage() {
               {s.reqSkill != null && <Badge tone="warn" title={tr('Classic-Regel', 'Classic rule')}>Skill {s.reqSkill} ({s.reqSkillType ? gatherSkillName(s.reqSkillType) : '?'})</Badge>}
               <SourceBadge source="questiedb_forever" />
               {s.generated ? <SourceBadge source="atlas_clustering" /> : null}
+              {d.sources.length > 0 && <SourceBadge source="community_guides" />}
+              {s.farmableBy && <Badge tone="warn">{s.farmableBy === 'horde' ? tr('Nur Horde (Mobs sind der Allianz freundlich)', 'Horde only (mobs are friendly to the Alliance)') : tr('Nur Allianz (Mobs sind der Horde freundlich)', 'Alliance only (mobs are friendly to the Horde)')}</Badge>}
               {scored && <Badge tone={scored.availability === 'ready' ? 'ok' : 'warn'}>{scored.availability === 'ready' ? tr('Sofort farmbar', 'Farmable now') : tr('Eingeschränkt – siehe „Warum nicht?“', 'Restricted – see “Why not?”')}</Badge>}
             </div>
           </div>
@@ -106,9 +110,35 @@ export function SpotDetailPage() {
         </div>
 
         <div className="grid gap-4 xl:grid-cols-[1.25fr_1fr]">
-          <WorldMap className="h-[460px] rounded-lg border border-line" zoneId={s.zoneId} zoneName={zoneName} uiMapId={d.zone.uiMapId} markers={markers} hull={s.hull} route={s.route}
-            focus={s.centerX != null ? { x: s.centerX, y: s.centerY!, r: s.radius ?? 8 } : null} />
+          {d.points.length === 0 && s.isInstance ? (
+            <Panel title={tr('Instanz', 'Instance')}>
+              <p className="text-[12.5px] text-muted">{tr(`${zoneName} ist eine Instanz: die Forever-Daten enthalten dort keine Spawnkoordinaten, daher gibt es keine Karte. Mobs, Level und Beute unten stammen aus den Instanz-NPCs.`, `${zoneName} is an instance: the Forever data has no spawn coordinates there, so there is no map. Mobs, levels and loot below come from the instance NPCs.`)}</p>
+            </Panel>
+          ) : (
+            <WorldMap className="h-[460px] rounded-lg border border-line" zoneId={s.zoneId} zoneName={zoneName} uiMapId={d.zone.uiMapId} markers={markers} hull={s.hull} route={s.route}
+              focus={s.centerX != null ? { x: s.centerX, y: s.centerY!, r: s.radius ?? 8 } : null} />
+          )}
           <div className="space-y-4">
+            {d.sources.length > 0 && (
+              <Panel title={<span className="inline-flex items-center gap-1.5"><Users className="size-4 text-info" />{tr('Community-Empfehlung', 'Community recommendation')}</span>}>
+                {[...new Set(d.sources.map((src) => (getLang() === 'de' ? src.noteDe : src.noteEn) ?? src.noteEn).filter(Boolean))].map((note) => (
+                  <p key={note} className="mb-2 text-[12.5px] text-ink">{note}</p>
+                ))}
+                <ul className="space-y-1 text-[12px]">
+                  {d.sources.filter((src, i, all) => all.findIndex((o) => o.url === src.url) === i).map((src) => (
+                    <li key={src.url} className="flex items-center gap-2">
+                      <span className="min-w-0 flex-1 truncate text-faint">
+                        {src.site} · {src.title}
+                        {src.forever ? <span className="text-ok"> · {tr('Forever-Guide', 'Forever guide')}</span> : <span> · {tr('Classic-Guide, für Forever nicht geprüft', 'Classic guide, not checked for Forever')}</span>}
+                      </span>
+                      <button type="button" onClick={() => openExternal(src.url)} className="inline-flex shrink-0 items-center gap-1 rounded border border-line px-1.5 py-0.5 text-[11px] text-muted hover:text-ink cursor-pointer" title={src.url}><ExternalLink className="size-3" />{tr('Quelle', 'Source')}</button>
+                    </li>
+                  ))}
+                </ul>
+                <p className="mt-2 text-[11.5px] text-faint">{tr('Mobs, Koordinaten und Beute wurden beim Build gegen die Forever-Spawndaten aufgelöst; die Guide-Texte selbst sind nicht übernommen.', 'Mobs, coordinates and loot were resolved against the Forever spawn data at build time; guide texts are not copied.')}</p>
+              </Panel>
+            )}
+            {profile && d.npcs.length > 0 && <XpPanel level={profile.level} mobs={d.npcs} />}
             {scored && (
               <Panel title={tr('Bewertung für dein Profil', 'Rating for your profile')}>
                 <div className="grid gap-3 text-[12.5px]">
@@ -146,7 +176,7 @@ export function SpotDetailPage() {
             <table className="w-full text-[12.5px]">
               <thead className="text-left text-[11px] uppercase tracking-wide text-faint">
                 <tr className="border-b border-line">
-                  {['NPC', 'ID', 'Level', tr('Klasse', 'Class'), tr('Typ', 'Type'), tr('Kürschnern', 'Skinning'), tr('Münzen', 'Coins'), 'Spawns', tr('Quellen', 'Sources')].map((h) => <th key={h} className="px-3 py-1.5 font-medium">{h}</th>)}
+                  {['NPC', 'ID', 'Level', profile ? tr(`XP/Kill (L${profile.level})`, `XP/kill (L${profile.level})`) : 'XP/Kill', tr('Klasse', 'Class'), tr('Typ', 'Type'), tr('Kürschnern', 'Skinning'), tr('Münzen', 'Coins'), 'Spawns', tr('Quellen', 'Sources')].map((h) => <th key={h} className="px-3 py-1.5 font-medium">{h}</th>)}
                 </tr>
               </thead>
               <tbody>
@@ -155,6 +185,7 @@ export function SpotDetailPage() {
                     <td className="px-3 py-1.5"><NpcName id={n.id} nameDe={n.nameDe} nameEn={n.nameEn} /></td>
                     <td className="px-3 py-1.5 num text-faint">{n.id}</td>
                     <td className="px-3 py-1.5 num">{n.levelMin}–{n.levelMax}</td>
+                    <td className="px-3 py-1.5 num text-info">{profile && n.levelMin != null ? (() => { const [lo, hi] = killXpRange(profile.level, n.levelMin, n.levelMax ?? n.levelMin, { rank: n.rank, xpMult: n.xpMult }); return hi === 0 ? <span className="text-faint">{tr('0 (grau)', '0 (gray)')}</span> : lo === hi ? num(lo) : `${num(lo)}–${num(hi)}`; })() : '—'}</td>
                     <td className="px-3 py-1.5">{classificationLabel(n.classification) ?? '?'}</td>
                     <td className="px-3 py-1.5 text-muted">{n.creatureType ?? tr('unbekannt', 'unknown')}</td>
                     <td className="px-3 py-1.5">{n.canSkin === 1 ? <span className={skinSkill != null && n.skinMin != null && skinSkill >= n.skinMin ? 'text-ok' : 'text-warn'}>{tr('ab', 'from')} {n.skinMin}–{n.skinMax}</span> : n.canSkin === 0 ? <span className="text-faint">{tr('nein', 'no')}</span> : <span className="text-faint">{tr('unbekannt', 'unknown')}</span>}</td>

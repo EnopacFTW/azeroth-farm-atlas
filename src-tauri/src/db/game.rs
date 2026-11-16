@@ -68,14 +68,17 @@ pub fn spot_detail(c: &Connection, id: &str) -> AppResult<Option<Value>> {
              'hasRare', s.has_rare, 'isInstance', s.is_instance, 'reqSkillType', s.req_skill_type, 'reqSkill', s.req_skill,
              'hull', json(s.hull_json), 'route', json(s.route_json), 'routeKind', s.route_kind, 'routeCurated', s.route_curated,
              'generated', s.generated, 'srcCore', s.src_core, 'avgCoinCopper', s.avg_coin_copper,
-             'modelVendorCopperPerKill', s.model_vendor_copper_per_kill, 'modelVendorPartial', s.model_vendor_partial),
+             'modelVendorCopperPerKill', s.model_vendor_copper_per_kill, 'modelVendorPartial', s.model_vendor_partial,
+             'farmableBy', s.farmable_by),
+          'sources', (SELECT json_group_array(json_object('site', ss.site, 'title', ss.title, 'url', ss.url, 'forever', ss.forever,
+             'noteEn', ss.note_en, 'noteDe', ss.note_de)) FROM spot_sources ss WHERE ss.spot_id = s.id),
           'zone', (SELECT json_object('id', z.id, 'uiMapId', z.ui_map_id, 'nameEn', z.name_en, 'nameDe', z.name_de, 'continent', z.continent,
              'kind', z.kind, 'control', z.control, 'levelMin', z.level_min, 'levelMax', z.level_max, 'fishingBaseSkill', z.fishing_base_skill,
              'srcMeta', z.src_meta, 'srcMap', z.src_map) FROM zones z WHERE z.id = s.zone_id),
           'npcs', (SELECT json_group_array(json_object('id', n.id, 'nameEn', n.name_en, 'nameDe', n.name_de, 'subName', n.sub_name,
              'levelMin', n.level_min, 'levelMax', n.level_max, 'rank', n.rank, 'classification', n.classification, 'creatureType', n.creature_type,
              'canSkin', n.can_skin, 'skinMin', n.skinning_skill_min, 'skinMax', n.skinning_skill_max, 'minCoin', n.min_coin, 'maxCoin', n.max_coin,
-             'inClassic', n.in_classic, 'srcCore', n.src_core, 'srcCombat', n.src_combat, 'spawns', sn.spawn_count,
+             'inClassic', n.in_classic, 'xpMult', n.xp_mult, 'srcCore', n.src_core, 'srcCombat', n.src_combat, 'spawns', sn.spawn_count,
              'loot', (SELECT json_group_array({LOOT_JSON}) FROM loot l JOIN items i ON i.id = l.item_id
                       WHERE l.source_type = 'npc' AND l.source_entity_id = n.id)))
              FROM spot_npcs sn JOIN npcs n ON n.id = sn.npc_id WHERE sn.spot_id = s.id),
@@ -98,7 +101,7 @@ pub fn item_detail(c: &Connection, id: u32) -> AppResult<Option<Value>> {
          'itemSubclass', i.item_subclass, 'itemLevel', i.item_level, 'requiredLevel', i.required_level, 'vendorSell', i.vendor_sell,
          'vendorBuy', i.vendor_buy, 'stackSize', i.stack_size, 'isCloth', i.is_cloth, 'inForever', i.in_forever, 'srcCore', i.src_core, 'srcEcon', i.src_econ),
       'npcSources', (SELECT json_group_array(x) FROM (SELECT json_object('npcId', n.id, 'nameEn', n.name_en, 'nameDe', n.name_de,
-         'levelMin', n.level_min, 'levelMax', n.level_max, 'rank', n.rank, 'zoneId', n.zone_id, 'context', l.context, 'rate', l.rate,
+         'levelMin', n.level_min, 'levelMax', n.level_max, 'rank', n.rank, 'xpMult', n.xp_mult, 'zoneId', n.zone_id, 'context', l.context, 'rate', l.rate,
          'minQty', l.min_qty, 'maxQty', l.max_qty, 'sourceId', l.source_id, 'reliability', l.reliability,
          'spawns', (SELECT COUNT(*) FROM npc_spawns ns WHERE ns.npc_id = n.id)) AS x
          FROM loot l JOIN npcs n ON n.id = l.source_entity_id WHERE l.source_type = 'npc' AND l.item_id = i.id
@@ -127,7 +130,7 @@ pub fn npc_detail(c: &Connection, id: u32) -> AppResult<Option<Value>> {
           'npc', json_object('id', n.id, 'nameEn', n.name_en, 'nameDe', n.name_de, 'subName', n.sub_name, 'levelMin', n.level_min,
              'levelMax', n.level_max, 'rank', n.rank, 'classification', n.classification, 'creatureType', n.creature_type, 'zoneId', n.zone_id,
              'friendlyTo', n.friendly_to, 'hostile', n.hostile, 'canSkin', n.can_skin, 'skinMin', n.skinning_skill_min, 'skinMax', n.skinning_skill_max,
-             'minCoin', n.min_coin, 'maxCoin', n.max_coin, 'inClassic', n.in_classic, 'srcCore', n.src_core, 'srcCombat', n.src_combat),
+             'minCoin', n.min_coin, 'maxCoin', n.max_coin, 'inClassic', n.in_classic, 'xpMult', n.xp_mult, 'srcCore', n.src_core, 'srcCombat', n.src_combat),
           'spawns', (SELECT json_group_array(json_array(ns.zone_id, ns.x, ns.y)) FROM npc_spawns ns WHERE ns.npc_id = n.id),
           'loot', (SELECT json_group_array({LOOT_JSON}) FROM loot l JOIN items i ON i.id = l.item_id WHERE l.source_type = 'npc' AND l.source_entity_id = n.id),
           'spots', (SELECT json_group_array(json_object('spotId', s.id, 'titleDe', s.title_de, 'titleEn', s.title_en, 'zoneId', s.zone_id, 'kind', s.kind))

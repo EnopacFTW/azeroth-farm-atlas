@@ -1,4 +1,5 @@
 import type { FarmObjective, Profile, ProfessionId, SpotCandidate } from './types';
+import { spotXp, type SpotXp } from './xp';
 import { conColor, grayLevel, hasProfession, professionLabel, skillOf, USES } from './professionRules';
 import { formatCopper } from './money';
 import { getLang, nm, tr } from '@/i18n';
@@ -18,6 +19,8 @@ export interface FinderFilters {
   requireXp: boolean;
   usableForMe: boolean;
   foreverOnly: boolean;
+  /** Only spots recommended by community guides. */
+  communityOnly?: boolean;
   showUnavailable: boolean;
   maxAbove: number; // highest acceptable mob level above player level
 }
@@ -52,6 +55,8 @@ export interface ScoredSpot {
   skinnableShare: number | null;
   pvpRisk: 'low' | 'medium' | 'high' | 'unknown';
   vendorPerKillCopper: number | null;
+  /** Classic kill XP for the profile level (spawn-weighted), null for node/fishing spots. */
+  xp: SpotXp | null;
 }
 
 const OBJ_LABEL: Record<FarmObjective, [string, string]> = {
@@ -95,7 +100,7 @@ export function scoreSpot(profile: Profile, spot: SpotCandidate, filters: Finder
   let availability: Availability = 'ready';
   let excluded = false;
   const L = profile.level;
-  const isMob = spot.kind === 'mob_cluster' || spot.kind === 'mob_scattered' || spot.kind === 'rare_mob';
+  const isMob = spot.kind === 'mob_cluster' || spot.kind === 'mob_scattered' || spot.kind === 'rare_mob' || spot.kind === 'instance_run';
   const objectives = filters.objectives.length ? filters.objectives : profile.goals;
   const pr = profile.priorities;
 
@@ -128,6 +133,24 @@ export function scoreSpot(profile: Profile, spot: SpotCandidate, filters: Finder
       whyNot.push(`${tr('Passt zu keinem gewählten Farmziel', 'Matches none of the selected farm goals')} (${objectives.map(objLabel).join(', ')})`);
     }
   }
+
+  // ---- faction: mobs that are friendly to one faction can only be farmed by the other
+  if (spot.farmableBy && spot.farmableBy !== profile.faction) {
+    excluded = true;
+    whyNot.push(spot.farmableBy === 'horde'
+      ? tr('Nur für die Horde: die Mobs sind der Allianz freundlich gesinnt', 'Horde only: the mobs are friendly to the Alliance')
+      : tr('Nur für die Allianz: die Mobs sind der Horde freundlich gesinnt', 'Alliance only: the mobs are friendly to the Horde'));
+  } else if (spot.farmableBy) {
+    why.push(tr('NPCs der Gegenfraktion – nur für deine Fraktion angreifbar', 'Enemy-faction NPCs – attackable by your faction only'));
+  }
+
+  // ---- community recommendation (researched guides, see Data sources)
+  const community = spot.communitySources ?? 0;
+  if (filters.communityOnly && !community) {
+    excluded = true;
+    whyNot.push(tr('Kein Community-Tipp', 'Not a community pick'));
+  }
+  if (community) why.push(tr(`Von der Community empfohlen (${community} ${community === 1 ? 'Guide' : 'Guides'}, siehe Details)`, `Recommended by the community (${community} ${community === 1 ? 'guide' : 'guides'}, see details)`));
 
   // ---- hard: elites / instances / solo
   if (spot.hasElite && (filters.noElites || filters.soloOnly)) { excluded = true; whyNot.push(tr('Elite-Gegner (Filter „Keine Elites“/„Nur solo“)', 'Elite enemies (filter “No elites”/“Solo only”)')); }
@@ -253,17 +276,19 @@ export function scoreSpot(profile: Profile, spot: SpotCandidate, filters: Finder
 
   // ---- fit score from known factors only
   const wsum = factors.reduce((a, f) => a + f.weight, 0);
-  const fitScore = wsum ? Math.round((factors.reduce((a, f) => a + f.weight * f.value, 0) / wsum) * 100) : 0;
+  // community picks get a small nudge (+3), never more than the fit itself
+  const fitScore = wsum ? Math.min(100, Math.round((factors.reduce((a, f) => a + f.weight * f.value, 0) / wsum) * 100) + (community ? 3 : 0)) : 0;
 
   if (excluded && availability === 'ready') availability = 'excluded';
   const visible = !excluded || (filters.showUnavailable && availability !== 'excluded');
   return {
     spot, availability, visible, fitScore, factors, why, whyNot, missing, matchedObjectives: matched, skinnableShare, pvpRisk: risk,
     vendorPerKillCopper: vendorPerKill,
+    xp: spot.npcs.length ? spotXp(profile.level, spot.npcs) : null,
   };
 }
 
-export type SortKey = 'fit' | 'level' | 'density' | 'vendor';
+export type SortKey = 'fit' | 'level' | 'density' | 'vendor' | 'xp';
 
 export function rankSpots(profile: Profile, spots: SpotCandidate[], filters: FinderFilters, sort: SortKey = 'fit'): ScoredSpot[] {
   const scored = spots.map((s) => scoreSpot(profile, s, filters)).filter((s) => s.visible);
@@ -273,6 +298,8 @@ export function rankSpots(profile: Profile, spots: SpotCandidate[], filters: Fin
     density: (a, b) => b.spot.spawnCount - a.spot.spawnCount,
     // unknown economic values sort last, never as 0
     vendor: (a, b) => (b.vendorPerKillCopper ?? -1) - (a.vendorPerKillCopper ?? -1),
+    // XP per kill (Classic formula); spots without mobs sort last
+    xp: (a, b) => (b.xp?.avg ?? -1) - (a.xp?.avg ?? -1),
   };
   return scored.sort((a, b) => (a.availability === 'ready' ? 0 : 1) - (b.availability === 'ready' ? 0 : 1) || cmp[sort](a, b));
 }

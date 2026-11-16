@@ -118,6 +118,8 @@ await check('Spot-Detail mit AH-Spalte und getrennten Loot-Kontexten', async () 
 await check('Farmtimer: Pause zieht Zeit ab, Session bleibt gespeichert (Test 9)', async () => {
   await go('#/sessions');
   const start = page.getByRole('button', { name: /Freie Session starten/ });
+  // wait until the page rendered either the start button or a running session (avoids a race right after navigation)
+  await start.or(page.getByRole('button', { name: /Pause/ })).first().waitFor();
   if (await start.isVisible().catch(() => false)) await start.click();
   await page.waitForFunction(() => /0:00:0[3-9]|0:00:[1-5]\d/.test(document.querySelector('[aria-live="polite"]')?.textContent ?? ''), null, { timeout: 15_000 });
   await page.getByRole('button', { name: /Pause/ }).click();
@@ -180,6 +182,29 @@ await check('Sprache EN ↔ DE: Oberfläche und Namen wechseln', async () => {
   await page.getByRole('button', { name: 'de', exact: true }).click();
   await page.getByText('passende Spots').waitFor();
   return 'EN-Texte sichtbar, zurück auf DE';
+});
+
+await check('XP pro Kill (Classic-Formel) und Item-Tooltip mit Wowhead-Link', async () => {
+  await go('#/finder');
+  await page.getByText('passende Spots').waitFor();
+  await page.getByText(/XP\/Kill:/).first().waitFor();
+  const xp = (await page.getByText(/XP\/Kill:/).first().innerText()).replace(/\s+/g, ' ');
+  await page.locator('article li span[class*="text-q"]').first().hover();
+  const tip = page.locator('[role="tooltip"]');
+  await tip.getByRole('button', { name: /Wowhead/ }).waitFor({ timeout: 15_000 });
+  await page.mouse.move(2, 2);
+  return `${xp.slice(0, 60)} · Tooltip ok`;
+});
+
+await check('Community-Spot: Quellen, XP-Panel, Instanz ohne Karte', async () => {
+  await go(`#/spots/${encodeURIComponent('community:wool-duskwood-raven-hill')}`);
+  await page.getByText('Community-Empfehlung').waitFor();
+  await page.getByText('Erfahrung pro Kill').waitFor();
+  const sources = await page.getByRole('button', { name: /^Quelle$/ }).count();
+  if (sources < 1) throw new Error('keine Quellen-Links');
+  await go(`#/spots/${encodeURIComponent('community:wool-stockade')}`);
+  await page.getByText(/ist eine Instanz/).waitFor();
+  return `${sources} Quellen, Instanzansicht ok`;
 });
 
 await go('#/finder');

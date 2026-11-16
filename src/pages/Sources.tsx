@@ -15,6 +15,7 @@ const NOTES_EN: Record<string, string> = {
   cmangos_classic: 'Classic 1.12 drop rates, skinning/node/fishing loot, creature type, coin loot, vendor prices, fishing base skill. Not verified for Forever.',
   classic_rules: 'Skinning formula, ore/herb skill thresholds, gray level (Wowpedia / cmangos Formulas.h).',
   manual_zone_meta: 'German zone names, continent, zone type, zone control – maintained manually.',
+  community_guides: 'Recommended farm spots from public guides (Warcraft Tavern, Almar\'s Guides, wow-professions.com, Boostroom, Method.gg). Mobs, coordinates and loot are resolved against the Forever spawn data at build time; sources are linked per spot.',
   atlas_clustering: 'Spots grouped automatically from Forever spawn points (DBSCAN); node routes are straight-line point sequences.',
 };
 

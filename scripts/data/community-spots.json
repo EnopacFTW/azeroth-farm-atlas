@@ -1,0 +1,3221 @@
+{
+  "_doc": "Community farm spots, researched from public guides (2026-11-17). Facts only (zone, mob/camp, approx. coordinates, target items), notes in own words. Resolved at build time against the Forever spawn data (QuestieDB) and loot tables: `mobs` = case-insensitive name substrings (`exact` = full names), `items` = target items (also used to find mobs if no `mobs` given), `at` + `r` = approximate guide coordinates and radius, `nodes`/`nodeType` = gathering nodes. Entries that do not resolve are reported and skipped. Instances have no spawn coordinates.",
+  "sources": {
+    "wt_cloth": {
+      "site": "Warcraft Tavern",
+      "title": "WoW Classic Cloth Farming Guide",
+      "url": "https://warcrafttavern.com/wow-classic/guides/cloth-farming/"
+    },
+    "wt_grind": {
+      "site": "Warcraft Tavern",
+      "title": "WoW Classic 1–60 Grinding Guide",
+      "url": "https://warcrafttavern.com/wow-classic/guides/1-60-grinding"
+    },
+    "wt_skin": {
+      "site": "Warcraft Tavern",
+      "title": "Skinning 1–300",
+      "url": "https://warcrafttavern.com/wow-classic/guides/skinning-1-300/"
+    },
+    "wp_light": {
+      "site": "wow-professions.com",
+      "title": "Light Leather Farming (Classic)",
+      "url": "https://wow-professions.com/classic/farming/light-leather-farming-wow-classic"
+    },
+    "wp_medium": {
+      "site": "wow-professions.com",
+      "title": "Medium Leather Farming (Classic)",
+      "url": "https://www.wow-professions.com/classic/farming/medium-leather-farming-wow-classic"
+    },
+    "wp_heavy": {
+      "site": "wow-professions.com",
+      "title": "Heavy Leather Farming (Classic)",
+      "url": "https://wow-professions.com/classic/farming/heavy-leather-farming-wow-classic"
+    },
+    "wp_thick": {
+      "site": "wow-professions.com",
+      "title": "Thick Leather Farming (Classic)",
+      "url": "https://wow-professions.com/classic/farming/thick-leather-farming-wow-classic"
+    },
+    "wp_rugged": {
+      "site": "wow-professions.com",
+      "title": "Rugged Leather Farming (Classic)",
+      "url": "https://wow-professions.com/classic/farming/rugged-leather-farming-wow-classic"
+    },
+    "almar": {
+      "site": "Almar's Guides",
+      "title": "Classic Farming Locations",
+      "url": "https://almarsguides.com/wow/farming/classic/"
+    },
+    "almar_water": {
+      "site": "Almar's Guides",
+      "title": "Essence of Water Farming",
+      "url": "https://almarsguides.com/wow/farming/classic/otherlocations/essenceofwater/"
+    },
+    "almar_fire": {
+      "site": "Almar's Guides",
+      "title": "Essence of Fire Farming",
+      "url": "https://almarsguides.com/wow/farming/classic/otherlocations/essenceoffire/"
+    },
+    "almar_earth": {
+      "site": "Almar's Guides",
+      "title": "Essence of Earth Farming",
+      "url": "https://almarsguides.com/wow/farming/classic/otherlocations/essenceofearth/"
+    },
+    "almar_air": {
+      "site": "Almar's Guides",
+      "title": "Essence of Air Farming",
+      "url": "https://almarsguides.com/wow/farming/classic/otherlocations/essenceofair/"
+    },
+    "almar_living": {
+      "site": "Almar's Guides",
+      "title": "Living Essence Farming",
+      "url": "https://almarsguides.com/wow/farming/classic/otherlocations/livingessence/"
+    },
+    "almar_elefire": {
+      "site": "Almar's Guides",
+      "title": "Elemental Fire Farming",
+      "url": "https://almarsguides.com/wow/farming/classic/otherlocations/elementalfire/"
+    },
+    "almar_eye": {
+      "site": "Almar's Guides",
+      "title": "Eye of Shadow Farming",
+      "url": "https://almarsguides.com/wow/farming/classic/otherlocations/eyeofshadow/"
+    },
+    "almar_egg": {
+      "site": "Almar's Guides",
+      "title": "Small Egg Farming",
+      "url": "https://almarsguides.com/wow/farming/classic/otherlocations/smalleggfarming/"
+    },
+    "almar_pearl": {
+      "site": "Almar's Guides",
+      "title": "Hinterlands Golden Pearl Farming",
+      "url": "https://almarsguides.com/wow/farming/classic/otherlocations/hinterlandsgoldenpearls/"
+    },
+    "boostroom": {
+      "site": "Boostroom",
+      "title": "WoW Forever Best Farming Spots",
+      "url": "https://boostroom.com/blog/wow-forever-best-farming-spots-gold-materials-and-valuable-items",
+      "forever": true
+    },
+    "method_herb": {
+      "site": "Method.gg",
+      "title": "Herbalism in WoW Forever (1–300)",
+      "url": "https://www.method.gg/wow-forever/herbalism-in-wow-forever-leveling-guide-herbalism-items-enchants-trainers",
+      "forever": true
+    }
+  },
+  "spots": [
+    {
+      "id": "linen-dun-morogh-rockjaw",
+      "zone": "Dun Morogh",
+      "mobs": [
+        "Rockjaw"
+      ],
+      "at": [
+        67,
+        54
+      ],
+      "r": 9,
+      "items": [
+        "Linen Cloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth"
+      ],
+      "en": "Rockjaw troggs at Gol'Bolar Quarry east of Kharanos.",
+      "de": "Rockjaw-Troggs am Steinbruch Gol'Bolar östlich von Kharanos."
+    },
+    {
+      "id": "linen-teldrassil-gnarlpine",
+      "zone": "Teldrassil",
+      "mobs": [
+        "Gnarlpine"
+      ],
+      "items": [
+        "Linen Cloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth"
+      ],
+      "en": "Gnarlpine furbolgs west of Dolanaar and at Ban'ethil Barrow Den.",
+      "de": "Gnarlpine-Furbolgs westlich von Dolanaar und am Hügelgrab Ban'ethil."
+    },
+    {
+      "id": "linen-teldrassil-bloodfeather",
+      "zone": "Teldrassil",
+      "mobs": [
+        "Bloodfeather"
+      ],
+      "items": [
+        "Linen Cloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth"
+      ],
+      "en": "Bloodfeather harpies at the Oracle Glade.",
+      "de": "Bloodfeather-Harpyien an der Lichtung des Orakels."
+    },
+    {
+      "id": "linen-darkshore-undead",
+      "zone": "Darkshore",
+      "items": [
+        "Linen Cloth"
+      ],
+      "at": [
+        41,
+        62
+      ],
+      "r": 6,
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth"
+      ],
+      "en": "Undead south-east of Auberdine.",
+      "de": "Untote südöstlich von Auberdine.",
+      "mobs": [
+        "Highborne"
+      ]
+    },
+    {
+      "id": "linen-darkshore-dark-strand",
+      "zone": "Darkshore",
+      "mobs": [
+        "Dark Strand"
+      ],
+      "items": [
+        "Linen Cloth",
+        "Wool Cloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth"
+      ],
+      "en": "Dark Strand cultists around the Tower of Althalaxx; linen and some wool.",
+      "de": "Kultisten der Dunklen Strähne am Turm von Althalaxx; Leinen und etwas Wolle."
+    },
+    {
+      "id": "linen-durotar-burning-blade",
+      "zone": "Durotar",
+      "mobs": [
+        "Burning Blade"
+      ],
+      "items": [
+        "Linen Cloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth"
+      ],
+      "en": "Burning Blade at Skull Rock and Thunder Ridge.",
+      "de": "Brennende Klinge am Schädelfels und am Donnerkamm."
+    },
+    {
+      "id": "linen-durotar-razormane",
+      "zone": "Durotar",
+      "mobs": [
+        "Razormane"
+      ],
+      "items": [
+        "Linen Cloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth"
+      ],
+      "en": "Razormane quilboar south-west of Razor Hill.",
+      "de": "Razormane-Stacheleber südwestlich von Klingenhügel."
+    },
+    {
+      "id": "linen-mulgore-venture",
+      "zone": "Mulgore",
+      "mobs": [
+        "Venture Co"
+      ],
+      "items": [
+        "Linen Cloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth"
+      ],
+      "en": "Venture Co. south-east of Thunder Bluff.",
+      "de": "Venture Co. südöstlich von Donnerfels."
+    },
+    {
+      "id": "linen-mulgore-palemane",
+      "zone": "Mulgore",
+      "mobs": [
+        "Palemane"
+      ],
+      "items": [
+        "Linen Cloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth"
+      ],
+      "en": "Palemane gnolls in southern Mulgore (low level).",
+      "de": "Palemane-Gnolle im Süden von Mulgore (niedrige Stufe)."
+    },
+    {
+      "id": "linen-silverpine-dalaran",
+      "zone": "Silverpine Forest",
+      "mobs": [
+        "Dalaran"
+      ],
+      "items": [
+        "Linen Cloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth"
+      ],
+      "en": "Dalaran mages at Ambermill.",
+      "de": "Magier von Dalaran in Ambermühle."
+    },
+    {
+      "id": "linen-barrens-kolkar",
+      "zone": "The Barrens",
+      "mobs": [
+        "Kolkar"
+      ],
+      "at": [
+        43,
+        24
+      ],
+      "r": 9,
+      "items": [
+        "Linen Cloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth"
+      ],
+      "en": "Kolkar centaurs west of the Crossroads.",
+      "de": "Kolkar-Zentauren westlich des Wegekreuzes."
+    },
+    {
+      "id": "linen-barrens-venture",
+      "zone": "The Barrens",
+      "mobs": [
+        "Venture Co"
+      ],
+      "at": [
+        56,
+        10
+      ],
+      "r": 8,
+      "items": [
+        "Linen Cloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth"
+      ],
+      "en": "Venture Co. at the Sludge Fen.",
+      "de": "Venture Co. im Schlickmoor."
+    },
+    {
+      "id": "linen-tirisfal-scarlet",
+      "zone": "Tirisfal Glades",
+      "mobs": [
+        "Scarlet"
+      ],
+      "items": [
+        "Linen Cloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth"
+      ],
+      "en": "Scarlet Crusade camps across eastern Tirisfal.",
+      "de": "Lager des Scharlachroten Kreuzzugs im Osten von Tirisfal."
+    },
+    {
+      "id": "linen-westfall-defias-jangolode",
+      "zone": "Westfall",
+      "mobs": [
+        "Defias"
+      ],
+      "at": [
+        43,
+        20
+      ],
+      "r": 9,
+      "items": [
+        "Linen Cloth"
+      ],
+      "objectives": [
+        "cloth",
+        "xp"
+      ],
+      "src": [
+        "wt_cloth",
+        "wt_grind"
+      ],
+      "en": "Defias at the Jangolode Mine; also a good XP grind at 12–15.",
+      "de": "Defias an der Jangolode-Mine; auch gutes XP-Grinden mit 12–15."
+    },
+    {
+      "id": "wool-ashenvale-thistlefur",
+      "zone": "Ashenvale",
+      "mobs": [
+        "Thistlefur"
+      ],
+      "items": [
+        "Wool Cloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth",
+        "almar"
+      ],
+      "en": "Thistlefur furbolgs north-west of Astranaar.",
+      "de": "Thistlefur-Furbolgs nordwestlich von Astranaar."
+    },
+    {
+      "id": "wool-duskwood-raven-hill",
+      "zone": "Duskwood",
+      "mobs": [
+        "Skeletal"
+      ],
+      "at": [
+        20,
+        48
+      ],
+      "r": 8,
+      "items": [
+        "Wool Cloth",
+        "Silk Cloth"
+      ],
+      "objectives": [
+        "cloth",
+        "xp"
+      ],
+      "src": [
+        "wt_cloth",
+        "wt_grind"
+      ],
+      "en": "Skeletons at Raven Hill Cemetery; wool and silk, good XP at 23–27.",
+      "de": "Skelette am Friedhof von Rabenflucht; Wolle und Seide, gute XP mit 23–27."
+    },
+    {
+      "id": "wool-duskwood-worgen",
+      "zone": "Duskwood",
+      "mobs": [
+        "Nightbane"
+      ],
+      "items": [
+        "Wool Cloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "almar"
+      ],
+      "en": "Nightbane worgen across Duskwood (Alliance).",
+      "de": "Nachtfluch-Worgen in Dämmerwald (Allianz)."
+    },
+    {
+      "id": "wool-duskwood-ogres",
+      "zone": "Duskwood",
+      "mobs": [
+        "Splinter Fist"
+      ],
+      "items": [
+        "Wool Cloth"
+      ],
+      "objectives": [
+        "cloth",
+        "xp"
+      ],
+      "src": [
+        "almar",
+        "wt_grind"
+      ],
+      "en": "Ogres at the Vul'Gol Ogre Mound; wool and good XP at 27–31.",
+      "de": "Oger am Ogerhügel Vul'Gol; Wolle und gute XP mit 27–31."
+    },
+    {
+      "id": "wool-hillsbrad-fields",
+      "zone": "Hillsbrad Foothills",
+      "mobs": [
+        "Hillsbrad"
+      ],
+      "at": [
+        33,
+        49
+      ],
+      "r": 10,
+      "items": [
+        "Wool Cloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth"
+      ],
+      "en": "Farmers, peasants and footmen in the Hillsbrad Fields (Horde).",
+      "de": "Bauern, Knechte und Fußsoldaten auf den Feldern von Hillsbrad (Horde)."
+    },
+    {
+      "id": "wool-hillsbrad-durnholde",
+      "zone": "Hillsbrad Foothills",
+      "mobs": [
+        "Syndicate"
+      ],
+      "at": [
+        76,
+        47
+      ],
+      "r": 9,
+      "items": [
+        "Wool Cloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth"
+      ],
+      "en": "Syndicate at Durnholde Keep.",
+      "de": "Syndikat in der Burg Durnholde."
+    },
+    {
+      "id": "wool-stonetalon-windshear",
+      "zone": "Stonetalon Mountains",
+      "mobs": [
+        "Windshear"
+      ],
+      "items": [
+        "Wool Cloth"
+      ],
+      "objectives": [
+        "cloth",
+        "xp"
+      ],
+      "src": [
+        "wt_cloth",
+        "wt_grind"
+      ],
+      "en": "Venture Co. at Windshear Crag; wool and XP at 20–23.",
+      "de": "Venture Co. am Scherwindfelsen; Wolle und XP mit 20–23."
+    },
+    {
+      "id": "wool-stonetalon-charred-vale",
+      "zone": "Stonetalon Mountains",
+      "items": [
+        "Wool Cloth"
+      ],
+      "at": [
+        37,
+        67
+      ],
+      "r": 9,
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth",
+        "almar"
+      ],
+      "en": "Harpies in the Charred Vale.",
+      "de": "Harpyien im Verkohlten Tal."
+    },
+    {
+      "id": "wool-barrens-baeldun",
+      "zone": "The Barrens",
+      "mobs": [
+        "Bael'dun"
+      ],
+      "items": [
+        "Wool Cloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth"
+      ],
+      "en": "Bael'dun dwarves north of Razorfen Downs.",
+      "de": "Bael'dun-Zwerge nördlich der Hügel der Klingenhauer."
+    },
+    {
+      "id": "wool-barrens-razormane-south",
+      "zone": "The Barrens",
+      "mobs": [
+        "Razormane"
+      ],
+      "at": [
+        44,
+        82
+      ],
+      "r": 9,
+      "items": [
+        "Wool Cloth"
+      ],
+      "objectives": [
+        "cloth",
+        "xp"
+      ],
+      "src": [
+        "wt_cloth",
+        "wt_grind"
+      ],
+      "en": "Razormane north of Razorfen Kraul and at Blackthorn Ridge; XP at 21–24.",
+      "de": "Razormane nördlich des Kral der Klingenhauer und am Schwarzdornkamm; XP mit 21–24."
+    },
+    {
+      "id": "wool-wetlands-dragonmaw",
+      "zone": "Wetlands",
+      "mobs": [
+        "Dragonmaw"
+      ],
+      "items": [
+        "Wool Cloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth",
+        "almar"
+      ],
+      "en": "Dragonmaw orcs at Dun Algaz and the Angerfang Encampment.",
+      "de": "Drachenmal-Orcs bei Dun Algaz und im Zornfanglager."
+    },
+    {
+      "id": "wool-westfall-riverpaw",
+      "zone": "Westfall",
+      "mobs": [
+        "Riverpaw"
+      ],
+      "items": [
+        "Wool Cloth",
+        "Linen Cloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth"
+      ],
+      "en": "Riverpaw gnolls in the southern camps east of the Deadmines.",
+      "de": "Flusspfoten-Gnolle in den südlichen Lagern östlich der Todesminen."
+    },
+    {
+      "id": "wool-stv-kurzen",
+      "zone": "Stranglethorn Vale",
+      "mobs": [
+        "Kurzen"
+      ],
+      "items": [
+        "Wool Cloth",
+        "Silk Cloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "almar",
+        "wt_cloth"
+      ],
+      "en": "Kurzen compound in northern Stranglethorn; wool and silk.",
+      "de": "Kurzen-Gelände im Norden des Schlingendorntals; Wolle und Seide."
+    },
+    {
+      "id": "wool-stockade",
+      "zone": "The Stockade",
+      "items": [
+        "Wool Cloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth",
+        "almar"
+      ],
+      "en": "Considered the best wool farm at high level: a full clear takes 20–30 min.",
+      "de": "Gilt auf hohem Level als bester Wollfarm: ein voller Durchlauf dauert 20–30 min."
+    },
+    {
+      "id": "wool-shadowfang",
+      "zone": "Shadowfang Keep",
+      "items": [
+        "Wool Cloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth",
+        "almar"
+      ],
+      "en": "Most humanoids drop wool; uncrowded.",
+      "de": "Die meisten Humanoiden droppen Wolle; wenig Andrang."
+    },
+    {
+      "id": "silk-alterac-syndicate",
+      "zone": "Alterac Mountains",
+      "mobs": [
+        "Syndicate"
+      ],
+      "items": [
+        "Silk Cloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth"
+      ],
+      "en": "Syndicate in the north-east near Lordamere Lake.",
+      "de": "Syndikat im Nordosten am Lordamere-See."
+    },
+    {
+      "id": "silk-desolace-burning-blade",
+      "zone": "Desolace",
+      "mobs": [
+        "Burning Blade"
+      ],
+      "items": [
+        "Silk Cloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth"
+      ],
+      "en": "Burning Blade south-west of Nijel's Point.",
+      "de": "Brennende Klinge südwestlich von Nijelspitze."
+    },
+    {
+      "id": "silk-desolace-magram",
+      "zone": "Desolace",
+      "mobs": [
+        "Magram"
+      ],
+      "items": [
+        "Silk Cloth"
+      ],
+      "objectives": [
+        "cloth",
+        "xp"
+      ],
+      "src": [
+        "wt_cloth",
+        "wt_grind"
+      ],
+      "en": "Magram centaurs in the south-east; XP at 35–37.",
+      "de": "Magram-Zentauren im Südosten; XP mit 35–37."
+    },
+    {
+      "id": "silk-desolace-kolkar",
+      "zone": "Desolace",
+      "mobs": [
+        "Kolkar"
+      ],
+      "items": [
+        "Silk Cloth"
+      ],
+      "objectives": [
+        "cloth",
+        "xp"
+      ],
+      "src": [
+        "wt_cloth",
+        "wt_grind"
+      ],
+      "en": "Kolkar Village in the east; XP at 33–35.",
+      "de": "Kolkardorf im Osten; XP mit 33–35."
+    },
+    {
+      "id": "silk-desolace-gelkis",
+      "zone": "Desolace",
+      "mobs": [
+        "Gelkis"
+      ],
+      "items": [
+        "Silk Cloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth"
+      ],
+      "en": "Gelkis centaurs in the south-west.",
+      "de": "Gelkis-Zentauren im Südwesten."
+    },
+    {
+      "id": "silk-desolace-hatefury",
+      "zone": "Desolace",
+      "mobs": [
+        "Hatefury"
+      ],
+      "items": [
+        "Silk Cloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth"
+      ],
+      "en": "Hatefury satyrs in the north-east.",
+      "de": "Hatefury-Satyrn im Nordosten."
+    },
+    {
+      "id": "silk-hillsbrad-miners",
+      "zone": "Hillsbrad Foothills",
+      "mobs": [
+        "Hillsbrad Miner"
+      ],
+      "items": [
+        "Silk Cloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth"
+      ],
+      "en": "Miners in the Azurelode Mine.",
+      "de": "Minenarbeiter in der Azurmine."
+    },
+    {
+      "id": "silk-needles-galak",
+      "zone": "Thousand Needles",
+      "mobs": [
+        "Galak"
+      ],
+      "items": [
+        "Silk Cloth"
+      ],
+      "objectives": [
+        "cloth",
+        "xp"
+      ],
+      "src": [
+        "wt_cloth",
+        "wt_grind"
+      ],
+      "en": "Galak centaurs in the north; Splithoof Hold XP at 25–28.",
+      "de": "Galak-Zentauren im Norden; Splithoof-Feste XP mit 25–28."
+    },
+    {
+      "id": "silk-needles-grimtotem",
+      "zone": "Thousand Needles",
+      "mobs": [
+        "Grimtotem"
+      ],
+      "items": [
+        "Silk Cloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth"
+      ],
+      "en": "Grimtotem south-east of the Great Lift.",
+      "de": "Grimmtotem südöstlich des Großen Aufzugs."
+    },
+    {
+      "id": "silk-stv-bloodscalp",
+      "zone": "Stranglethorn Vale",
+      "mobs": [
+        "Bloodscalp"
+      ],
+      "items": [
+        "Silk Cloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth"
+      ],
+      "en": "Bloodscalp trolls in the ruins north of Grom'gol.",
+      "de": "Blutskalp-Trolle in den Ruinen nördlich von Grom'gol."
+    },
+    {
+      "id": "silk-stv-moshogg",
+      "zone": "Stranglethorn Vale",
+      "mobs": [
+        "Mosh'Ogg"
+      ],
+      "items": [
+        "Silk Cloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth"
+      ],
+      "en": "Mosh'Ogg ogres south-east of Grom'gol.",
+      "de": "Mosh'Ogg-Oger südöstlich von Grom'gol."
+    },
+    {
+      "id": "silk-stv-venture-nazferiti",
+      "zone": "Stranglethorn Vale",
+      "mobs": [
+        "Venture Co"
+      ],
+      "at": [
+        43,
+        17
+      ],
+      "r": 8,
+      "items": [
+        "Silk Cloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth"
+      ],
+      "en": "Venture Co. at Lake Nazferiti.",
+      "de": "Venture Co. am Nazferitisee."
+    },
+    {
+      "id": "silk-arathi-boulderfist",
+      "zone": "Arathi Highlands",
+      "mobs": [
+        "Boulderfist"
+      ],
+      "items": [
+        "Silk Cloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth"
+      ],
+      "en": "Boulderfist ogres south of Hammerfall.",
+      "de": "Boulderfist-Oger südlich von Hammerfall."
+    },
+    {
+      "id": "silk-arathi-syndicate",
+      "zone": "Arathi Highlands",
+      "mobs": [
+        "Syndicate"
+      ],
+      "items": [
+        "Silk Cloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth"
+      ],
+      "en": "Syndicate in north-west Arathi.",
+      "de": "Syndikat im Nordwesten des Arathihochlands."
+    },
+    {
+      "id": "silk-arathi-drywhisker",
+      "zone": "Arathi Highlands",
+      "mobs": [
+        "Drywhisker"
+      ],
+      "items": [
+        "Silk Cloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth"
+      ],
+      "en": "Drywhisker kobolds in the north-east.",
+      "de": "Drywhisker-Kobolde im Nordosten."
+    },
+    {
+      "id": "silk-badlands-shadowforge",
+      "zone": "Badlands",
+      "mobs": [
+        "Shadowforge"
+      ],
+      "items": [
+        "Silk Cloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth"
+      ],
+      "en": "Shadowforge dwarves in northern Badlands.",
+      "de": "Schattenschmiede-Zwerge im Norden des Ödlands."
+    },
+    {
+      "id": "silk-ashenvale-bleakheart",
+      "zone": "Ashenvale",
+      "mobs": [
+        "Bleakheart"
+      ],
+      "items": [
+        "Silk Cloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth"
+      ],
+      "en": "Bleakheart satyrs at Satyrnaar.",
+      "de": "Bleakheart-Satyrn in Satyrnaar."
+    },
+    {
+      "id": "silk-scarlet-monastery",
+      "zone": "Scarlet Monastery",
+      "items": [
+        "Silk Cloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth",
+        "almar"
+      ],
+      "en": "Library and Armory are the usual silk/mageweave runs.",
+      "de": "Bibliothek und Waffenkammer sind die üblichen Seide-/Magiestoff-Runs."
+    },
+    {
+      "id": "silk-razorfen-downs",
+      "zone": "Razorfen Downs",
+      "items": [
+        "Silk Cloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth",
+        "almar"
+      ],
+      "en": "Nearly all humanoids drop silk.",
+      "de": "Fast alle Humanoiden droppen Seide."
+    },
+    {
+      "id": "silk-razorfen-kraul",
+      "zone": "Razorfen Kraul",
+      "items": [
+        "Silk Cloth",
+        "Wool Cloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "almar"
+      ],
+      "en": "Solo-able silk farm at high level.",
+      "de": "Auf hohem Level solo farmbarer Seidenfarm."
+    },
+    {
+      "id": "silk-uldaman",
+      "zone": "Uldaman",
+      "items": [
+        "Silk Cloth",
+        "Mageweave Cloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth"
+      ],
+      "en": "Humanoids drop silk and mageweave.",
+      "de": "Humanoiden droppen Seide und Magiestoff."
+    },
+    {
+      "id": "mageweave-azshara-highborne",
+      "zone": "Azshara",
+      "mobs": [
+        "Highborne"
+      ],
+      "at": [
+        18,
+        70
+      ],
+      "r": 9,
+      "items": [
+        "Mageweave Cloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth"
+      ],
+      "en": "Highborne south-west of Valormok.",
+      "de": "Hochgeborene südwestlich von Valormok."
+    },
+    {
+      "id": "mageweave-azshara-haldarr",
+      "zone": "Azshara",
+      "mobs": [
+        "Haldarr"
+      ],
+      "items": [
+        "Mageweave Cloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth"
+      ],
+      "en": "Haldarr satyrs south-west of Valormok.",
+      "de": "Haldarr-Satyrn südwestlich von Valormok."
+    },
+    {
+      "id": "mageweave-badlands-dustbelcher",
+      "zone": "Badlands",
+      "mobs": [
+        "Dustbelcher"
+      ],
+      "items": [
+        "Mageweave Cloth",
+        "Silk Cloth"
+      ],
+      "objectives": [
+        "cloth",
+        "xp"
+      ],
+      "src": [
+        "wt_cloth",
+        "wt_grind"
+      ],
+      "en": "Dustbelcher ogres at Camp Cagg; also XP at 41–45.",
+      "de": "Staubspeier-Oger im Lager Cagg; auch XP mit 41–45."
+    },
+    {
+      "id": "mageweave-felwood-deadwood-south",
+      "zone": "Felwood",
+      "mobs": [
+        "Deadwood"
+      ],
+      "at": [
+        49,
+        89
+      ],
+      "r": 9,
+      "items": [
+        "Mageweave Cloth",
+        "Runecloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth",
+        "almar"
+      ],
+      "en": "Southern Deadwood furbolgs (Deadwood Village).",
+      "de": "Südliche Totenwald-Furbolgs (Dorf der Totenwaldfelle)."
+    },
+    {
+      "id": "mageweave-felwood-jadefire-south",
+      "zone": "Felwood",
+      "mobs": [
+        "Jadefire"
+      ],
+      "at": [
+        40,
+        76
+      ],
+      "r": 12,
+      "items": [
+        "Mageweave Cloth",
+        "Felcloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth",
+        "almar"
+      ],
+      "en": "Southern Jadefire satyrs.",
+      "de": "Südliche Jadefeuer-Satyrn."
+    },
+    {
+      "id": "mageweave-felwood-jaedenar",
+      "zone": "Felwood",
+      "mobs": [
+        "Jaedenar"
+      ],
+      "items": [
+        "Mageweave Cloth",
+        "Runecloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth"
+      ],
+      "en": "Shadow Council at Jaedenar.",
+      "de": "Schattenrat in Jaedenar."
+    },
+    {
+      "id": "mageweave-feralas-grimtotem",
+      "zone": "Feralas",
+      "mobs": [
+        "Grimtotem"
+      ],
+      "items": [
+        "Mageweave Cloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth"
+      ],
+      "en": "Grimtotem west of Camp Mojache.",
+      "de": "Grimmtotem westlich von Camp Mojache."
+    },
+    {
+      "id": "mageweave-feralas-northspring",
+      "zone": "Feralas",
+      "mobs": [
+        "Northspring"
+      ],
+      "items": [
+        "Mageweave Cloth"
+      ],
+      "objectives": [
+        "cloth",
+        "xp"
+      ],
+      "src": [
+        "wt_cloth",
+        "wt_grind"
+      ],
+      "en": "Northspring harpies at the Ruins of Ravenwind; XP at 47–51.",
+      "de": "Nordquell-Harpyien an den Ruinen von Rabenwind; XP mit 47–51."
+    },
+    {
+      "id": "mageweave-feralas-woodpaw",
+      "zone": "Feralas",
+      "mobs": [
+        "Woodpaw"
+      ],
+      "items": [
+        "Mageweave Cloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth"
+      ],
+      "en": "Woodpaw gnolls south-west of Camp Mojache.",
+      "de": "Waldpfoten-Gnolle südwestlich von Camp Mojache."
+    },
+    {
+      "id": "mageweave-feralas-gordunni",
+      "zone": "Feralas",
+      "mobs": [
+        "Gordunni"
+      ],
+      "items": [
+        "Mageweave Cloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth"
+      ],
+      "en": "Gordunni ogres north of Camp Mojache.",
+      "de": "Gordunni-Oger nördlich von Camp Mojache."
+    },
+    {
+      "id": "mageweave-searing-dark-iron",
+      "zone": "Searing Gorge",
+      "mobs": [
+        "Dark Iron"
+      ],
+      "items": [
+        "Mageweave Cloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth"
+      ],
+      "en": "Dark Iron dwarves around The Cauldron.",
+      "de": "Dunkeleisenzwerge rund um den Kessel."
+    },
+    {
+      "id": "mageweave-stv-bloodsail",
+      "zone": "Stranglethorn Vale",
+      "mobs": [
+        "Bloodsail"
+      ],
+      "items": [
+        "Mageweave Cloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth"
+      ],
+      "en": "Bloodsail pirates south of Booty Bay.",
+      "de": "Blutsegel-Piraten südlich von Beutebucht."
+    },
+    {
+      "id": "mageweave-stv-skullsplitter",
+      "zone": "Stranglethorn Vale",
+      "mobs": [
+        "Skullsplitter"
+      ],
+      "items": [
+        "Mageweave Cloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth"
+      ],
+      "en": "Skullsplitter trolls at the Zul'Mamwe ruins.",
+      "de": "Schädelspalter-Trolle in den Ruinen von Zul'Mamwe."
+    },
+    {
+      "id": "mageweave-tanaris-dunemaul",
+      "zone": "Tanaris",
+      "mobs": [
+        "Dunemaul"
+      ],
+      "items": [
+        "Mageweave Cloth"
+      ],
+      "objectives": [
+        "cloth",
+        "gold"
+      ],
+      "src": [
+        "wt_cloth",
+        "almar",
+        "boostroom"
+      ],
+      "en": "Dunemaul Compound; named as still worthwhile in Forever guides.",
+      "de": "Dunemaul-Gelände; laut Forever-Guides weiterhin lohnend."
+    },
+    {
+      "id": "mageweave-tanaris-southsea",
+      "zone": "Tanaris",
+      "mobs": [
+        "Southsea"
+      ],
+      "items": [
+        "Mageweave Cloth"
+      ],
+      "objectives": [
+        "cloth",
+        "xp"
+      ],
+      "src": [
+        "wt_cloth",
+        "almar",
+        "wt_grind"
+      ],
+      "en": "Southsea pirates on the east coast (Lost Rigger Cove); XP at 45–48.",
+      "de": "Südmeerpiraten an der Ostküste (Bucht des Verlorenen Riggers); XP mit 45–48."
+    },
+    {
+      "id": "mageweave-tanaris-wastewander",
+      "zone": "Tanaris",
+      "mobs": [
+        "Wastewander"
+      ],
+      "items": [
+        "Mageweave Cloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth"
+      ],
+      "en": "Wastewander bandits east of Gadgetzan.",
+      "de": "Wüstenwanderer östlich von Gadgetzan."
+    },
+    {
+      "id": "mageweave-tanaris-sandfury",
+      "zone": "Tanaris",
+      "mobs": [
+        "Sandfury"
+      ],
+      "items": [
+        "Mageweave Cloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "almar"
+      ],
+      "en": "Elite Sandfury trolls outside Zul'Farrak.",
+      "de": "Elite-Sandwut-Trolle vor Zul'Farrak."
+    },
+    {
+      "id": "mageweave-hinterlands-highvale",
+      "zone": "The Hinterlands",
+      "mobs": [
+        "Highvale"
+      ],
+      "items": [
+        "Mageweave Cloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth"
+      ],
+      "en": "Highvale elves at Quel'Danil Lodge.",
+      "de": "Hochtal-Elfen an der Hütte Quel'Danil."
+    },
+    {
+      "id": "mageweave-hinterlands-vilebranch",
+      "zone": "The Hinterlands",
+      "mobs": [
+        "Vilebranch"
+      ],
+      "items": [
+        "Mageweave Cloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth",
+        "almar"
+      ],
+      "en": "Elite Vilebranch trolls at Jintha'Alor.",
+      "de": "Elite-Vilebranch-Trolle in Jintha'Alor."
+    },
+    {
+      "id": "mageweave-hinterlands-witherbark",
+      "zone": "The Hinterlands",
+      "mobs": [
+        "Witherbark"
+      ],
+      "items": [
+        "Mageweave Cloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth"
+      ],
+      "en": "Witherbark trolls at Shadra'Alor and Hiri'watha.",
+      "de": "Witherbark-Trolle in Shadra'Alor und Hiri'watha."
+    },
+    {
+      "id": "mageweave-sunken-temple",
+      "zone": "The Temple of Atal'Hakkar",
+      "items": [
+        "Mageweave Cloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth"
+      ],
+      "en": "Nearly all humanoids drop mageweave.",
+      "de": "Fast alle Humanoiden droppen Magiestoff."
+    },
+    {
+      "id": "rune-azshara-blood-elves",
+      "zone": "Azshara",
+      "mobs": [
+        "Blood Elf"
+      ],
+      "items": [
+        "Runecloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth",
+        "almar"
+      ],
+      "en": "Blood elves at the Thalassian Base Camp.",
+      "de": "Blutelfen im Thalassischen Basislager."
+    },
+    {
+      "id": "rune-azshara-legashi",
+      "zone": "Azshara",
+      "mobs": [
+        "Legashi"
+      ],
+      "items": [
+        "Runecloth",
+        "Felcloth"
+      ],
+      "objectives": [
+        "cloth",
+        "rare"
+      ],
+      "src": [
+        "wt_cloth",
+        "almar",
+        "boostroom"
+      ],
+      "en": "Legashi satyrs: runecloth and felcloth, alternative to crowded Felwood.",
+      "de": "Legashi-Satyrn: Runenstoff und Teufelsstoff, Ausweichort zum vollen Teufelswald."
+    },
+    {
+      "id": "rune-burning-steppes-blackrock",
+      "zone": "Burning Steppes",
+      "mobs": [
+        "Blackrock"
+      ],
+      "items": [
+        "Runecloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth",
+        "almar"
+      ],
+      "en": "Blackrock orcs around the Pillar of Ash.",
+      "de": "Schwarzfels-Orcs um die Aschesäule."
+    },
+    {
+      "id": "rune-deadwind-ogres",
+      "zone": "Deadwind Pass",
+      "mobs": [
+        "Deadwind"
+      ],
+      "items": [
+        "Runecloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth",
+        "almar"
+      ],
+      "en": "Ogres at the Grosh'gok Compound.",
+      "de": "Oger im Grosh'gok-Gelände."
+    },
+    {
+      "id": "rune-epl-tyrs-hand",
+      "zone": "Eastern Plaguelands",
+      "mobs": [
+        "Scarlet"
+      ],
+      "items": [
+        "Runecloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "almar"
+      ],
+      "en": "Scarlet Crusade at Tyr's Hand.",
+      "de": "Scharlachroter Kreuzzug in Tyrs Hand."
+    },
+    {
+      "id": "rune-wpl-andorhal",
+      "zone": "Western Plaguelands",
+      "items": [
+        "Runecloth"
+      ],
+      "at": [
+        43,
+        68
+      ],
+      "r": 9,
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "almar"
+      ],
+      "en": "Undead in the ruins of Andorhal.",
+      "de": "Untote in den Ruinen von Andorhal."
+    },
+    {
+      "id": "rune-wpl-felstone",
+      "zone": "Western Plaguelands",
+      "items": [
+        "Runecloth"
+      ],
+      "at": [
+        37,
+        56
+      ],
+      "r": 7,
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "almar",
+        "boostroom"
+      ],
+      "en": "Felstone Field: dense, lower-level undead.",
+      "de": "Teufelssteinfeld: dichte, niedrigere Untote."
+    },
+    {
+      "id": "rune-wpl-dalsons",
+      "zone": "Western Plaguelands",
+      "items": [
+        "Runecloth"
+      ],
+      "at": [
+        47,
+        50
+      ],
+      "r": 7,
+      "objectives": [
+        "cloth",
+        "xp"
+      ],
+      "src": [
+        "boostroom",
+        "wt_grind"
+      ],
+      "en": "Dalson's Tears: dense undead camp.",
+      "de": "Dalsons Tränen: dichtes Untoten-Lager."
+    },
+    {
+      "id": "rune-wpl-sorrow-hill",
+      "zone": "Western Plaguelands",
+      "items": [
+        "Runecloth"
+      ],
+      "at": [
+        50,
+        78
+      ],
+      "r": 8,
+      "objectives": [
+        "xp",
+        "cloth"
+      ],
+      "src": [
+        "wt_grind"
+      ],
+      "en": "Sorrow Hill ghouls and skeletons; XP at 51–53.",
+      "de": "Ghule und Skelette am Kummerhügel; XP mit 51–53."
+    },
+    {
+      "id": "rune-felwood-deadwood-north",
+      "zone": "Felwood",
+      "mobs": [
+        "Deadwood"
+      ],
+      "at": [
+        62,
+        11
+      ],
+      "r": 9,
+      "items": [
+        "Runecloth"
+      ],
+      "objectives": [
+        "cloth",
+        "xp"
+      ],
+      "src": [
+        "wt_cloth",
+        "wt_grind"
+      ],
+      "en": "Northern Deadwood furbolgs (Felpaw Village); XP at 54–55.",
+      "de": "Nördliche Totenwald-Furbolgs (Dorf der Teufelspfoten); XP mit 54–55."
+    },
+    {
+      "id": "rune-felwood-jadefire-run",
+      "zone": "Felwood",
+      "mobs": [
+        "Jadefire"
+      ],
+      "at": [
+        42,
+        18
+      ],
+      "r": 9,
+      "items": [
+        "Runecloth",
+        "Felcloth"
+      ],
+      "objectives": [
+        "cloth",
+        "rare"
+      ],
+      "src": [
+        "wt_cloth",
+        "almar",
+        "boostroom"
+      ],
+      "en": "Jadefire Run satyrs: the classic felcloth spot.",
+      "de": "Jadefeuerlauf-Satyrn: der klassische Teufelsstoff-Spot."
+    },
+    {
+      "id": "rune-silithus-twilight",
+      "zone": "Silithus",
+      "mobs": [
+        "Twilight"
+      ],
+      "items": [
+        "Runecloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth",
+        "almar"
+      ],
+      "en": "Twilight's Hammer camps and the northern cave.",
+      "de": "Lager des Schattenhammers und die nördliche Höhle."
+    },
+    {
+      "id": "rune-winterspring-winterfall",
+      "zone": "Winterspring",
+      "mobs": [
+        "Winterfall"
+      ],
+      "items": [
+        "Runecloth"
+      ],
+      "objectives": [
+        "cloth",
+        "xp"
+      ],
+      "src": [
+        "wt_cloth",
+        "wt_grind"
+      ],
+      "en": "Winterfall furbolgs; XP at 55–57 (watch Timbermaw reputation).",
+      "de": "Winterfell-Furbolgs; XP mit 55–57 (Holzschlundfeste-Ruf beachten)."
+    },
+    {
+      "id": "rune-blasted-shadowsworn",
+      "zone": "Blasted Lands",
+      "mobs": [
+        "Shadowsworn"
+      ],
+      "items": [
+        "Runecloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth"
+      ],
+      "en": "Shadowsworn cultists at the Altar of Storms.",
+      "de": "Schattenschwur-Kultisten am Altar der Stürme."
+    },
+    {
+      "id": "rune-dire-maul",
+      "zone": "Dire Maul",
+      "items": [
+        "Runecloth",
+        "Felcloth"
+      ],
+      "objectives": [
+        "cloth",
+        "gold"
+      ],
+      "src": [
+        "wt_cloth"
+      ],
+      "en": "Humanoids drop runecloth, demons felcloth; Dire Maul East is a popular gold run.",
+      "de": "Humanoiden droppen Runenstoff, Dämonen Teufelsstoff; Düsterbruch Ost ist ein beliebter Goldrun."
+    },
+    {
+      "id": "rune-stratholme",
+      "zone": "Stratholme",
+      "items": [
+        "Runecloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth"
+      ],
+      "en": "Nearly all humanoids drop runecloth.",
+      "de": "Fast alle Humanoiden droppen Runenstoff."
+    },
+    {
+      "id": "rune-scholomance",
+      "zone": "Scholomance",
+      "items": [
+        "Runecloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth"
+      ],
+      "en": "Nearly all humanoids drop runecloth.",
+      "de": "Fast alle Humanoiden droppen Runenstoff."
+    },
+    {
+      "id": "rune-brd",
+      "zone": "Blackrock Depths",
+      "items": [
+        "Runecloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth"
+      ],
+      "en": "Nearly all humanoids drop runecloth.",
+      "de": "Fast alle Humanoiden droppen Runenstoff."
+    },
+    {
+      "id": "rune-blackrock-spire",
+      "zone": "Blackrock Spire",
+      "items": [
+        "Runecloth"
+      ],
+      "objectives": [
+        "cloth"
+      ],
+      "src": [
+        "wt_cloth"
+      ],
+      "en": "Lower and Upper Blackrock Spire humanoids.",
+      "de": "Humanoiden in der Unteren und Oberen Schwarzfelsspitze."
+    },
+    {
+      "id": "xp-westfall-jansen",
+      "zone": "Westfall",
+      "mobs": [
+        "Harvest"
+      ],
+      "at": [
+        57,
+        17
+      ],
+      "r": 10,
+      "objectives": [
+        "xp"
+      ],
+      "src": [
+        "wt_grind"
+      ],
+      "en": "Golems and wildlife around the Jansen Stead (10–13).",
+      "de": "Golems und Wildtiere am Jansen-Gehöft (10–13)."
+    },
+    {
+      "id": "xp-westfall-saldean",
+      "zone": "Westfall",
+      "mobs": [
+        "Harvest Watcher"
+      ],
+      "objectives": [
+        "xp"
+      ],
+      "src": [
+        "wt_grind"
+      ],
+      "en": "Harvest Watchers at Saldean's Farm (13–16).",
+      "de": "Erntebehüter auf Saldeans Hof (13–16)."
+    },
+    {
+      "id": "xp-duskwood-tranquil-gardens",
+      "zone": "Duskwood",
+      "mobs": [
+        "Skeletal Mage",
+        "Skeletal Warrior"
+      ],
+      "objectives": [
+        "xp"
+      ],
+      "src": [
+        "wt_grind"
+      ],
+      "en": "Skeletons at Tranquil Gardens Cemetery (21–25).",
+      "de": "Skelette am Friedhof der Stillen Gärten (21–25)."
+    },
+    {
+      "id": "xp-duskwood-ghouls",
+      "zone": "Duskwood",
+      "mobs": [
+        "Rotted One",
+        "Plague Spreader",
+        "Bone Chewer"
+      ],
+      "objectives": [
+        "xp"
+      ],
+      "src": [
+        "wt_grind"
+      ],
+      "en": "Ghouls at Raven Hill and the Mistmantle Manor (26–33).",
+      "de": "Ghule an Rabenflucht und am Herrenhaus Nebelmantel (26–33)."
+    },
+    {
+      "id": "xp-needles-highperch",
+      "zone": "Thousand Needles",
+      "mobs": [
+        "Highperch"
+      ],
+      "objectives": [
+        "xp",
+        "skinning"
+      ],
+      "src": [
+        "wt_grind"
+      ],
+      "en": "Wyverns at Highperch (27–32), skinnable.",
+      "de": "Wyvern am Hochhorst (27–32), kürschnerbar."
+    },
+    {
+      "id": "xp-stv-nessingwary",
+      "zone": "Stranglethorn Vale",
+      "mobs": [
+        "Tiger",
+        "Panther"
+      ],
+      "at": [
+        33,
+        12
+      ],
+      "r": 12,
+      "objectives": [
+        "xp",
+        "skinning"
+      ],
+      "src": [
+        "wt_grind"
+      ],
+      "en": "Tigers and panthers near Nessingwary's Expedition (32–35).",
+      "de": "Tiger und Panther bei Nesingwarys Expedition (32–35)."
+    },
+    {
+      "id": "xp-badlands-lesser-rock",
+      "zone": "Badlands",
+      "mobs": [
+        "Lesser Rock Elemental"
+      ],
+      "exact": true,
+      "objectives": [
+        "xp"
+      ],
+      "src": [
+        "wt_grind"
+      ],
+      "en": "Lesser rock elementals in the Dustbowl (37–41).",
+      "de": "Geringe Felselementare im Staubkessel (37–41)."
+    },
+    {
+      "id": "xp-badlands-rock",
+      "zone": "Badlands",
+      "mobs": [
+        "Rock Elemental",
+        "Enraged Rock Elemental"
+      ],
+      "exact": true,
+      "objectives": [
+        "xp"
+      ],
+      "src": [
+        "wt_grind"
+      ],
+      "en": "Rock elementals at the Mirage Flats (38–42).",
+      "de": "Felselementare in den Spiegelungsebenen (38–42)."
+    },
+    {
+      "id": "xp-badlands-greater-rock",
+      "zone": "Badlands",
+      "mobs": [
+        "Greater Rock Elemental"
+      ],
+      "exact": true,
+      "objectives": [
+        "xp"
+      ],
+      "src": [
+        "wt_grind"
+      ],
+      "en": "Greater rock elementals near Camp Cagg (41–45).",
+      "de": "Große Felselementare beim Lager Cagg (41–45)."
+    },
+    {
+      "id": "xp-stv-vile-reef",
+      "zone": "Stranglethorn Vale",
+      "mobs": [
+        "Lesser Water Elemental"
+      ],
+      "exact": true,
+      "objectives": [
+        "xp"
+      ],
+      "src": [
+        "wt_grind"
+      ],
+      "en": "Lesser water elementals at the Vile Reef (37–40).",
+      "de": "Geringe Wasserelementare am Üblen Riff (37–40)."
+    },
+    {
+      "id": "xp-stv-raptors",
+      "zone": "Stranglethorn Vale",
+      "mobs": [
+        "Jungle Stalker",
+        "Lashtail"
+      ],
+      "objectives": [
+        "xp",
+        "skinning"
+      ],
+      "src": [
+        "wt_grind",
+        "wp_heavy"
+      ],
+      "en": "Raptors south of Grom'gol around the Gurubashi Arena (40–43); heavy leather.",
+      "de": "Raptoren südlich von Grom'gol um die Arena der Gurubashi (40–43); schweres Leder."
+    },
+    {
+      "id": "xp-feralas-frayfeather",
+      "zone": "Feralas",
+      "mobs": [
+        "Frayfeather"
+      ],
+      "objectives": [
+        "xp",
+        "skinning"
+      ],
+      "src": [
+        "wt_grind",
+        "wp_heavy"
+      ],
+      "en": "Hippogryphs in the Frayfeather Highlands (45–48).",
+      "de": "Hippogryphen im Hochland der Zerzausten Federn (45–48)."
+    },
+    {
+      "id": "xp-tanaris-thistleshrub",
+      "zone": "Tanaris",
+      "mobs": [
+        "Thistleshrub"
+      ],
+      "objectives": [
+        "xp"
+      ],
+      "src": [
+        "wt_grind"
+      ],
+      "en": "Thistleshrubs in Thistleshrub Valley (48–50).",
+      "de": "Distelstrauch-Wesen im Distelstrauchtal (48–50)."
+    },
+    {
+      "id": "xp-azshara-spitelash",
+      "zone": "Azshara",
+      "mobs": [
+        "Spitelash"
+      ],
+      "objectives": [
+        "xp"
+      ],
+      "src": [
+        "wt_grind"
+      ],
+      "en": "Naga along the Azshara beaches (50–55).",
+      "de": "Naga an den Stränden von Azshara (50–55)."
+    },
+    {
+      "id": "xp-ungoro-tar",
+      "zone": "Un'Goro Crater",
+      "mobs": [
+        "Tar Lord",
+        "Tar Lurker",
+        "Tar Creeper",
+        "Tar Beast"
+      ],
+      "exact": true,
+      "objectives": [
+        "xp"
+      ],
+      "src": [
+        "wt_grind"
+      ],
+      "en": "Tar elementals at the tar pits (52–54).",
+      "de": "Teerwesen an den Teergruben (52–54)."
+    },
+    {
+      "id": "xp-winterspring-kel-theril",
+      "zone": "Winterspring",
+      "mobs": [
+        "Highborne"
+      ],
+      "at": [
+        52,
+        38
+      ],
+      "r": 10,
+      "objectives": [
+        "xp"
+      ],
+      "src": [
+        "wt_grind"
+      ],
+      "en": "Ghosts at Lake Kel'Theril (54–60).",
+      "de": "Geister am Kel'Therilsee (54–60)."
+    },
+    {
+      "id": "xp-winterspring-owlbeasts",
+      "zone": "Winterspring",
+      "mobs": [
+        "Owlbeast"
+      ],
+      "objectives": [
+        "xp",
+        "skinning"
+      ],
+      "src": [
+        "wt_grind",
+        "almar"
+      ],
+      "en": "Owlbeasts at the Hidden Grove and Owl Wing Thicket (57–60).",
+      "de": "Eulenbestien im Verborgenen Hain und am Eulenflügeldickicht (57–60)."
+    },
+    {
+      "id": "xp-barrens-silithid",
+      "zone": "The Barrens",
+      "mobs": [
+        "Silithid"
+      ],
+      "objectives": [
+        "xp"
+      ],
+      "src": [
+        "wt_grind"
+      ],
+      "en": "Silithid at the Field of Giants (21–24).",
+      "de": "Silithiden auf dem Feld der Riesen (21–24)."
+    },
+    {
+      "id": "leather-barrens-taurajo",
+      "zone": "The Barrens",
+      "mobs": [
+        "Thunderhawk",
+        "Thunderhead",
+        "Zhevra"
+      ],
+      "at": [
+        45,
+        58
+      ],
+      "r": 14,
+      "objectives": [
+        "skinning"
+      ],
+      "src": [
+        "wp_light",
+        "wt_skin"
+      ],
+      "en": "Thunderhawks, thunderheads and zhevra around Camp Taurajo; light leather.",
+      "de": "Donnerfalken, Donnerköpfe und Zhevras um Camp Taurajo; leichtes Leder."
+    },
+    {
+      "id": "leather-darkshore-south",
+      "zone": "Darkshore",
+      "mobs": [
+        "Moonstalker",
+        "Foreststrider",
+        "Thistle Bear"
+      ],
+      "objectives": [
+        "skinning"
+      ],
+      "src": [
+        "wp_light"
+      ],
+      "en": "Southern Darkshore beasts; light leather.",
+      "de": "Wildtiere im Süden der Dunkelküste; leichtes Leder."
+    },
+    {
+      "id": "leather-ashenvale-bucks",
+      "zone": "Ashenvale",
+      "mobs": [
+        "Wild Buck",
+        "Ghostpaw"
+      ],
+      "objectives": [
+        "skinning"
+      ],
+      "src": [
+        "wp_light"
+      ],
+      "en": "Wild bucks and Ghostpaw runners; light leather.",
+      "de": "Wilde Böcke und Geisterpfotenläufer; leichtes Leder."
+    },
+    {
+      "id": "leather-loch-modan-boars-bears",
+      "zone": "Loch Modan",
+      "mobs": [
+        "Mountain Boar",
+        "Black Bear"
+      ],
+      "objectives": [
+        "skinning"
+      ],
+      "src": [
+        "wp_light"
+      ],
+      "en": "Elder mountain boars and black bear patriarchs; light leather.",
+      "de": "Alte Bergeber und Schwarzbärenpatriarchen; leichtes Leder."
+    },
+    {
+      "id": "leather-silverpine-moonrage",
+      "zone": "Silverpine Forest",
+      "mobs": [
+        "Moonrage"
+      ],
+      "objectives": [
+        "skinning"
+      ],
+      "src": [
+        "wp_light"
+      ],
+      "en": "Moonrage worgen at the cave; light leather.",
+      "de": "Mondwut-Worgen an der Höhle; leichtes Leder."
+    },
+    {
+      "id": "leather-duskwood-rotting-orchard",
+      "zone": "Duskwood",
+      "items": [
+        "Medium Leather"
+      ],
+      "at": [
+        64,
+        72
+      ],
+      "r": 9,
+      "objectives": [
+        "skinning"
+      ],
+      "src": [
+        "wp_medium"
+      ],
+      "en": "Rotting Orchard and Roland's Doom; named the best medium leather spot.",
+      "de": "Verfaulter Obsthain und Rolands Verderben; als bester Spot für mittleres Leder genannt."
+    },
+    {
+      "id": "leather-ashenvale-terrowulf",
+      "zone": "Ashenvale",
+      "mobs": [
+        "Terrowulf"
+      ],
+      "objectives": [
+        "skinning"
+      ],
+      "src": [
+        "wp_medium"
+      ],
+      "en": "Terrowulf worgen and their cave; medium leather.",
+      "de": "Terrowulf-Worgen und ihre Höhle; mittleres Leder."
+    },
+    {
+      "id": "leather-hillsbrad-yetis",
+      "zone": "Hillsbrad Foothills",
+      "mobs": [
+        "Yeti"
+      ],
+      "objectives": [
+        "skinning"
+      ],
+      "src": [
+        "wp_medium",
+        "wt_skin"
+      ],
+      "en": "Cave and ferocious yetis in the Foothill Caverns.",
+      "de": "Höhlen- und wilde Yetis in den Vorgebirgshöhlen."
+    },
+    {
+      "id": "leather-wetlands-whelgar",
+      "zone": "Wetlands",
+      "mobs": [
+        "Mottled"
+      ],
+      "objectives": [
+        "skinning"
+      ],
+      "src": [
+        "wp_medium"
+      ],
+      "en": "Raptors at Whelgar's Excavation Site.",
+      "de": "Raptoren an Whelgars Ausgrabungsstätte."
+    },
+    {
+      "id": "leather-wetlands-crimson-whelps",
+      "zone": "Wetlands",
+      "mobs": [
+        "Crimson Whelp"
+      ],
+      "objectives": [
+        "skinning",
+        "gold",
+        "rare"
+      ],
+      "src": [
+        "almar"
+      ],
+      "en": "Crimson whelps: medium leather and the Crimson Whelpling pet.",
+      "de": "Purpurrote Welpen: mittleres Leder und das Haustier Purpurroter Welpling."
+    },
+    {
+      "id": "leather-stonetalon-pridewing",
+      "zone": "Stonetalon Mountains",
+      "mobs": [
+        "Pridewing"
+      ],
+      "objectives": [
+        "skinning"
+      ],
+      "src": [
+        "wp_medium"
+      ],
+      "en": "Pridewing wyverns on the mountain.",
+      "de": "Stolzflügel-Wyvern auf dem Berg."
+    },
+    {
+      "id": "leather-barrens-stormhide",
+      "zone": "The Barrens",
+      "mobs": [
+        "Stormhide",
+        "Hecklefang",
+        "Greater Thunderhawk"
+      ],
+      "objectives": [
+        "skinning"
+      ],
+      "src": [
+        "wp_medium"
+      ],
+      "en": "Southern Barrens beasts; medium leather.",
+      "de": "Wildtiere im Süden des Brachlands; mittleres Leder."
+    },
+    {
+      "id": "leather-dustwallow-stonemaul",
+      "zone": "Dustwallow Marsh",
+      "items": [
+        "Heavy Leather",
+        "Thick Leather"
+      ],
+      "at": [
+        42,
+        70
+      ],
+      "r": 12,
+      "objectives": [
+        "skinning"
+      ],
+      "src": [
+        "wp_heavy",
+        "wp_thick"
+      ],
+      "en": "Stonemaul Ruins and the Den of Flame; mobs often give two leather.",
+      "de": "Steinbruchruinen und Flammenbau; Mobs geben oft zwei Leder."
+    },
+    {
+      "id": "leather-dustwallow-raptors",
+      "zone": "Dustwallow Marsh",
+      "mobs": [
+        "Mottled"
+      ],
+      "objectives": [
+        "skinning"
+      ],
+      "src": [
+        "almar"
+      ],
+      "en": "Dustwallow raptors; heavy leather.",
+      "de": "Raptoren der Düstermarschen; schweres Leder."
+    },
+    {
+      "id": "leather-feralas-feral-scar",
+      "zone": "Feralas",
+      "mobs": [
+        "Feral Scar"
+      ],
+      "objectives": [
+        "skinning"
+      ],
+      "src": [
+        "wp_heavy"
+      ],
+      "en": "Yetis in the Feral Scar cave; heavy leather.",
+      "de": "Yetis in der Höhle der Wilden Narbe; schweres Leder."
+    },
+    {
+      "id": "leather-alterac-yetis",
+      "zone": "Alterac Mountains",
+      "mobs": [
+        "Yeti"
+      ],
+      "objectives": [
+        "skinning"
+      ],
+      "src": [
+        "wp_heavy",
+        "wt_skin"
+      ],
+      "en": "Mountain and giant yetis.",
+      "de": "Berg- und Riesenyetis."
+    },
+    {
+      "id": "leather-ungoro-ravasaur",
+      "zone": "Un'Goro Crater",
+      "mobs": [
+        "Ravasaur"
+      ],
+      "objectives": [
+        "skinning"
+      ],
+      "src": [
+        "wp_thick"
+      ],
+      "en": "Ravasaurs; thick leather.",
+      "de": "Ravasaurier; dickes Leder."
+    },
+    {
+      "id": "leather-searing-incendosaur",
+      "zone": "Searing Gorge",
+      "mobs": [
+        "Incendosaur"
+      ],
+      "objectives": [
+        "skinning"
+      ],
+      "src": [
+        "wp_thick"
+      ],
+      "en": "Incendosaurs in the cave (first right); thick leather.",
+      "de": "Feuersaurier in der Höhle (erste rechts); dickes Leder."
+    },
+    {
+      "id": "leather-stv-basilisks",
+      "zone": "Stranglethorn Vale",
+      "mobs": [
+        "Ironjaw",
+        "Thrashtail"
+      ],
+      "objectives": [
+        "skinning"
+      ],
+      "src": [
+        "wp_thick"
+      ],
+      "en": "Basilisks in the cave; for lower-level characters.",
+      "de": "Basilisken in der Höhle; für niedrigere Charaktere."
+    },
+    {
+      "id": "leather-hinterlands-turtles",
+      "zone": "The Hinterlands",
+      "mobs": [
+        "Snapjaw"
+      ],
+      "objectives": [
+        "skinning"
+      ],
+      "src": [
+        "almar",
+        "wt_skin"
+      ],
+      "en": "Turtles on the eastern beach; thick leather (and golden pearls).",
+      "de": "Schildkröten am Oststrand; dickes Leder (und Goldperlen)."
+    },
+    {
+      "id": "leather-winterspring-ice-thistle",
+      "zone": "Winterspring",
+      "mobs": [
+        "Ice Thistle"
+      ],
+      "objectives": [
+        "skinning",
+        "xp"
+      ],
+      "src": [
+        "wp_rugged",
+        "almar",
+        "wt_grind"
+      ],
+      "en": "Ice Thistle yetis south of Everlook incl. the cave; top rugged leather spot.",
+      "de": "Eisdistel-Yetis südlich von Ewige Warte inkl. Höhle; Top-Spot für robustes Leder."
+    },
+    {
+      "id": "leather-epl-north",
+      "zone": "Eastern Plaguelands",
+      "mobs": [
+        "Frenzied Plaguehound",
+        "Monstrous Plaguebat"
+      ],
+      "exact": true,
+      "objectives": [
+        "skinning",
+        "gold"
+      ],
+      "src": [
+        "wp_rugged"
+      ],
+      "en": "Plaguehounds and plaguebats in the north; rugged leather.",
+      "de": "Seuchenhunde und Seuchenfledermäuse im Norden; robustes Leder."
+    },
+    {
+      "id": "leather-epl-south",
+      "zone": "Eastern Plaguelands",
+      "mobs": [
+        "Plaguehound Runt",
+        "Plaguebat"
+      ],
+      "exact": true,
+      "objectives": [
+        "skinning"
+      ],
+      "src": [
+        "wp_rugged"
+      ],
+      "en": "Lower plaguehounds and plaguebats in the south.",
+      "de": "Niedrigere Seuchenhunde und -fledermäuse im Süden."
+    },
+    {
+      "id": "leather-ungoro-west",
+      "zone": "Un'Goro Crater",
+      "mobs": [
+        "Pterrordax",
+        "Diemetradon"
+      ],
+      "objectives": [
+        "skinning"
+      ],
+      "src": [
+        "wp_rugged",
+        "wt_skin"
+      ],
+      "en": "Pterrordaxes and diemetradons in western Un'Goro.",
+      "de": "Pterrordaxe und Diemetradons im Westen von Un'Goro."
+    },
+    {
+      "id": "leather-felwood-beasts",
+      "zone": "Felwood",
+      "mobs": [
+        "Felpaw",
+        "Angerclaw"
+      ],
+      "objectives": [
+        "skinning"
+      ],
+      "src": [
+        "wp_rugged",
+        "almar"
+      ],
+      "en": "Felpaw wolves and Angerclaw bears; rugged leather.",
+      "de": "Teufelspfotenwölfe und Zornklauenbären; robustes Leder."
+    },
+    {
+      "id": "leather-ungoro-devilsaur",
+      "zone": "Un'Goro Crater",
+      "mobs": [
+        "Devilsaur"
+      ],
+      "objectives": [
+        "skinning",
+        "gold",
+        "rare"
+      ],
+      "src": [
+        "boostroom"
+      ],
+      "en": "Devilsaurs (elite, patrolling): Devilsaur Leather; dangerous and contested.",
+      "de": "Teufelssaurier (Elite, wandernd): Teufelssaurierleder; gefährlich und umkämpft."
+    },
+    {
+      "id": "mat-epl-water",
+      "zone": "Eastern Plaguelands",
+      "items": [
+        "Essence of Water"
+      ],
+      "objectives": [
+        "gold",
+        "rare"
+      ],
+      "src": [
+        "almar_water"
+      ],
+      "en": "Water elementals in the southern (~25–30) and northern ponds.",
+      "de": "Wasserelementare im südlichen (~25–30) und nördlichen Teich."
+    },
+    {
+      "id": "mat-felwood-water",
+      "zone": "Felwood",
+      "items": [
+        "Essence of Water"
+      ],
+      "objectives": [
+        "gold",
+        "rare"
+      ],
+      "src": [
+        "almar_water",
+        "boostroom"
+      ],
+      "en": "Water elementals in the north (Irontree Woods) along the shore.",
+      "de": "Wasserelementare im Norden (Eisenwald) am Ufer."
+    },
+    {
+      "id": "mat-felwood-fire",
+      "zone": "Felwood",
+      "items": [
+        "Essence of Fire",
+        "Elemental Fire"
+      ],
+      "objectives": [
+        "gold",
+        "rare"
+      ],
+      "src": [
+        "almar_fire",
+        "almar_elefire",
+        "boostroom"
+      ],
+      "en": "Fire elementals in the craters north of Bloodvenom Falls; elite earth elementals nearby.",
+      "de": "Feuerelementare in den Kratern nördlich der Blutgiftfälle; Elite-Erdelementare in der Nähe."
+    },
+    {
+      "id": "mat-ungoro-fire",
+      "zone": "Un'Goro Crater",
+      "items": [
+        "Essence of Fire",
+        "Elemental Fire"
+      ],
+      "objectives": [
+        "gold",
+        "rare"
+      ],
+      "src": [
+        "almar_fire",
+        "almar_elefire",
+        "boostroom"
+      ],
+      "en": "Fire elementals around the volcano; avoid the elite Blazerunner at the top.",
+      "de": "Feuerelementare am Vulkan; Elite Blazerunner oben meiden."
+    },
+    {
+      "id": "mat-silithus-earth",
+      "zone": "Silithus",
+      "items": [
+        "Essence of Earth"
+      ],
+      "objectives": [
+        "gold",
+        "rare"
+      ],
+      "src": [
+        "almar_earth"
+      ],
+      "en": "Earth elementals in the north-western Crystal Vale.",
+      "de": "Erdelementare im nordwestlichen Kristalltal."
+    },
+    {
+      "id": "mat-ungoro-stone-guardian",
+      "zone": "Un'Goro Crater",
+      "mobs": [
+        "Stone Guardian"
+      ],
+      "exact": true,
+      "objectives": [
+        "gold",
+        "rare"
+      ],
+      "src": [
+        "almar_earth",
+        "almar"
+      ],
+      "en": "Elite stone guardians: Essence of Earth, chance for Guardian Stone.",
+      "de": "Elite-Steinwächter: Essenz der Erde, Chance auf Wächterstein."
+    },
+    {
+      "id": "mat-silithus-air",
+      "zone": "Silithus",
+      "items": [
+        "Essence of Air"
+      ],
+      "objectives": [
+        "gold",
+        "rare"
+      ],
+      "src": [
+        "almar_air"
+      ],
+      "en": "Air elementals north-west of Cenarion Hold; thorium and herbs nearby.",
+      "de": "Luftelementare nordwestlich der Burg Cenarius; Thorium und Kräuter in der Nähe."
+    },
+    {
+      "id": "mat-wpl-living",
+      "zone": "Western Plaguelands",
+      "items": [
+        "Living Essence"
+      ],
+      "objectives": [
+        "gold",
+        "rare"
+      ],
+      "src": [
+        "almar_living"
+      ],
+      "en": "Living Essence source.",
+      "de": "Quelle für Lebendige Essenz."
+    },
+    {
+      "id": "mat-felwood-living",
+      "zone": "Felwood",
+      "items": [
+        "Living Essence"
+      ],
+      "objectives": [
+        "gold",
+        "rare"
+      ],
+      "src": [
+        "almar_living"
+      ],
+      "en": "Living Essence source.",
+      "de": "Quelle für Lebendige Essenz."
+    },
+    {
+      "id": "mat-ungoro-living",
+      "zone": "Un'Goro Crater",
+      "items": [
+        "Living Essence"
+      ],
+      "objectives": [
+        "gold",
+        "rare"
+      ],
+      "src": [
+        "almar_living",
+        "boostroom"
+      ],
+      "en": "Living Essence source.",
+      "de": "Quelle für Lebendige Essenz."
+    },
+    {
+      "id": "mat-arathi-elemental-fire",
+      "zone": "Arathi Highlands",
+      "items": [
+        "Elemental Fire"
+      ],
+      "objectives": [
+        "gold"
+      ],
+      "src": [
+        "almar_elefire",
+        "boostroom"
+      ],
+      "en": "Fire elementals for Elemental Fire.",
+      "de": "Feuerelementare für Elementarfeuer."
+    },
+    {
+      "id": "mat-winterspring-hederine",
+      "zone": "Winterspring",
+      "mobs": [
+        "Hederine"
+      ],
+      "items": [
+        "Felcloth",
+        "Runecloth"
+      ],
+      "objectives": [
+        "gold",
+        "rare",
+        "cloth"
+      ],
+      "src": [
+        "almar_eye"
+      ],
+      "en": "Elite Hederine slayers/initiates in the south: Eye of Shadow, felcloth.",
+      "de": "Elite-Hederine im Süden: Schattenauge, Teufelsstoff."
+    },
+    {
+      "id": "mat-darkshore-moonkin-egg",
+      "zone": "Darkshore",
+      "mobs": [
+        "Moonkin"
+      ],
+      "items": [
+        "Small Egg"
+      ],
+      "objectives": [
+        "gold"
+      ],
+      "src": [
+        "almar_egg"
+      ],
+      "en": "Moonkin east of Auberdine: Small Egg (cooking).",
+      "de": "Mondkin östlich von Auberdine: Kleines Ei (Kochkunst)."
+    },
+    {
+      "id": "mat-hinterlands-golden-pearl",
+      "zone": "The Hinterlands",
+      "mobs": [
+        "Saltwater Snapjaw"
+      ],
+      "objectives": [
+        "gold",
+        "rare"
+      ],
+      "src": [
+        "almar_pearl"
+      ],
+      "en": "Saltwater snapjaws: Golden Pearl; beach next to the Horde town.",
+      "de": "Salzwasserschnapper: Goldperle; Strand neben dem Horde-Ort."
+    },
+    {
+      "id": "mat-azshara-clams",
+      "zone": "Azshara",
+      "items": [
+        "Big-mouth Clam"
+      ],
+      "objectives": [
+        "gold",
+        "rare"
+      ],
+      "src": [
+        "almar"
+      ],
+      "en": "Big-mouth clams (chance for Golden Pearl).",
+      "de": "Großmaulmuscheln (Chance auf Goldperle)."
+    },
+    {
+      "id": "mat-westfall-crawlers",
+      "zone": "Westfall",
+      "mobs": [
+        "Crawler"
+      ],
+      "items": [
+        "Crawler Meat",
+        "Crawler Claw"
+      ],
+      "objectives": [
+        "gold"
+      ],
+      "src": [
+        "almar"
+      ],
+      "en": "Coastal crawlers: crawler meat for cooking.",
+      "de": "Küstenkrabbler: Krabblerfleisch für Kochkunst."
+    },
+    {
+      "id": "mat-epl-larval-acid",
+      "zone": "Eastern Plaguelands",
+      "items": [
+        "Larval Acid"
+      ],
+      "objectives": [
+        "gold",
+        "rare"
+      ],
+      "src": [
+        "almar"
+      ],
+      "en": "Larval Acid source.",
+      "de": "Quelle für Larvensäure."
+    },
+    {
+      "id": "ore-ungoro-thorium",
+      "zone": "Un'Goro Crater",
+      "nodeType": "ore",
+      "nodes": [
+        "Thorium"
+      ],
+      "objectives": [
+        "mining",
+        "gold"
+      ],
+      "src": [
+        "almar",
+        "boostroom"
+      ],
+      "en": "Circular rich thorium route; traditionally one of the strongest thorium zones.",
+      "de": "Rundroute für reiches Thorium; traditionell eine der stärksten Thorium-Zonen."
+    },
+    {
+      "id": "ore-silithus-thorium",
+      "zone": "Silithus",
+      "nodeType": "ore",
+      "nodes": [
+        "Thorium"
+      ],
+      "objectives": [
+        "mining",
+        "gold"
+      ],
+      "src": [
+        "almar",
+        "boostroom"
+      ],
+      "en": "Outer terrain and hive areas.",
+      "de": "Außengelände und Bienenstock-Bereiche."
+    },
+    {
+      "id": "ore-winterspring-thorium",
+      "zone": "Winterspring",
+      "nodeType": "ore",
+      "nodes": [
+        "Thorium"
+      ],
+      "objectives": [
+        "mining",
+        "gold"
+      ],
+      "src": [
+        "almar",
+        "boostroom"
+      ],
+      "en": "Rich thorium pockets; elites and difficult terrain.",
+      "de": "Reiche Thorium-Nester; Elites und schwieriges Gelände."
+    },
+    {
+      "id": "ore-burning-steppes-thorium",
+      "zone": "Burning Steppes",
+      "nodeType": "ore",
+      "nodes": [
+        "Thorium"
+      ],
+      "objectives": [
+        "mining",
+        "gold"
+      ],
+      "src": [
+        "almar"
+      ],
+      "en": "Thorium farming route.",
+      "de": "Thorium-Farmroute."
+    },
+    {
+      "id": "ore-epl-thorium",
+      "zone": "Eastern Plaguelands",
+      "nodeType": "ore",
+      "objectives": [
+        "mining",
+        "gold"
+      ],
+      "src": [
+        "almar",
+        "boostroom"
+      ],
+      "en": "Mithril, truesilver and thorium along the mountain edges.",
+      "de": "Mithril, Echtsilber und Thorium an den Bergrändern."
+    },
+    {
+      "id": "ore-badlands-mithril",
+      "zone": "Badlands",
+      "nodeType": "ore",
+      "nodes": [
+        "Mithril",
+        "Gold",
+        "Truesilver"
+      ],
+      "objectives": [
+        "mining",
+        "gold"
+      ],
+      "src": [
+        "almar"
+      ],
+      "en": "Mithril and gold route.",
+      "de": "Mithril- und Goldroute."
+    },
+    {
+      "id": "ore-tanaris-mithril",
+      "zone": "Tanaris",
+      "nodeType": "ore",
+      "nodes": [
+        "Mithril",
+        "Truesilver",
+        "Gold"
+      ],
+      "objectives": [
+        "mining",
+        "gold"
+      ],
+      "src": [
+        "almar"
+      ],
+      "en": "Mithril and truesilver route.",
+      "de": "Mithril- und Echtsilberroute."
+    },
+    {
+      "id": "herb-teldrassil",
+      "zone": "Teldrassil",
+      "nodeType": "herb",
+      "objectives": [
+        "herbalism"
+      ],
+      "src": [
+        "method_herb"
+      ],
+      "en": "Herbalism 1–75 (Alliance): loop from Dolanaar via Darnassus.",
+      "de": "Kräuterkunde 1–75 (Allianz): Runde ab Dolanaar über Darnassus."
+    },
+    {
+      "id": "herb-mulgore",
+      "zone": "Mulgore",
+      "nodeType": "herb",
+      "objectives": [
+        "herbalism"
+      ],
+      "src": [
+        "method_herb"
+      ],
+      "en": "Herbalism 1–75 (Horde): best in northern Mulgore.",
+      "de": "Kräuterkunde 1–75 (Horde): am besten im Norden von Mulgore."
+    },
+    {
+      "id": "herb-loch-modan",
+      "zone": "Loch Modan",
+      "nodeType": "herb",
+      "objectives": [
+        "herbalism"
+      ],
+      "src": [
+        "method_herb"
+      ],
+      "en": "Herbalism 75–115 (Alliance).",
+      "de": "Kräuterkunde 75–115 (Allianz)."
+    },
+    {
+      "id": "herb-barrens",
+      "zone": "The Barrens",
+      "nodeType": "herb",
+      "objectives": [
+        "herbalism"
+      ],
+      "src": [
+        "method_herb"
+      ],
+      "en": "Herbalism 75–115 (Horde): north first, south later.",
+      "de": "Kräuterkunde 75–115 (Horde): erst Norden, später Süden."
+    },
+    {
+      "id": "herb-wetlands",
+      "zone": "Wetlands",
+      "nodeType": "herb",
+      "objectives": [
+        "herbalism"
+      ],
+      "src": [
+        "method_herb"
+      ],
+      "en": "Herbalism 115–170 (Alliance): loop from Menethil Harbor.",
+      "de": "Kräuterkunde 115–170 (Allianz): Runde ab Hafen von Menethil."
+    },
+    {
+      "id": "herb-hillsbrad",
+      "zone": "Hillsbrad Foothills",
+      "nodeType": "herb",
+      "objectives": [
+        "herbalism"
+      ],
+      "src": [
+        "method_herb"
+      ],
+      "en": "Herbalism 115–170 (Horde): via Tarren Mill.",
+      "de": "Kräuterkunde 115–170 (Horde): über Tarrens Mühle."
+    },
+    {
+      "id": "herb-stv",
+      "zone": "Stranglethorn Vale",
+      "nodeType": "herb",
+      "objectives": [
+        "herbalism"
+      ],
+      "src": [
+        "method_herb",
+        "boostroom"
+      ],
+      "en": "Herbalism 170–205 (both): loop past Grom'gol and the northern camp.",
+      "de": "Kräuterkunde 170–205 (beide): Runde an Grom'gol und dem Nordlager vorbei."
+    },
+    {
+      "id": "herb-tanaris",
+      "zone": "Tanaris",
+      "nodeType": "herb",
+      "objectives": [
+        "herbalism"
+      ],
+      "src": [
+        "method_herb"
+      ],
+      "en": "Herbalism 205–230: Purple Lotus and Firebloom; spread out but little competition.",
+      "de": "Kräuterkunde 205–230: Lila Lotus und Feuerblüte; verstreut, aber wenig Konkurrenz."
+    },
+    {
+      "id": "herb-hinterlands",
+      "zone": "The Hinterlands",
+      "nodeType": "herb",
+      "objectives": [
+        "herbalism"
+      ],
+      "src": [
+        "method_herb"
+      ],
+      "en": "Herbalism 230–270: most Sungrass.",
+      "de": "Kräuterkunde 230–270: das meiste Sonnengras."
+    },
+    {
+      "id": "herb-felwood",
+      "zone": "Felwood",
+      "nodeType": "herb",
+      "objectives": [
+        "herbalism"
+      ],
+      "src": [
+        "method_herb",
+        "boostroom"
+      ],
+      "en": "Herbalism 270–300: lowest zone with max-level herbs; pairs with satyr farming.",
+      "de": "Kräuterkunde 270–300: niedrigste Zone mit Max-Level-Kräutern; passt zum Satyr-Farmen."
+    },
+    {
+      "id": "herb-ungoro",
+      "zone": "Un'Goro Crater",
+      "nodeType": "herb",
+      "objectives": [
+        "herbalism",
+        "gold"
+      ],
+      "src": [
+        "boostroom"
+      ],
+      "en": "Golden Sansam, Dreamfoil, Mountain Silversage, Sungrass.",
+      "de": "Goldener Sansam, Traumblatt, Bergsilbersalbei, Sonnengras."
+    },
+    {
+      "id": "herb-epl",
+      "zone": "Eastern Plaguelands",
+      "nodeType": "herb",
+      "objectives": [
+        "herbalism",
+        "gold"
+      ],
+      "src": [
+        "boostroom",
+        "almar"
+      ],
+      "en": "Plaguebloom, Dreamfoil, Arthas' Tears, Sungrass; chance of Black Lotus.",
+      "de": "Pestblüte, Traumblatt, Arthas' Tränen, Sonnengras; Chance auf Schwarzen Lotus."
+    },
+    {
+      "id": "herb-winterspring",
+      "zone": "Winterspring",
+      "nodeType": "herb",
+      "objectives": [
+        "herbalism",
+        "gold"
+      ],
+      "src": [
+        "boostroom",
+        "almar"
+      ],
+      "en": "Icecap; chance of Black Lotus.",
+      "de": "Eiskappe; Chance auf Schwarzen Lotus."
+    },
+    {
+      "id": "herb-burning-steppes",
+      "zone": "Burning Steppes",
+      "nodeType": "herb",
+      "objectives": [
+        "herbalism"
+      ],
+      "src": [
+        "almar"
+      ],
+      "en": "Herbalism farming route.",
+      "de": "Kräuter-Farmroute."
+    },
+    {
+      "id": "herb-azshara",
+      "zone": "Azshara",
+      "nodeType": "herb",
+      "objectives": [
+        "herbalism"
+      ],
+      "src": [
+        "boostroom"
+      ],
+      "en": "Purple Lotus, Sungrass, Golden Sansam, Dreamfoil; alternative when popular zones are crowded.",
+      "de": "Lila Lotus, Sonnengras, Goldener Sansam, Traumblatt; Ausweichzone bei vollen Gebieten."
+    },
+    {
+      "id": "herb-arathi",
+      "zone": "Arathi Highlands",
+      "nodeType": "herb",
+      "objectives": [
+        "herbalism"
+      ],
+      "src": [
+        "boostroom"
+      ],
+      "en": "Goldthorn, Khadgar's Whisker, Fadeleaf, Wild Steelbloom.",
+      "de": "Golddorn, Khadgars Schnurrbart, Blassblatt, Wildstahlblume."
+    }
+  ]
+}

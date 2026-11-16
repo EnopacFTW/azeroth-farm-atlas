@@ -1,6 +1,6 @@
 # Coverage-Report (automatisch erzeugt)
 
-Build: 2026-11-15T19:01:47.172Z  ·  Seed SHA-256: `41241edb8604f614…`
+Build: 2026-11-16T23:26:36.212Z  ·  Seed SHA-256: `eb16d9b11a3a56a5…`
 
 ## Datensätze
 
@@ -15,25 +15,32 @@ Build: 2026-11-15T19:01:47.172Z  ·  Seed SHA-256: `41241edb8604f614…`
 | lootRows | 316092 |
 | lootRowsForeverRelation | 161687 |
 | lootRowsClassicWithRate | 154405 |
-| spots | 1648 |
+| spots | 1880 |
 | curatedRoutes | 0 |
+| communitySpots | 174 |
 | skippedLootReferences | 19125 |
 
 ## Spots je Levelband und Farmziel (offene Welt)
 
 | Band | xp | gold | cloth | skinning | mining | herbalism | fishing | rare |
 |---|---|---|---|---|---|---|---|---|
-| 1-10 | 156 | 97 | 99 | 52 | 5 | 20 | 7 | 19 |
-| 11-20 | 272 | 171 | 161 | 85 | 37 | 70 | 19 | 57 |
-| 21-30 | 221 | 133 | 123 | 78 | 60 | 83 | 20 | 85 |
-| 31-40 | 225 | 122 | 94 | 88 | 70 | 84 | 13 | 179 |
-| 41-50 | 239 | 132 | 85 | 101 | 66 | 78 | 13 | 190 |
-| 51-60 | 240 | 153 | 115 | 96 | 68 | 78 | 15 | 188 |
+| 1-10 | 198 | 110 | 110 | 73 | 5 | 20 | 7 | 19 |
+| 11-20 | 322 | 192 | 188 | 113 | 37 | 70 | 19 | 62 |
+| 21-30 | 271 | 162 | 152 | 103 | 57 | 76 | 19 | 98 |
+| 31-40 | 276 | 152 | 127 | 109 | 70 | 84 | 13 | 193 |
+| 41-50 | 293 | 167 | 118 | 121 | 66 | 78 | 13 | 204 |
+| 51-60 | 296 | 193 | 138 | 119 | 68 | 78 | 15 | 217 |
+
+## Community-Spots
+
+Aufgelöst: 174
+
 
 ## Quellen
 
 - **QuestieDB – Flavor Forever** (GPL-3.0) – https://github.com/Questie/QuestieDB – Version: `4dbb82440a27856f8dccf57094a5d792cdc7cc9b` – forever_client_data
 - **cmangos classic-db (1.12.1)** (GPL-3.0) – https://github.com/cmangos/classic-db – Version: `ClassicDB_1_12_1_z2815.sql.gz sha256:4f92db520868ab4e566726f68b5b2e380ae781209beaf22237b4f7f04600d0c0` – classic_fallback
 - **Classic-Spielregeln (Wowpedia)** (Fakten / CC BY-SA Referenz) – https://wowpedia.fandom.com/wiki/Skinning – Version: `Classic 1.12` – classic_fallback
-- **Zonen-Metadaten (manuell kuratiert)** (Projektlizenz (GPL-3.0)) – scripts/data/zones.json – Version: `2026-11-15` – manual_unverified
-- **Azeroth Farm Atlas – automatische Spot-Gruppierung** (GPL-3.0) – scripts/lib/geo.mjs – Version: `1` – forever_client_data
+- **Zonen-Metadaten (manuell kuratiert)** (Projektlizenz (GPL-3.0)) – scripts/data/zones.json – Version: `2026-11-16` – manual_unverified
+- **Azeroth Farm Atlas – automatische Spot-Gruppierung** (GPL-3.0) – scripts/lib/geo.mjs – Version: `2` – forever_client_data
+- **Community-Farmguides (recherchiert)** (Fakten mit Quellenlink) – scripts/data/community-spots.json – Version: `2026-11-16` – manual_unverified

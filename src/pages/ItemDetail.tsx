@@ -10,6 +10,7 @@ import { useActiveProfile, useMarketSelection } from '@/services/hooks';
 import { formatCopper } from '@/domain/money';
 import type { LootContext } from '@/domain/types';
 import { dateTime, nm, nmAlt, num, title, tr } from '@/i18n';
+import { WowheadButton } from '@/components/Wowhead';
 
 export function ItemDetailPage() {
   const id = Number(useParams().id);
@@ -54,7 +55,7 @@ export function ItemDetailPage() {
         <div className="flex flex-wrap items-start gap-3">
           <div className="min-w-0 flex-1">
             <h1 className={`font-display text-[20px] font-semibold ${['text-q0', 'text-q1', 'text-q2', 'text-q3', 'text-q4', 'text-q5'][it.quality ?? 1]}`}>{nm(it)}</h1>
-            <p className="text-[12.5px] text-faint">{nmAlt(it) ? `${nmAlt(it)} · ` : ''}Item-ID <span className="selectable">{it.id}</span></p>
+            <p className="flex flex-wrap items-center gap-2 text-[12.5px] text-faint"><span>{nmAlt(it) ? `${nmAlt(it)} · ` : ''}Item-ID <span className="selectable">{it.id}</span></span><WowheadButton kind="item" id={it.id} /></p>
             <div className="mt-2 flex flex-wrap gap-1.5">
               {it.itemLevel != null && <Badge>{tr('Itemlevel', 'Item level')} {it.itemLevel}</Badge>}
               {it.requiredLevel ? <Badge>{tr('Benötigt Level', 'Requires level')} {it.requiredLevel}</Badge> : null}

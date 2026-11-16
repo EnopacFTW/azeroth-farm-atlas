@@ -15,7 +15,7 @@ const Q = path.join(RAW, 'questiedb');
 const CM = path.join(RAW, 'cmangos', 'ClassicDB.sql');
 const OUT_DB = path.join(ROOT, 'src-tauri', 'resources', 'seed.db');
 const META = JSON.parse(fs.readFileSync(path.join(ROOT, 'scripts', 'data', 'zones.json'), 'utf8'));
-const SEED_SCHEMA_VERSION = 1;
+const SEED_SCHEMA_VERSION = 2;
 
 const t0 = Date.now();
 const log = (...a) => console.log(`[${((Date.now() - t0) / 1000).toFixed(1)}s]`, ...a);
@@ -46,6 +46,9 @@ const SOURCES = [
   { id: 'atlas_clustering', name: 'Azeroth Farm Atlas – automatische Spot-Gruppierung', url: 'scripts/lib/geo.mjs', license: 'GPL-3.0',
     version: String(SEED_SCHEMA_VERSION), flavor: 'forever', reliability: 'forever_client_data',
     notes: 'Spots sind automatisch aus Forever-Spawnpunkten gruppiert (DBSCAN, eps 6 %). Keine handkuratierten Routen.' },
+  { id: 'community_guides', name: 'Community-Farmguides (recherchiert)', url: 'scripts/data/community-spots.json', license: 'Fakten mit Quellenlink',
+    version: builtAt.slice(0, 10), flavor: 'classic_era', reliability: 'manual_unverified',
+    notes: 'Empfohlene Farmspots aus öffentlichen Guides (Warcraft Tavern, Almar\'s Guides, wow-professions.com, Boostroom, Method.gg). Mobs, Koordinaten und Loot werden beim Build gegen die Forever-Spawndaten aufgelöst; Quellen je Spot verlinkt.' },
 ];
 
 // ---------------------------------------------------------------- QuestieDB
@@ -67,7 +70,7 @@ const T = readTables(sql, ['creature_template', 'creature_loot_template', 'skinn
   'gameobject_loot_template', 'fishing_loot_template', 'item_template', 'skill_fishing_base_level']);
 const pick = (t, cols) => toObjects(T.columns[t], T.rows[t], cols);
 const cCreatures = new Map(pick('creature_template', ['Entry', 'Name', 'MinLevel', 'MaxLevel', 'CreatureType', 'Family', 'Rank',
-  'MinLootGold', 'MaxLootGold', 'LootId', 'SkinningLootId']).map((r) => [r.Entry, r]));
+  'MinLootGold', 'MaxLootGold', 'LootId', 'SkinningLootId', 'ExperienceMultiplier']).map((r) => [r.Entry, r]));
 const cItems = new Map(pick('item_template', ['entry', 'class', 'subclass', 'name', 'Quality', 'BuyPrice', 'SellPrice', 'stackable',
   'ItemLevel', 'RequiredLevel']).map((r) => [r.entry, r]));
 const cGameObjects = new Map(pick('gameobject_template', ['entry', 'type', 'name', 'data1']).map((r) => [r.entry, r]));
@@ -151,7 +154,7 @@ const CLASSIFICATION = { 0: 'normal', 1: 'elite', 2: 'rare_elite', 3: 'boss', 4:
 log('npcs + spawns…');
 const insNpc = ins('npcs', ['id', 'name_en', 'name_de', 'sub_name', 'level_min', 'level_max', 'rank', 'classification', 'creature_type',
   'family', 'zone_id', 'friendly_to', 'hostile', 'min_coin', 'max_coin', 'can_skin', 'skinning_skill_min', 'skinning_skill_max',
-  'in_classic', 'src_core', 'src_combat']);
+  'in_classic', 'xp_mult', 'src_core', 'src_combat']);
 const insNpcSpawn = ins('npc_spawns', ['npc_id', 'zone_id', 'x', 'y']);
 const npcInfo = new Map();
 let spawnCount = 0;
@@ -173,14 +176,16 @@ for (const [idStr, n] of Object.entries(qNpcs)) {
   const c = cCreatures.get(id);
   const de = deNpcs[id]?.[0] ?? null;
   const typeName = c ? CREATURE_TYPES[c.CreatureType] ?? null : null;
-  const hostile = friendly == null && !(npcFlags > 0) ? 1 : 0;
+  const neutralMob = friendly === 'AH' && !(npcFlags > 0) && !!c && !!typeName && !['humanoid', 'critter', 'not_specified', 'totem'].includes(typeName)
+    && (c.LootId > 0 || c.SkinningLootId > 0 || c.MaxLootGold > 0);
+  const hostile = (friendly == null && !(npcFlags > 0)) || neutralMob ? 1 : 0;
   const canSkin = c ? (c.SkinningLootId > 0 ? 1 : 0) : null;
   const coinMin = c ? c.MinLootGold : null;
   const coinMax = c ? c.MaxLootGold : null;
   insNpc(id, name, typeof de === 'string' ? de : null, subName ?? null, lmin ?? null, lmax ?? null, rank ?? null,
     CLASSIFICATION[rank] ?? null, typeName, c?.Family ?? null, zoneId || null, friendly ?? null, hostile, coinMin, coinMax,
     canSkin, canSkin ? skinningSkillForLevel(lmin) : null, canSkin ? skinningSkillForLevel(lmax) : null, c ? 1 : 0,
-    'questiedb_forever', c ? 'cmangos_classic' : null);
+    c ? Number(c.ExperienceMultiplier) : null, 'questiedb_forever', c ? 'cmangos_classic' : null);
   const pts = [];
   for (const [z, list] of Object.entries(spawns ?? {})) {
     for (const p of list ?? []) {
@@ -191,7 +196,7 @@ for (const [idStr, n] of Object.entries(qNpcs)) {
       spawnCount++;
     }
   }
-  npcInfo.set(id, { id, name, de, lmin, lmax, rank, hostile, typeName, canSkin, coinMin, coinMax, pts, family: c?.Family ?? 0, inClassic: !!c });
+  npcInfo.set(id, { id, name, de, lmin, lmax, rank, hostile, typeName, canSkin, coinMin, coinMax, pts, family: c?.Family ?? 0, inClassic: !!c, zoneId: zoneId || null, friendly: friendly ?? null, npcFlags: npcFlags ?? 0 });
 
   if (c?.LootId) {
     const { rows, skippedRefs } = expandLoot(cCreatureLoot.get(c.LootId) ?? []);
@@ -303,9 +308,11 @@ log(`items: ${itemsWritten}, loot rows: ${lootWritten}`);
 log('spots…');
 const insSpotRaw = ins('spots', ['id', 'slug', 'kind', 'title_en', 'title_de', 'zone_id', 'level_min', 'level_max', 'center_x', 'center_y',
   'radius', 'spawn_count', 'tags', 'professions', 'has_elite', 'has_rare', 'is_instance', 'req_skill_type', 'req_skill', 'hull_json',
-  'route_json', 'route_kind', 'route_curated', 'generated', 'src_core', 'avg_coin_copper', 'model_vendor_copper_per_kill', 'model_vendor_partial']);
+  'route_json', 'route_kind', 'route_curated', 'generated', 'src_core', 'avg_coin_copper', 'model_vendor_copper_per_kill', 'model_vendor_partial',
+  'farmable_by']);
 let pendingEcon = [null, null, null];
-const insSpot = (...v) => { insSpotRaw(...v, ...pendingEcon); pendingEcon = [null, null, null]; };
+let pendingFaction = null;
+const insSpot = (...v) => { insSpotRaw(...v, ...pendingEcon, pendingFaction); pendingEcon = [null, null, null]; pendingFaction = null; };
 const insSpotItem = ins('spot_items', ['spot_id', 'item_id', 'context', 'rate', 'forever_confirmed', 'rank']);
 const itemVendorSell = new Map([...cItems.values()].map((c) => [c.entry, c.SellPrice]));
 
@@ -484,6 +491,7 @@ for (const z of META.zones) {
 }
 
 // --- gathering node spots: one per (zone, node name)
+const nodeSpotIds = new Map();
 const nodesByZoneName = new Map();
 for (const o of objInfo.values()) {
   for (const p of o.pts) {
@@ -506,6 +514,7 @@ for (const g of nodesByZoneName.values()) {
   const tour = nearestNeighbourTour(all).map((p) => [fmt(p.x), fmt(p.y)]);
   const slug = uniqueSlug(slugify(`${zoneMeta.get(g.zone).en}-${g.name}`));
   const id = `node:${slug}`;
+  nodeSpotIds.set(`${g.zone}|${g.type}|${g.name}`, id);
   const skillType = tag;
   const plural = g.type === 'fishing_pool' ? 'Schwärme' : 'Vorkommen';
   insSpot(id, slug, g.type === 'fishing_pool' ? 'fishing_pool' : 'node_zone', `${g.name} · ${zoneName(g.zone, 'en')}`,
@@ -536,6 +545,102 @@ for (const [zoneId] of cFishLoot) {
     base != null ? Math.max(1, base) : null, null, null, null, 0, 1, 'cmangos_classic');
   spotCount++;
 }
+// --- community spots: researched guide recommendations, resolved against the Forever spawn and loot data
+const COMMUNITY = JSON.parse(fs.readFileSync(path.join(ROOT, 'scripts', 'data', 'community-spots.json'), 'utf8'));
+const insSpotSource = ins('spot_sources', ['spot_id', 'site', 'title', 'url', 'forever', 'note_en', 'note_de']);
+const zoneByName = new Map([...zoneMeta].map(([id, z]) => [z.en.toLowerCase(), id]));
+const itemIdsByName = new Map();
+for (const r of db.prepare('SELECT id, name_en FROM items').all()) {
+  const k = r.name_en.toLowerCase();
+  if (!itemIdsByName.has(k)) itemIdsByName.set(k, []);
+  itemIdsByName.get(k).push(r.id);
+}
+const communityReport = { resolved: [], skipped: [] };
+for (const e of COMMUNITY.spots) {
+  const zid = zoneByName.get(e.zone.toLowerCase());
+  if (!zid) { communityReport.skipped.push(`${e.id}: unknown zone ${e.zone}`); continue; }
+  const unknownItems = (e.items ?? []).filter((n) => !itemIdsByName.has(n.toLowerCase()));
+  if (unknownItems.length) communityReport.skipped.push(`${e.id}: unknown item(s) ${unknownItems.join(', ')} (ignored)`);
+  const itemSet = new Set((e.items ?? []).flatMap((n) => itemIdsByName.get(n.toLowerCase()) ?? []));
+  const near = (p) => !e.at || Math.hypot(p.x - e.at[0], p.y - e.at[1]) <= (e.r ?? 10);
+  const tokenOk = (name, tokens) => !tokens || tokens.some((t) => (e.exact ? name.toLowerCase() === t.toLowerCase() : name.toLowerCase().includes(t.toLowerCase())));
+  const instance = isInstanceZone(zid);
+  const slug = uniqueSlug(`community-${e.id}`);
+  const id = `community:${e.id}`;
+  const objectives = e.objectives ?? [];
+  if (e.nodeType) {
+    // gathering recommendations are attached to the existing per-node spots of the zone (one node type and skill each),
+    // so a mixed route never hides a node the character cannot gather yet
+    const targets = [...nodeSpotIds].filter(([k]) => { const [z, t, name] = k.split('|'); return Number(z) === zid && t === e.nodeType && tokenOk(name, e.nodes); })
+      .map(([, sid]) => sid);
+    if (!targets.length) { communityReport.skipped.push(`${e.id}: no node spots`); continue; }
+    for (const sid of targets) {
+      for (const key of e.src) {
+        const src = COMMUNITY.sources[key];
+        if (!src) throw new Error(`community spot ${e.id}: unknown source ${key}`);
+        insSpotSource(sid, src.site, src.title, src.url, src.forever ? 1 : 0, e.en ?? null, e.de ?? null);
+      }
+    }
+    communityReport.resolved.push(e.id);
+    continue;
+  } else {
+    const picked = new Map();
+    for (const n of npcInfo.values()) {
+      const named = !!e.mobs && !!n.friendly && !(n.npcFlags > 0) && ![1, 3].includes(n.rank);
+      if ((!n.hostile && !named) || n.lmin == null || !tokenOk(n.name, e.mobs)) continue;
+      // without mob names the target items select the mobs: only mobs that drop one of them
+      if (!e.mobs && !(lootByNpc.get(n.id) ?? []).some((l) => itemSet.has(l.item) && (l.rate == null || l.rate > 0))) continue;
+      if (instance) { if (n.zoneId === zid) picked.set(n.id, []); continue; }
+      const pts = n.pts.filter((p) => p.zone === zid && near(p));
+      if (pts.length) picked.set(n.id, pts);
+    }
+    if (!picked.size) { communityReport.skipped.push(`${e.id}: no matching mobs`); continue; }
+    const npcs = [...picked.keys()].map((nid) => npcInfo.get(nid)).sort((a, b) => picked.get(b.id).length - picked.get(a.id).length);
+    const all = [...picked.values()].flat();
+    const loot = npcs.flatMap((n) => lootByNpc.get(n.id) ?? []);
+    const anySkin = npcs.some((n) => n.canSkin === 1);
+    const tags = ['xp'];
+    if (anySkin) tags.push('skinning');
+    if (loot.some((l) => CLOTH.has(l.item) && l.ctx === 'normal_kill' && (l.rate == null || l.rate > 0))) tags.push('cloth');
+    if (npcs.some((n) => (n.coinMax ?? 0) > 0)) tags.push('gold');
+    const hasRare = npcs.some((n) => n.rank === 2 || n.rank === 4);
+    if (hasRare) tags.push('rare');
+    if (loot.length) tags.push('materials');
+    for (const o of objectives) if (!tags.includes(o)) tags.push(o);
+    const hasElite = npcs.some((n) => [1, 2, 3].includes(n.rank));
+    const names = (lang) => npcs.slice(0, 2).map((n) => (lang === 'de' ? n.de || n.name : n.name)).join(', ') + (npcs.length > 2 ? ` +${npcs.length - 2}` : '');
+    const cx = all.length ? all.reduce((s, p) => s + p.x, 0) / all.length : null;
+    const cy = all.length ? all.reduce((s, p) => s + p.y, 0) / all.length : null;
+    const where = (lang) => (cx != null ? `${zoneName(zid, lang)} (${Math.round(cx)}, ${Math.round(cy)})` : zoneName(zid, lang));
+    const weights = new Map(npcs.map((n) => [n.id, Math.max(1, picked.get(n.id).length)]));
+    pendingEcon = vendorModel(npcs, weights);
+    // friendly to Alliance only -> farmable by Horde, and vice versa; any mob hostile to both makes it a both-faction spot
+    const sides = new Set(npcs.map((n) => (n.hostile ? 'both' : n.friendly === 'A' ? 'horde' : n.friendly === 'H' ? 'alliance' : 'both')));
+    pendingFaction = sides.has('both') || sides.size !== 1 ? null : [...sides][0];
+    writeSpotItems(id, aggregateSpotLoot(npcs.map((n) => ({ weight: weights.get(n.id), hasClassic: n.inClassic, rows: lootByNpc.get(n.id) ?? [] }))));
+    const hull = all.length >= 3 ? convexHull(all).map((p) => [fmt(p.x), fmt(p.y)]) : null;
+    insSpot(id, slug, instance ? 'instance_run' : 'mob_cluster', `${names('en')} · ${where('en')}`, `${names('de')} · ${where('de')}`, zid,
+      Math.min(...npcs.map((n) => n.lmin)), Math.max(...npcs.map((n) => n.lmax ?? n.lmin)),
+      cx != null ? fmt(cx) : null, cy != null ? fmt(cy) : null, cx != null ? fmt(Math.max(...all.map((p) => Math.hypot(p.x - cx, p.y - cy)))) : null,
+      all.length || npcs.length, JSON.stringify(tags), JSON.stringify(professionsFor(tags)), hasElite ? 1 : 0, hasRare ? 1 : 0, instance ? 1 : 0,
+      anySkin ? 'skinning' : null, anySkin ? Math.min(...npcs.filter((n) => n.canSkin === 1).map((n) => skinningSkillForLevel(n.lmin))) : null,
+      hull ? JSON.stringify(hull) : null, null, null, 0, 0, 'community_guides');
+    for (const n of npcs) {
+      const pts = picked.get(n.id);
+      insSpotNpc(id, n.id, pts.length);
+      for (const p of pts) insSpotPoint(id, 'npc', n.id, p.x, p.y);
+    }
+  }
+  for (const key of e.src) {
+    const s = COMMUNITY.sources[key];
+    if (!s) throw new Error(`community spot ${e.id}: unknown source ${key}`);
+    insSpotSource(id, s.site, s.title, s.url, s.forever ? 1 : 0, e.en ?? null, e.de ?? null);
+  }
+  communityReport.resolved.push(e.id);
+  spotCount++;
+}
+log(`community spots: ${communityReport.resolved.length} resolved, ${communityReport.skipped.length} notes`);
+for (const s of communityReport.skipped) log(`  community: ${s}`);
 log(`spots: ${spotCount}`);
 
 // ---------------------------------------------------------------- vendors (Forever relation from QuestieDB item.vendors)
@@ -584,6 +689,7 @@ const manifest = {
     spots: count('spots'),
     spotsByKind: Object.fromEntries(db.prepare('SELECT kind, COUNT(*) c FROM spots GROUP BY kind').all().map((r) => [r.kind, r.c])),
     curatedRoutes: 0,
+    communitySpots: communityReport.resolved.length,
     skippedLootReferences: refsSkipped,
   },
   coverage,
@@ -598,6 +704,7 @@ const lines = ['# Coverage-Report (automatisch erzeugt)', '', `Build: ${builtAt}
   '## Datensätze', '', '| Tabelle | Anzahl |', '|---|---|', ...Object.entries(manifest.counts).filter(([, v]) => typeof v === 'number').map(([k, v]) => `| ${k} | ${v} |`), '',
   '## Spots je Levelband und Farmziel (offene Welt)', '', `| Band | ${objectives.join(' | ')} |`, `|---|${objectives.map(() => '---').join('|')}|`,
   ...Object.entries(coverage).map(([band, o]) => `| ${band} | ${objectives.map((k) => (o[k] === 0 ? '**0 (Lücke)**' : o[k])).join(' | ')} |`), '',
+  '## Community-Spots', '', `Aufgelöst: ${communityReport.resolved.length}`, '', ...communityReport.skipped.map((s) => `- ${s}`), '',
   '## Quellen', '', ...SOURCES.map((s) => `- **${s.name}** (${s.license}) – ${s.url} – Version: \`${s.version}\` – ${s.reliability}`), ''];
 fs.mkdirSync(path.join(ROOT, 'docs'), { recursive: true });
 fs.writeFileSync(path.join(ROOT, 'docs', 'coverage-report.md'), lines.join('\n'));

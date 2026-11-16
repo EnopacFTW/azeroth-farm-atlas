@@ -6,7 +6,9 @@ import { LootTables } from '@/components/LootTable';
 import { SourceBadge } from '@/components/data';
 import { Badge, Empty, ErrorBox, Panel, Select, Spinner } from '@/components/ui';
 import { api } from '@/services/tauri';
-import { useQuotes } from '@/services/hooks';
+import { useActiveProfile, useQuotes } from '@/services/hooks';
+import { XpPanel } from '@/components/XpPanel';
+import { WowheadButton } from '@/components/Wowhead';
 import { formatCopper } from '@/domain/money';
 import { nm, nmAlt, title, tr } from '@/i18n';
 
@@ -22,6 +24,7 @@ export function NpcDetailPage() {
   const activeZone = zone ?? spawnZones[0] ?? null;
   const itemIds = useMemo(() => [...new Set<number>((q.data?.loot ?? []).filter((l: any) => l.rate == null || l.rate > 0.005).map((l: any) => l.itemId))], [q.data]);
   const quotes = useQuotes(itemIds);
+  const { profile } = useActiveProfile();
   if (q.isLoading) return <div className="p-6"><Spinner /></div>;
   if (q.error) return <div className="p-6"><ErrorBox error={q.error} /></div>;
   const n = q.data.npc;
@@ -33,7 +36,7 @@ export function NpcDetailPage() {
     <div className="h-full overflow-y-auto">
       <div className="mx-auto max-w-[1400px] space-y-4 p-5">
         <div>
-          <h1 className="font-display text-[20px] font-semibold text-ink">{nm(n)} {n.subName && <span className="text-[14px] text-muted">‹{n.subName}›</span>}</h1>
+          <h1 className="flex flex-wrap items-center gap-2 font-display text-[20px] font-semibold text-ink">{nm(n)} {n.subName && <span className="text-[14px] text-muted">‹{n.subName}›</span>}<WowheadButton kind="npc" id={n.id} /></h1>
           <p className="text-[12.5px] text-faint">{nmAlt(n) ? `${nmAlt(n)} · ` : ''}NPC-ID <span className="selectable">{n.id}</span></p>
           <div className="mt-2 flex flex-wrap gap-1.5">
             <Badge>Level {n.levelMin}–{n.levelMax}</Badge>
@@ -41,7 +44,8 @@ export function NpcDetailPage() {
             <Badge>{n.creatureType ?? tr('Typ unbekannt', 'Type unknown')}</Badge>
             <Badge tone={n.canSkin ? 'ok' : 'neutral'}>{n.canSkin === 1 ? tr(`Kürschnerbar ab ${n.skinMin}`, `Skinnable from ${n.skinMin}`) : n.canSkin === 0 ? tr('Nicht kürschnerbar', 'Not skinnable') : tr('Kürschnerbarkeit unbekannt', 'Skinnability unknown')}</Badge>
             {n.maxCoin ? <Badge>{tr('Münzen', 'Coins')} {formatCopper(n.minCoin)}–{formatCopper(n.maxCoin)}</Badge> : null}
-            {n.friendlyTo && <Badge tone="info">{tr('Freundlich zu', 'Friendly to')} {n.friendlyTo}</Badge>}
+            {n.friendlyTo === 'AH' ? <Badge tone="info">{tr('Neutral (greift nicht von selbst an)', 'Neutral (does not attack on its own)')}</Badge>
+              : n.friendlyTo ? <Badge tone="warn">{n.friendlyTo === 'A' ? tr('Freundlich zur Allianz – nur Horde kann angreifen', 'Friendly to the Alliance – only the Horde can attack') : tr('Freundlich zur Horde – nur Allianz kann angreifen', 'Friendly to the Horde – only the Alliance can attack')}</Badge> : null}
             <SourceBadge source={n.srcCore} />{n.srcCombat && <SourceBadge source={n.srcCombat} />}
           </div>
         </div>
@@ -57,11 +61,16 @@ export function NpcDetailPage() {
               <WorldMap className="h-[440px] rounded-lg border border-line" zoneId={activeZone} zoneName={z ? nm(z) : `Zone ${activeZone}`} uiMapId={z?.uiMapId} markers={markers} />
             )}
           </div>
-          <Panel title={tr('Spots mit diesem NPC', 'Spots with this NPC')}>
-            {q.data.spots.length === 0 ? <Empty>{tr('In keinem generierten Spot.', 'Not in any generated spot.')}</Empty> : (
-              <ul className="space-y-1 text-[12.5px]">{q.data.spots.map((s: any) => <li key={s.spotId}><Link to={`/spots/${encodeURIComponent(s.spotId)}`} className="text-ink hover:underline">{title(s)}</Link></li>)}</ul>
+          <div className="space-y-4">
+            {profile && n.hostile && n.levelMin != null && (
+              <XpPanel level={profile.level} mobs={[{ levelMin: n.levelMin, levelMax: n.levelMax, rank: n.rank, xpMult: n.xpMult, spawns: 1 }]} />
             )}
-          </Panel>
+            <Panel title={tr('Spots mit diesem NPC', 'Spots with this NPC')}>
+              {q.data.spots.length === 0 ? <Empty>{tr('In keinem generierten Spot.', 'Not in any generated spot.')}</Empty> : (
+                <ul className="space-y-1 text-[12.5px]">{q.data.spots.map((s: any) => <li key={s.spotId}><Link to={`/spots/${encodeURIComponent(s.spotId)}`} className="text-ink hover:underline">{title(s)}</Link></li>)}</ul>
+              )}
+            </Panel>
+          </div>
         </div>
         <Panel title={tr('Loot (getrennt nach Kontext)', 'Loot (split by context)')}>
           <LootTables rows={q.data.loot} quotes={quotes.data ?? []} quotesLoading={quotes.isLoading && quotes.fetchStatus !== 'idle'} quotesError={!!quotes.error} />

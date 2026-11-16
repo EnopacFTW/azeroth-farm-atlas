@@ -252,7 +252,7 @@ pub fn match_zone(stem: &str, zones: &[ZoneKey]) -> Option<u32> {
     if k.is_empty() {
         return None;
     }
-    zones.iter().find(|z| z.keys.iter().any(|zk| *zk == k)).map(|z| z.id)
+    zones.iter().find(|z| z.keys.contains(&k)).map(|z| z.id)
 }
 
 pub fn zone_keys(game: &Connection) -> AppResult<Vec<ZoneKey>> {

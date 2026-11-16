@@ -1,6 +1,6 @@
 {
-  "seedSchemaVersion": 1,
-  "builtAt": "2026-11-15T19:01:47.172Z",
+  "seedSchemaVersion": 2,
+  "builtAt": "2026-11-16T23:26:36.212Z",
   "sources": [
     {
       "id": "questiedb_forever",
@@ -31,7 +31,7 @@
       "name": "Zonen-Metadaten (manuell kuratiert)",
       "url": "scripts/data/zones.json",
       "license": "Projektlizenz (GPL-3.0)",
-      "version": "2026-11-15",
+      "version": "2026-11-16",
       "reliability": "manual_unverified"
     },
     {
@@ -39,8 +39,16 @@
       "name": "Azeroth Farm Atlas – automatische Spot-Gruppierung",
       "url": "scripts/lib/geo.mjs",
       "license": "GPL-3.0",
-      "version": "1",
+      "version": "2",
       "reliability": "forever_client_data"
+    },
+    {
+      "id": "community_guides",
+      "name": "Community-Farmguides (recherchiert)",
+      "url": "scripts/data/community-spots.json",
+      "license": "Fakten mit Quellenlink",
+      "version": "2026-11-16",
+      "reliability": "manual_unverified"
     }
   ],
   "counts": {
@@ -53,79 +61,81 @@
     "lootRows": 316092,
     "lootRowsForeverRelation": 161687,
     "lootRowsClassicWithRate": 154405,
-    "spots": 1648,
+    "spots": 1880,
     "spotsByKind": {
       "fishing_pool": 10,
       "fishing_zone": 37,
-      "mob_cluster": 883,
-      "mob_scattered": 43,
+      "instance_run": 12,
+      "mob_cluster": 1090,
+      "mob_scattered": 48,
       "node_zone": 395,
-      "rare_mob": 280
+      "rare_mob": 288
     },
     "curatedRoutes": 0,
+    "communitySpots": 174,
     "skippedLootReferences": 19125
   },
   "coverage": {
     "1-10": {
-      "xp": 156,
-      "gold": 97,
-      "cloth": 99,
-      "skinning": 52,
+      "xp": 198,
+      "gold": 110,
+      "cloth": 110,
+      "skinning": 73,
       "mining": 5,
       "herbalism": 20,
       "fishing": 7,
       "rare": 19
     },
     "11-20": {
-      "xp": 272,
-      "gold": 171,
-      "cloth": 161,
-      "skinning": 85,
+      "xp": 322,
+      "gold": 192,
+      "cloth": 188,
+      "skinning": 113,
       "mining": 37,
       "herbalism": 70,
       "fishing": 19,
-      "rare": 57
+      "rare": 62
     },
     "21-30": {
-      "xp": 221,
-      "gold": 133,
-      "cloth": 123,
-      "skinning": 78,
-      "mining": 60,
-      "herbalism": 83,
-      "fishing": 20,
-      "rare": 85
+      "xp": 271,
+      "gold": 162,
+      "cloth": 152,
+      "skinning": 103,
+      "mining": 57,
+      "herbalism": 76,
+      "fishing": 19,
+      "rare": 98
     },
     "31-40": {
-      "xp": 225,
-      "gold": 122,
-      "cloth": 94,
-      "skinning": 88,
+      "xp": 276,
+      "gold": 152,
+      "cloth": 127,
+      "skinning": 109,
       "mining": 70,
       "herbalism": 84,
       "fishing": 13,
-      "rare": 179
+      "rare": 193
     },
     "41-50": {
-      "xp": 239,
-      "gold": 132,
-      "cloth": 85,
-      "skinning": 101,
+      "xp": 293,
+      "gold": 167,
+      "cloth": 118,
+      "skinning": 121,
       "mining": 66,
       "herbalism": 78,
       "fishing": 13,
-      "rare": 190
+      "rare": 204
     },
     "51-60": {
-      "xp": 240,
-      "gold": 153,
-      "cloth": 115,
-      "skinning": 96,
+      "xp": 296,
+      "gold": 193,
+      "cloth": 138,
+      "skinning": 119,
       "mining": 68,
       "herbalism": 78,
       "fishing": 15,
-      "rare": 188
+      "rare": 217
     }
   },
-  "seedSha256": "41241edb8604f614fc826a3ed038c032b862c77ab72ce789400f3329bdb17689"
+  "seedSha256": "eb16d9b11a3a56a58d9af1b2b6f55faf218391b02e2edbda2a79cfa49487831c"
 }

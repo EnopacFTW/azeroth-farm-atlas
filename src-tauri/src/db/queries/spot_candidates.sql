@@ -9,10 +9,11 @@ SELECT json_object(
   'hasElite', s.has_elite, 'hasRare', s.has_rare, 'isInstance', s.is_instance,
   'reqSkillType', s.req_skill_type, 'reqSkill', s.req_skill,
   'avgCoinCopper', s.avg_coin_copper, 'modelVendorCopperPerKill', s.model_vendor_copper_per_kill, 'modelVendorPartial', s.model_vendor_partial,
-  'routeKind', s.route_kind, 'routeCurated', s.route_curated, 'generated', s.generated, 'srcCore', s.src_core,
+  'routeKind', s.route_kind, 'routeCurated', s.route_curated, 'generated', s.generated, 'srcCore', s.src_core, 'farmableBy', s.farmable_by,
+  'communitySources', (SELECT COUNT(*) FROM spot_sources ss WHERE ss.spot_id = s.id),
   'npcs', (SELECT json_group_array(json_object('id', n.id, 'nameEn', n.name_en, 'nameDe', n.name_de, 'levelMin', n.level_min,
               'levelMax', n.level_max, 'rank', n.rank, 'canSkin', n.can_skin, 'skinMin', n.skinning_skill_min, 'skinMax', n.skinning_skill_max,
-              'creatureType', n.creature_type, 'inClassic', n.in_classic, 'spawns', sn.spawn_count))
+              'creatureType', n.creature_type, 'inClassic', n.in_classic, 'xpMult', n.xp_mult, 'spawns', sn.spawn_count))
            FROM spot_npcs sn JOIN npcs n ON n.id = sn.npc_id WHERE sn.spot_id = s.id),
   'objects', (SELECT json_group_array(json_object('id', o.id, 'nameEn', o.name_en, 'nameDe', o.name_de, 'nodeType', o.node_type,
               'requiredSkill', o.required_skill, 'spawns', so.spawn_count))

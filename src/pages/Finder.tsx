@@ -86,7 +86,7 @@ export function FinderPage() {
             {cand.isFetching && <Spinner label="" />}
             <div className="ml-auto">
               <Select<SortKey> ariaLabel={tr('Sortieren', 'Sort')} value={sort} onChange={setSort} className="h-7"
-                options={[{ value: 'fit', label: tr('Sortieren: Eignung', 'Sort: fit') }, { value: 'level', label: tr('Moblevel', 'Mob level') }, { value: 'density', label: tr('Spawndichte', 'Spawn density') }, { value: 'vendor', label: tr('Händlerwert/Kill (Modell)', 'Vendor value/kill (model)') }]} />
+                options={[{ value: 'fit', label: tr('Sortieren: Eignung', 'Sort: fit') }, { value: 'level', label: tr('Moblevel', 'Mob level') }, { value: 'density', label: tr('Spawndichte', 'Spawn density') }, { value: 'vendor', label: tr('Händlerwert/Kill (Modell)', 'Vendor value/kill (model)') }, { value: 'xp', label: tr('XP/Kill', 'XP/kill') }]} />
             </div>
           </div>
           <div ref={listRef} className="min-h-0 flex-1 space-y-2 overflow-y-auto p-3">

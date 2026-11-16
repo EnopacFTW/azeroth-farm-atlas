@@ -1,11 +1,12 @@
 import { Link } from 'react-router-dom';
-import { Columns3, Drill, Fish, Leaf, MapPin, PawPrint, Shirt, Skull, Star } from 'lucide-react';
+import { Columns3, Drill, Fish, Leaf, MapPin, PawPrint, Shirt, Skull, Star, Users } from 'lucide-react';
 import type { ScoredSpot } from '@/domain/scoring';
 import { pct } from '@/domain/scoring';
 import { formatCopper } from '@/domain/money';
-import { nm, nmAlt, title, titleAlt, tr } from '@/i18n';
+import { nm, num, title, titleAlt, tr } from '@/i18n';
 import { Badge, cx } from './ui';
 import { LevelRange } from './data';
+import { HoverCard, ItemTooltipBody } from './ItemTooltip';
 
 export function availabilityInfo(a: string): { label: string; tone: 'ok' | 'warn' | 'bad' | 'neutral' | 'info' } {
   switch (a) {
@@ -22,6 +23,7 @@ export const spotKindLabel = (k: string) =>
   ({
     mob_cluster: tr('Mob-Cluster', 'Mob cluster'), mob_scattered: tr('Verstreute Spawns', 'Scattered spawns'), rare_mob: tr('Rare-Mob', 'Rare mob'),
     node_zone: tr('Vorkommen', 'Nodes'), fishing_pool: tr('Fischschwärme', 'Fishing pools'), fishing_zone: tr('Angelgewässer', 'Fishing waters'),
+    instance_run: tr('Instanz-Run', 'Instance run'),
   } as Record<string, string>)[k] ?? k;
 
 export const gatherSkillName = (k: string) =>
@@ -60,6 +62,8 @@ export function SpotCard({ s, active, favorite, inCompare, onSelect, onFavorite,
         </div>
       </div>
       <div className="mt-2 flex flex-wrap gap-1">
+        {sp.communitySources ? <Badge tone="info" title={tr('In recherchierten Farmguides empfohlen – Quellen in den Details', 'Recommended in researched farming guides – sources in the details')}><Users className="size-3" /> Community</Badge> : null}
+        {sp.farmableBy && <Badge tone="warn">{sp.farmableBy === 'horde' ? tr('Nur Horde', 'Horde only') : tr('Nur Allianz', 'Alliance only')}</Badge>}
         {sp.hasElite ? <Badge tone="bad"><Skull className="size-3" /> Elite</Badge> : null}
         {sp.isInstance ? <Badge tone="warn">{tr('Instanz', 'Instance')}</Badge> : null}
         {s.pvpRisk === 'high' && <Badge tone="bad">{tr('PvP-Feindgebiet', 'PvP enemy territory')}</Badge>}
@@ -74,12 +78,26 @@ export function SpotCard({ s, active, favorite, inCompare, onSelect, onFavorite,
       {items.length > 0 && (
         <ul className="mt-2 flex flex-wrap gap-x-3 gap-y-0.5 text-[12px]">
           {items.map((i) => (
-            <li key={`${i.itemId}-${i.context}`} className="text-muted" title={`${nmAlt(i) ?? nm(i)} · ${i.context}${i.foreverConfirmed ? tr(' · Forever-Drop bestätigt', ' · Forever drop confirmed') : ''}`}>
-              <span className={['text-q0', 'text-q1', 'text-q2', 'text-q3', 'text-q4'][i.quality ?? 1]}>{nm(i)}</span>{' '}
+            <li key={`${i.itemId}-${i.context}`} className="text-muted">
+              <HoverCard trigger={<span className={['text-q0', 'text-q1', 'text-q2', 'text-q3', 'text-q4'][i.quality ?? 1]}>{nm(i)}</span>}>
+                {() => <ItemTooltipBody id={i.itemId} />}
+              </HoverCard>{' '}
               <span className="num text-faint">{i.rate != null ? pct(i.rate) : '?'}</span>
             </li>
           ))}
         </ul>
+      )}
+      {s.xp && (
+        <div className="mt-2 text-[12px] text-faint" title={tr('Classic-XP-Formel (cmangos/Wowpedia), Elite ×2, ohne Ausgeruht – nicht Forever-geprüft', 'Classic XP formula (cmangos/Wowpedia), elite ×2, without rested – not checked on Forever')}>
+          XP/Kill: {s.xp.avg > 0 ? (
+            <>
+              <span className="num font-semibold text-info">≈ {num(s.xp.avg)}</span>
+              {s.xp.min !== s.xp.max && <span className="num"> ({num(s.xp.min)}–{num(s.xp.max)})</span>}
+              {s.xp.killsToLevel != null && <> · <span className="num text-muted">~{num(s.xp.killsToLevel)}</span> {tr('Kills bis Levelaufstieg', 'kills to level up')}</>}
+              {s.xp.eliteShare > 0 && <span className="text-bad/80"> · {tr('inkl. Elite ×2', 'incl. elite ×2')}</span>}
+            </>
+          ) : <span className="text-warn">{tr('0 (grau)', '0 (gray)')}</span>}
+        </div>
       )}
       <div className="mt-2 flex items-center gap-3 text-[12px]">
         <span className="text-faint" title={tr('Gold/h nur aus gemessenen Sessions', 'Gold/h only from measured sessions')}>
