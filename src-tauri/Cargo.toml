@@ -1,6 +1,6 @@
 [package]
 name = "azeroth-farm-atlas"
-version = "0.3.0"
+version = "0.3.1"
 description = "Azeroth Farm Atlas – WoW Forever Farmfinder (Windows)"
 authors = ["Azeroth Farm Atlas contributors"]
 license = "GPL-3.0-or-later"

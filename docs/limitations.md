@@ -18,10 +18,14 @@
 - Keine mitgelieferten WoW-Zonenkarten (Urheberrecht); die App lädt auch keine herunter.
 - Ist WoW: Forever oder Classic Era installiert, übernimmt „Alle Zonenkarten übernehmen“ (Weltatlas → Kartenbilder bzw.
   Button auf leeren Karten) die Weltkarten aller 49 Zonen/Städte/Schlachtfelder direkt aus dem lokalen Client – exakt
-  ausgerichtet (Kartenbereich 1002 × 668 der 4 × 3 Kacheln = 0–100 %). Es ist die Grundkarte **ohne** die Einblendungen
-  „erkundeter Gebiete“ (Ortschaften, Wege), wie eine unerkundete Ingame-Karte. Dungeons/Raids haben keine Zonenkarte.
-- Gelesen werden nur unverschlüsselte, lokal vorhandene Dateien; der Kartenordner je Zone ist fest hinterlegt
-  (`src-tauri/src/wowclient/mod.rs`). Ändert Blizzard das Speicherformat, schlägt die Übernahme mit einer Meldung fehl.
+  ausgerichtet (Kartenbereich 1002 × 668 der 4 × 3 Kacheln = 0–100 %) und **vollständig erkundet**: Es wird die Kartengrafik
+  verwendet, die der Client der UiMap zuordnet (UiMapXMapArt, Phase 0 – bei Forever teils neu gezeichnet), plus alle
+  Einblendungen „erkundeter Gebiete“ (WorldMapOverlay: Ortschaften, Wege, Lager). Städte und Warsongschlucht/Arathibecken
+  haben im Spiel keine solchen Einblendungen. Dungeons/Raids haben keine Zonenkarte.
+- Gelesen werden nur unverschlüsselte, lokal vorhandene Dateien. Die vier Spieltabellen werden über feste File-IDs und ihre
+  Spaltenstruktur erkannt; passt die Struktur nicht (künftiger Patch), nutzt die App die alten Kacheldateinamen
+  (`src-tauri/src/wowclient/mod.rs`) ohne Ortschaften. Ändert Blizzard das Speicherformat, kommt eine Fehlermeldung.
+- Nach einem WoW-Patch oder einem App-Update mit besseren Karten bietet die Karte „Karten aktualisieren“ an.
 - Eigene Bilder (z. B. Screenshot der Ingame-Weltkarte) lassen sich weiterhin importieren und per Regler ausrichten;
   sie werden bei der Client-Übernahme nicht überschrieben.
 - Ohne Bild: 0–100-%-Koordinatenfläche (3:2) mit Spawndichte-Schattierung aller Forever-Spawns. Sie zeigt, wo die Zone

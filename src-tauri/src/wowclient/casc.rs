@@ -152,30 +152,47 @@ impl Storage {
         Ok(out)
     }
 
-    /// Resolves file paths (e.g. `Interface/WorldMap/Elwynn/Elwynn1.blp`) and returns the decoded contents
-    /// of those that exist in the local storage, keyed by the given path.
-    pub fn read_files_by_name(&self, paths: &[String]) -> AppResult<HashMap<String, Vec<u8>>> {
+    /// Loads encoding and root once; files are then resolved by path or file data ID.
+    pub fn index(&self) -> AppResult<Index<'_>> {
         let enc_ekey = self.cfg_key("encoding", 1)?;
         let root_ckey = self.cfg_key("root", 0)?;
         let enc = self.read_ekeys(&[enc_ekey])?.remove(&enc_ekey).ok_or_else(|| bad("encoding"))?;
         let root_ekey = *encoding_lookup(&enc, &HashSet::from([root_ckey]))?.get(&root_ckey).ok_or_else(|| bad("root"))?;
         let root = self.read_ekeys(&[root_ekey])?.remove(&root_ekey).ok_or_else(|| bad("root"))?;
+        Ok(Index { storage: self, enc, root })
+    }
 
+    /// Resolves file paths (e.g. `Interface/WorldMap/Elwynn/Elwynn1.blp`) and returns the decoded contents
+    /// of those that exist in the local storage, keyed by the given path.
+    pub fn read_files_by_name(&self, paths: &[String]) -> AppResult<HashMap<String, Vec<u8>>> {
+        let idx = self.index()?;
+        let ids = idx.fdids_by_name(paths)?;
+        let data = idx.read_fdids(&ids.values().copied().collect::<Vec<_>>())?;
+        Ok(ids.into_iter().filter_map(|(p, id)| data.get(&id).map(|d| (p, d.clone()))).collect())
+    }
+}
+
+pub struct Index<'a> {
+    storage: &'a Storage,
+    enc: Vec<u8>,
+    root: Vec<u8>,
+}
+
+impl Index<'_> {
+    /// Path → file data ID (only paths the root file knows by name hash).
+    pub fn fdids_by_name(&self, paths: &[String]) -> AppResult<HashMap<String, i64>> {
         let by_hash: HashMap<u64, &String> = paths.iter().map(|p| (name_hash(p), p)).collect();
-        let ckeys = root_lookup(&root, &by_hash.keys().copied().collect())?;
-        drop(root);
-        let wanted_c: HashSet<[u8; 16]> = ckeys.values().copied().collect();
-        let c2e = encoding_lookup(&enc, &wanted_c)?;
-        drop(enc);
+        let (names, _) = root_scan(&self.root, &by_hash.keys().copied().collect(), &HashSet::new())?;
+        Ok(names.into_iter().filter_map(|(h, id)| by_hash.get(&h).map(|p| ((*p).clone(), id))).collect())
+    }
+
+    /// Decoded contents of the given file data IDs that are present in the local storage.
+    pub fn read_fdids(&self, fdids: &[i64]) -> AppResult<HashMap<i64, Vec<u8>>> {
+        let (_, ckeys) = root_scan(&self.root, &HashSet::new(), &fdids.iter().copied().collect())?;
+        let c2e = encoding_lookup(&self.enc, &ckeys.values().copied().collect())?;
         let ekeys: Vec<[u8; 16]> = c2e.values().copied().collect();
-        let data = self.read_ekeys(&ekeys)?;
-        let mut out = HashMap::new();
-        for (h, path) in by_hash {
-            if let Some(d) = ckeys.get(&h).and_then(|c| c2e.get(c)).and_then(|e| data.get(e)) {
-                out.insert(path.clone(), d.clone());
-            }
-        }
-        Ok(out)
+        let data = self.storage.read_ekeys(&ekeys)?;
+        Ok(ckeys.into_iter().filter_map(|(id, c)| c2e.get(&c).and_then(|e| data.get(e)).map(|d| (id, d.clone()))).collect())
     }
 }
 
@@ -256,8 +273,11 @@ pub fn encoding_lookup(enc: &[u8], wanted: &HashSet<[u8; 16]>) -> AppResult<Hash
 const LOCALE_ENUS: u32 = 0x2;
 const NO_NAME_HASH: u32 = 0x1000_0000;
 
-/// Root (TSFM) lookup: path name hash → content key (prefers enUS / all-locale records).
-pub fn root_lookup(root: &[u8], hashes: &HashSet<u64>) -> AppResult<HashMap<u64, [u8; 16]>> {
+/// Root (TSFM) scan: name hash → file data ID for the wanted hashes, and file data ID → content key for the wanted IDs
+/// plus the IDs found by name (prefers enUS / all-locale records).
+pub type RootScan = (HashMap<u64, i64>, HashMap<i64, [u8; 16]>);
+
+pub fn root_scan(root: &[u8], hashes: &HashSet<u64>, fdids: &HashSet<i64>) -> AppResult<RootScan> {
     let u32at = |i: usize| root.get(i..i + 4).map(|s| u32::from_le_bytes(s.try_into().unwrap()));
     if u32at(0) != Some(0x4D46_5354) {
         return Err(bad("root (TSFM)"));
@@ -308,12 +328,12 @@ pub fn root_lookup(root: &[u8], hashes: &HashSet<u64>) -> AppResult<HashMap<u64,
             }
             p = next;
         }
-        if pass == 0 && fdid_of.is_empty() {
+        wanted_ids = fdid_of.values().copied().chain(fdids.iter().copied()).collect();
+        if pass == 0 && wanted_ids.is_empty() {
             break;
         }
-        wanted_ids = fdid_of.values().copied().collect();
     }
-    Ok(fdid_of.into_iter().filter_map(|(h, f)| best.get(&f).map(|(c, _)| (h, *c))).collect())
+    Ok((fdid_of, best.into_iter().map(|(f, (c, _))| (f, c)).collect()))
 }
 
 /// Jenkins `hashlittle2` over the normalised path (upper case, backslashes) as used by WoW root files.

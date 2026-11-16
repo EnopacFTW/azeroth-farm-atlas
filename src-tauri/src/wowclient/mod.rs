@@ -5,10 +5,12 @@
 
 pub mod blp;
 pub mod casc;
+pub mod db2;
 
 use crate::error::{AppError, AppResult};
 use crate::i18n::tr;
 use serde::Serialize;
+use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 
 /// Zone ID (AreaTable) → world map art folder of the Classic client.
@@ -103,37 +105,138 @@ pub fn detect_installs() -> Vec<ClientInstall> {
 pub struct ZoneMap {
     pub zone_id: u32,
     pub png: Vec<u8>,
+    /// Number of "explored area" overlays (towns, roads) drawn onto the base map.
+    pub overlays: u32,
 }
 
-/// Extracts and stitches the world maps of the given zones. Returns the maps and the zones without tiles.
-pub fn extract_zone_maps(install: &ClientInstall, zone_ids: &[u32]) -> AppResult<(Vec<ZoneMap>, Vec<u32>)> {
+/// Client database files (file data IDs, stable across Classic builds).
+const DB_WORLD_MAP_OVERLAY: i64 = 1_134_579;
+const DB_WORLD_MAP_OVERLAY_TILE: i64 = 1_957_212;
+const DB_UI_MAP_ART_TILE: i64 = 1_957_210;
+const DB_UI_MAP_X_MAP_ART: i64 = 1_957_217;
+
+/// (row, col, file data ID) of a 256 px texture tile.
+type Tile = (usize, usize, i64);
+
+/// Overlay texture placed on the 1002 × 668 map, split into 256 px tiles.
+struct Overlay {
+    x: i64,
+    y: i64,
+    w: usize,
+    h: usize,
+    tiles: Vec<Tile>,
+}
+
+/// What the client shows for each UiMap: map art (phase 0), its base tiles and its explored-area overlays.
+#[derive(Default)]
+struct ArtIndex {
+    art_of_map: HashMap<u32, u32>,
+    base: HashMap<u32, Vec<Tile>>,
+    overlays: HashMap<u32, Vec<Overlay>>,
+}
+
+/// Reads UiMapXMapArt, UiMapArtTile, WorldMapOverlay and WorldMapOverlayTile.
+/// None if a table is missing or has an unexpected layout (then the legacy file names are used, without overlays).
+fn load_art_index(idx: &casc::Index) -> Option<ArtIndex> {
+    let dbs = idx.read_fdids(&[DB_UI_MAP_X_MAP_ART, DB_UI_MAP_ART_TILE, DB_WORLD_MAP_OVERLAY, DB_WORLD_MAP_OVERLAY_TILE]).ok()?;
+    let xart = db2::parse(dbs.get(&DB_UI_MAP_X_MAP_ART)?).ok()?;
+    let art = db2::parse(dbs.get(&DB_UI_MAP_ART_TILE)?).ok()?;
+    let ov = db2::parse(dbs.get(&DB_WORLD_MAP_OVERLAY)?).ok()?;
+    let ovt = db2::parse(dbs.get(&DB_WORLD_MAP_OVERLAY_TILE)?).ok()?;
+    // UiMapXMapArt = PhaseID, UiMapArtID + relation UiMapID; *Tile = RowIndex, ColIndex, LayerIndex, FileDataID + relation;
+    // WorldMapOverlay = ID, UiMapArtID, TextureWidth, TextureHeight, OffsetX, OffsetY, … (13 fields)
+    let has = |t: &db2::Table, n: usize| t.rows.first().is_some_and(|r| r.fields.len() == n && r.relation.is_some());
+    if !(has(&xart, 2) && has(&art, 4) && has(&ovt, 4) && ov.rows.first()?.fields.len() == 13) {
+        return None;
+    }
+    let f = |r: &db2::Row, i: usize| r.fields.get(i).and_then(|v| v.first()).copied().unwrap_or(0);
+    let mut out = ArtIndex::default();
+    let mut phase: HashMap<u32, u32> = HashMap::new();
+    for r in &xart.rows {
+        let (map, p, a) = (r.relation.unwrap_or(0), f(r, 0), f(r, 1));
+        if phase.get(&map).map_or(true, |old| p < *old) {
+            phase.insert(map, p);
+            out.art_of_map.insert(map, a);
+        }
+    }
+    let tiles_of = |t: &db2::Table| {
+        let mut m: HashMap<u32, Vec<Tile>> = HashMap::new();
+        for r in &t.rows {
+            if f(r, 2) == 0 {
+                m.entry(r.relation.unwrap_or(0)).or_default().push((f(r, 0) as usize, f(r, 1) as usize, f(r, 3) as i64));
+            }
+        }
+        m
+    };
+    out.base = tiles_of(&art);
+    let mut ov_tiles = tiles_of(&ovt);
+    for r in &ov.rows {
+        let (w, h) = (f(r, 2) as usize, f(r, 3) as usize);
+        let Some(t) = ov_tiles.remove(&r.id) else { continue };
+        if w == 0 || h == 0 || w > 2048 || h > 2048 {
+            continue;
+        }
+        out.overlays.entry(f(r, 1)).or_default().push(Overlay { x: f(r, 4) as i32 as i64, y: f(r, 5) as i32 as i64, w, h, tiles: t });
+    }
+    Some(out)
+}
+
+/// Extracts the world maps of the given zones (zone ID, UiMap ID) exactly as the client shows them fully explored:
+/// the map art assigned to the UiMap plus all explored-area overlays. Zones without UiMap art fall back to the
+/// legacy `Interface/WorldMap/<Zone>` tiles. Returns the maps and the zones without a map.
+pub fn extract_zone_maps(install: &ClientInstall, zones: &[(u32, Option<u32>)]) -> AppResult<(Vec<ZoneMap>, Vec<u32>)> {
     let root = wow_root_of(Path::new(&install.root)).ok_or_else(|| AppError::not_found(tr("Keine WoW-Installation in diesem Ordner", "No WoW installation in this folder")))?;
     if !PRODUCTS.iter().any(|(p, _)| *p == install.product) {
         return Err(AppError::invalid(tr("Nicht unterstützte WoW-Version", "Unsupported WoW version")));
     }
     let storage = casc::Storage::open(&root, &install.product)?;
-    let zones: Vec<(u32, &str)> = ZONE_MAP_DIRS.iter().copied().filter(|(z, _)| zone_ids.contains(z)).collect();
-    let tile = |dir: &str, i: u32| format!("Interface/WorldMap/{dir}/{dir}{i}.blp");
-    let names: Vec<String> = zones.iter().flat_map(|(_, d)| (1..=12).map(move |i| tile(d, i))).collect();
-    let files = storage.read_files_by_name(&names)?;
+    let idx = storage.index()?;
+    let arts = load_art_index(&idx).unwrap_or_default();
+    let art_of = |ui: Option<u32>| ui.and_then(|u| arts.art_of_map.get(&u)).filter(|a| arts.base.get(a).is_some_and(|t| !t.is_empty())).copied();
+
+    // legacy fallback: file names of the 4 × 3 tiles
+    let legacy_dir = |z: u32| ZONE_MAP_DIRS.iter().find(|(id, _)| *id == z).map(|(_, d)| *d);
+    let tile_name = |dir: &str, i: usize| format!("Interface/WorldMap/{dir}/{dir}{i}.blp");
+    let legacy_names: Vec<String> = zones.iter().filter(|(_, ui)| art_of(*ui).is_none()).filter_map(|(z, _)| legacy_dir(*z)).flat_map(|d| (1..=12).map(move |i| tile_name(d, i))).collect();
+    let legacy_ids = idx.fdids_by_name(&legacy_names)?;
+
+    let plan: Vec<(u32, Vec<Tile>, &[Overlay])> = zones
+        .iter()
+        .map(|(z, ui)| match art_of(*ui) {
+            Some(a) => (*z, arts.base[&a].clone(), arts.overlays.get(&a).map(|v| v.as_slice()).unwrap_or(&[])),
+            None => {
+                let tiles = legacy_dir(*z)
+                    .map(|d| (0..12).filter_map(|i| legacy_ids.get(&tile_name(d, i + 1)).map(|id| (i / 4, i % 4, *id))).collect())
+                    .unwrap_or_default();
+                (*z, tiles, &[][..])
+            }
+        })
+        .collect();
+    let want: Vec<i64> = plan.iter().flat_map(|(_, base, ov)| base.iter().map(|t| t.2).chain(ov.iter().flat_map(|o| o.tiles.iter().map(|t| t.2)))).collect();
+    let files = idx.read_fdids(&want)?;
+    drop(idx);
+
     let (mut maps, mut missing) = (vec![], vec![]);
-    for (zone_id, dir) in zones {
-        match stitch(&files, &(1..=12).map(|i| tile(dir, i)).collect::<Vec<_>>()) {
-            Some(png) => maps.push(ZoneMap { zone_id, png }),
+    for (zone_id, base, ov) in plan {
+        match compose(&base, ov, &files) {
+            Some((png, n)) => maps.push(ZoneMap { zone_id, png, overlays: n }),
             None => missing.push(zone_id),
         }
     }
-    missing.extend(zone_ids.iter().filter(|z| !ZONE_MAP_DIRS.iter().any(|(id, _)| id == *z)));
     Ok((maps, missing))
 }
 
-fn stitch(files: &std::collections::HashMap<String, Vec<u8>>, tiles: &[String]) -> Option<Vec<u8>> {
+/// Stitches the base tiles (all 12 must be present), alpha-blends the overlays on top and encodes a 1002 × 668 PNG.
+fn compose(base: &[Tile], overlays: &[Overlay], files: &HashMap<i64, Vec<u8>>) -> Option<(Vec<u8>, u32)> {
     let (w, h) = (MAP_W as usize, MAP_H as usize);
+    if base.len() < 12 {
+        return None;
+    }
     let mut rgb = vec![0u8; w * h * 3];
-    for (i, name) in tiles.iter().enumerate() {
-        let img = blp::decode(files.get(name)?).ok()?;
+    for &(row, col, fdid) in base {
+        let img = blp::decode(files.get(&fdid)?).ok()?;
         let (tw, th) = (img.width as usize, img.height as usize);
-        let (ox, oy) = ((i % 4) * 256, (i / 4) * 256);
+        let (ox, oy) = (col * 256, row * 256);
         for y in 0..th.min(256) {
             for x in 0..tw.min(256) {
                 let (dx, dy) = (ox + x, oy + y);
@@ -144,6 +247,37 @@ fn stitch(files: &std::collections::HashMap<String, Vec<u8>>, tiles: &[String]) 
             }
         }
     }
+    let mut drawn = 0;
+    for o in overlays {
+        let mut any = false;
+        for &(row, col, fdid) in &o.tiles {
+            let Some(img) = files.get(&fdid).and_then(|d| blp::decode(d).ok()) else { continue };
+            any = true;
+            let (tw, th) = (img.width as usize, img.height as usize);
+            for y in 0..th.min(256) {
+                for x in 0..tw.min(256) {
+                    let (lx, ly) = (col * 256 + x, row * 256 + y);
+                    if lx >= o.w || ly >= o.h {
+                        continue;
+                    }
+                    let (dx, dy) = (o.x + lx as i64, o.y + ly as i64);
+                    if dx < 0 || dy < 0 || dx >= w as i64 || dy >= h as i64 {
+                        continue;
+                    }
+                    let s = &img.pixels[(y * tw + x) * 4..][..4];
+                    let a = s[3] as u32;
+                    if a == 0 {
+                        continue;
+                    }
+                    let d = &mut rgb[(dy as usize * w + dx as usize) * 3..][..3];
+                    for k in 0..3 {
+                        d[k] = ((s[k] as u32 * a + d[k] as u32 * (255 - a)) / 255) as u8;
+                    }
+                }
+            }
+        }
+        drawn += any as u32;
+    }
     let mut out = vec![];
     {
         let mut e = png::Encoder::new(&mut out, MAP_W, MAP_H);
@@ -152,7 +286,7 @@ fn stitch(files: &std::collections::HashMap<String, Vec<u8>>, tiles: &[String]) 
         let mut wr = e.write_header().ok()?;
         wr.write_image_data(&rgb).ok()?;
     }
-    Some(out)
+    Some((out, drawn))
 }
 
 #[cfg(test)]
@@ -182,10 +316,12 @@ mod tests {
         let installs = detect_installs();
         println!("{installs:?}");
         let Some(i) = installs.first() else { return };
-        let ids: Vec<u32> = ZONE_MAP_DIRS.iter().map(|z| z.0).collect();
+        let seed = rusqlite::Connection::open(Path::new(env!("CARGO_MANIFEST_DIR")).join("resources/seed.db")).unwrap();
+        let mut st = seed.prepare("SELECT id, ui_map_id FROM zones WHERE ui_map_id IS NOT NULL").unwrap();
+        let zones: Vec<(u32, Option<u32>)> = st.query_map([], |r| Ok((r.get(0)?, r.get(1)?))).unwrap().map(|r| r.unwrap()).collect();
         let t = std::time::Instant::now();
-        let (maps, missing) = extract_zone_maps(i, &ids).unwrap();
-        println!("{} maps in {:?}, missing {missing:?}", maps.len(), t.elapsed());
+        let (maps, missing) = extract_zone_maps(i, &zones).unwrap();
+        println!("{} maps in {:?}, missing {missing:?}, overlays {:?}", maps.len(), t.elapsed(), maps.iter().map(|m| (m.zone_id, m.overlays)).collect::<Vec<_>>());
         if let Ok(dir) = std::env::var("MAP_DUMP_DIR") {
             for m in &maps {
                 std::fs::write(Path::new(&dir).join(format!("{}.png", m.zone_id)), &m.png).unwrap();
@@ -194,3 +330,4 @@ mod tests {
         assert!(missing.is_empty());
     }
 }
+

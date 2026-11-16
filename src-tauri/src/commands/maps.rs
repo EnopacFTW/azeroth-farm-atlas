@@ -124,20 +124,21 @@ pub async fn import_client_maps(state: State<'_, AppState>, root: String, produc
         .into_iter()
         .find(|i| i.product == product)
         .ok_or_else(|| AppError::not_found(tr("WoW-Installation nicht gefunden", "WoW installation not found")))?;
-    let zone_ids: Vec<u32> = {
+    let zones: Vec<(u32, Option<u32>)> = {
         let game = state.game()?;
-        let mut st = game.prepare("SELECT id FROM zones WHERE ui_map_id IS NOT NULL")?;
-        let ids = st.query_map([], |r| r.get::<_, u32>(0))?.collect::<Result<Vec<_>, _>>()?;
-        ids
+        let mut st = game.prepare("SELECT id, ui_map_id FROM zones WHERE ui_map_id IS NOT NULL")?;
+        let rows = st.query_map([], |r| Ok((r.get::<_, u32>(0)?, r.get::<_, Option<u32>>(1)?)))?.collect::<Result<Vec<_>, _>>()?;
+        rows
     };
     let existing = maps::list(&*state.user()?, &state.paths.maps_dir)?;
     let keep: Vec<u32> = if replace_own { vec![] } else { existing.iter().filter(|a| !maps::is_client_map(a.original_name.as_deref())).map(|a| a.zone_id).collect() };
-    let wanted: Vec<u32> = zone_ids.iter().copied().filter(|z| !keep.contains(z)).collect();
+    let wanted: Vec<(u32, Option<u32>)> = zones.iter().copied().filter(|(z, _)| !keep.contains(z)).collect();
     let inst = install.clone();
     let (extracted, missing) = tauri::async_runtime::spawn_blocking(move || wowclient::extract_zone_maps(&inst, &wanted))
         .await
         .map_err(|e| AppError::new("task", e.to_string()))??;
-    let source = format!("{} · {} {}", maps::CLIENT_PREFIX, install.label, install.version);
+    // "explored" marks maps with all explored-area overlays (since 0.3.1); the frontend offers a refresh otherwise
+    let source = format!("{} · {} {} · explored", maps::CLIENT_PREFIX, install.label, install.version);
     let user = state.user()?;
     let mut imported = 0;
     for m in extracted {

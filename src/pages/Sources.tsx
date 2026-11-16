@@ -111,7 +111,7 @@ export function SourcesPage() {
 
         <Panel title={tr('Bekannte Grenzen', 'Known limitations')}>
           <ul className="list-disc space-y-1 pl-5 text-[12.5px] text-muted">
-            <li>{tr('Keine mitgelieferten Blizzard-Kartenbilder (Urheberrecht). Zonenkarten werden aus deiner lokalen WoW-Installation übernommen (Grundkarte ohne Ortschafts-Einblendungen) oder als eigene Bilder importiert; sonst Koordinatenfläche mit Spawndichte.', 'No bundled Blizzard map images (copyright). Zone maps are taken from your local WoW installation (base map without town overlays) or imported as your own images; otherwise a coordinate plane with spawn density.')}</li>
+            <li>{tr('Keine mitgelieferten Blizzard-Kartenbilder (Urheberrecht). Zonenkarten werden aus deiner lokalen WoW-Installation übernommen (vollständig erkundet, mit Ortschaften) oder als eigene Bilder importiert; sonst Koordinatenfläche mit Spawndichte.', 'No bundled Blizzard map images (copyright). Zone maps are taken from your local WoW installation (fully explored, with towns) or imported as your own images; otherwise a coordinate plane with spawn density.')}</li>
             <li>{tr('Dropchancen, Kürschnerbarkeit, Münzloot und Händlerpreise stammen aus Classic-Emulator-Daten (cmangos), nicht aus Forever-Messungen.', 'Drop rates, skinnability, coin loot and vendor prices come from Classic emulator data (cmangos), not Forever measurements.')}</li>
             <li>{tr('Weltdrops (Referenz-Loottabellen) sind nicht einzelnen Spots zugeordnet.', 'World drops (reference loot tables) are not assigned to spots.')}</li>
             <li>{tr('Forever-neue NPCs ohne Classic-Eintrag haben unbekannten Typ/Loot.', 'NPCs new in Forever without a Classic entry have unknown type/loot.')}</li>

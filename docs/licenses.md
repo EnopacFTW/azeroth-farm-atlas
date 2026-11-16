@@ -15,7 +15,8 @@
 **Karten:** Es werden **keine** Blizzard-Kartenbilder ausgeliefert, heruntergeladen oder im Repository gespeichert.
 Auf Wunsch liest die App die Weltkarten (© Blizzard Entertainment) aus der **lokal installierten** WoW-Forever- bzw.
 Classic-Era-Installation des Nutzers (nur lesend, lokaler CASC-Speicher, kein CDN, kein Spielprozess) und legt sie nur
-im lokalen Datenordner ab. Ohne Client: selbst erzeugte Koordinatenflächen mit Spawndichte oder eigene importierte Bilder.
+im lokalen Datenordner ab. Die Tabellen-Spaltenlayouts stammen aus
+WoWDBDefs (wowdev); die File-IDs der Tabellen aus der Community-Listfile (wowdev). Ohne Client: selbst erzeugte Koordinatenflächen mit Spawndichte oder eigene importierte Bilder.
 Item-Icons werden nicht geladen.
 
 **Laufzeit-Bibliotheken:** Tauri (MIT/Apache-2.0), React (MIT), Leaflet (BSD-2), TanStack Query (MIT), Zustand (MIT),

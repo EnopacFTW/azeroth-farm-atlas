@@ -253,7 +253,7 @@ export function WorldMap({ zoneId, zoneName, uiMapId, markers, hull, route, rout
             </span>}
       </div>
       <div className="absolute right-2 top-2 z-[500] flex items-start gap-1.5">
-        {zoneId != null && uiMapId && asset.isSuccess && !a && !calibrationOverride && <ClientMapsButton />}
+        {zoneId != null && uiMapId && asset.isSuccess && (!a || isClientMap(a)) && !calibrationOverride && <ClientMapsButton current={a} />}
         {zoneId != null && !calibrationOverride && (
           <button
             type="button"
