@@ -589,7 +589,7 @@ for (const e of COMMUNITY.spots) {
       const named = !!e.mobs && !!n.friendly && !(n.npcFlags > 0) && ![1, 3].includes(n.rank);
       if ((!n.hostile && !named) || n.lmin == null || !tokenOk(n.name, e.mobs)) continue;
       // without mob names the target items select the mobs: only mobs that drop one of them
-      if (!e.mobs && !(lootByNpc.get(n.id) ?? []).some((l) => itemSet.has(l.item) && (l.rate == null || l.rate > 0))) continue;
+      if (!e.mobs && !e.allMobs && !(lootByNpc.get(n.id) ?? []).some((l) => itemSet.has(l.item) && (l.rate == null || l.rate > 0))) continue;
       if (instance) { if (n.zoneId === zid) picked.set(n.id, []); continue; }
       const pts = n.pts.filter((p) => p.zone === zid && near(p));
       if (pts.length) picked.set(n.id, pts);
@@ -607,6 +607,8 @@ for (const e of COMMUNITY.spots) {
     if (hasRare) tags.push('rare');
     if (loot.length) tags.push('materials');
     for (const o of objectives) if (!tags.includes(o)) tags.push(o);
+    // recommended for AoE grinding/farming by the AoE guides (finder filter "AoE spots")
+    if (e.aoe) tags.push('aoe');
     const hasElite = npcs.some((n) => [1, 2, 3].includes(n.rank));
     const names = (lang) => npcs.slice(0, 2).map((n) => (lang === 'de' ? n.de || n.name : n.name)).join(', ') + (npcs.length > 2 ? ` +${npcs.length - 2}` : '');
     const cx = all.length ? all.reduce((s, p) => s + p.x, 0) / all.length : null;

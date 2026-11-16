@@ -27,8 +27,8 @@ Voraussetzungen und Details: [docs/windows-build.md](docs/windows-build.md).
 
 | Ansicht | Funktion |
 |---|---|
-| Farmfinder | Level-Regler 1–60, Klasse, Fraktion, 2 Primärberufe + Skill, Angeln, Farmziele, Filter (solo, Elites, Instanzen, PvP-Risiko, noch XP, verwertbar, Forever-only, nur Community-Tipps), Ergebnisliste mit Eignung, XP/Kill und Kills bis Levelaufstieg, Hauptdrops mit Item-Tooltips, Skill-Status, Karte, „Warum / Warum nicht / Welche Daten fehlen“ |
-| Community-Spots | 174 recherchierte Farmspots aus öffentlichen Guides (Stoff, Leder, XP, Essenzen, Perlen, Erz/Kräuter, Instanz-Runs), gegen Forever-Spawns aufgelöst, mit Quellenlinks |
+| Farmfinder | Level-Regler 1–60, Klasse, Fraktion, 2 Primärberufe + Skill, Angeln, Farmziele, Filter (solo, Elites, Instanzen, PvP-Risiko, noch XP, verwertbar, Forever-only, nur Community-Tipps, nur AoE-Spots), Ergebnisliste mit Eignung, XP/Kill und Kills bis Levelaufstieg, Hauptdrops mit Item-Tooltips, Skill-Status, Karte, „Warum / Warum nicht / Welche Daten fehlen“ |
+| Community-Spots | 198 recherchierte Farmspots aus öffentlichen Guides (Stoff, Leder, XP, AoE-Grinding, Essenzen, Perlen, Erz/Kräuter, Instanz-Runs), gegen Forever-Spawns aufgelöst, mit Quellenlinks |
 | XP | XP pro Kill je Mob und Spot (Classic-Formel, Elite/Ausgeruht), Kills bis zum nächsten Level, Grau-ab-Level |
 | Spot-Detail | Mobs mit NPC-ID/Level/Klasse/Kürschnerbarkeit, Loot getrennt nach Kill/Kürschnern/Knoten/Angeln/Quest mit Chance, Händler- und AH-Preis, Ertragsmodell (gemessen vs. modelliert), `/way`-Kopie, Rare-Drop-Rechner, Session starten |
 | Weltatlas | Kontinent → Zone, Ebenen Spots/Erz/Kräuter/Fischschwärme, Marker nach Skill gefiltert, Zonenkarten mit einem Klick aus der lokalen WoW-Forever-/Classic-Era-Installation übernehmen, alternativ eigene Bilder importieren und ausrichten; ohne Bild Spawndichte als Grundkarte |

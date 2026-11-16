@@ -135,3 +135,23 @@ describe('Classic fallback switch (test 11)', () => {
     expect(s.vendorPerKillCopper).toBeNull();
   });
 });
+
+describe('AoE-Filter und Fraktion (Community-Spots)', () => {
+  const mage: Profile = { ...base, level: 34, class: 'mage', goals: ['xp'] };
+  it('only AoE spots, faction-correct (Go\'Shek for Alliance, Dabyrie for Horde)', () => {
+    const ally = rankSpots(mage, candidates(34), f({ objectives: ['xp'], aoeOnly: true }));
+    expect(ally.length).toBeGreaterThan(2);
+    expect(ally.every((r) => (r.spot.tags as string[]).includes('aoe'))).toBe(true);
+    const ids = ally.map((r) => r.spot.id);
+    expect(ids).toContain('community:aoe-arathi-goshek');
+    expect(ids).not.toContain('community:aoe-arathi-dabyrie');
+    const horde = rankSpots({ ...mage, faction: 'horde' }, candidates(34), f({ objectives: ['xp'], aoeOnly: true })).map((r) => r.spot.id);
+    expect(horde).toContain('community:aoe-arathi-dabyrie');
+    expect(horde).not.toContain('community:aoe-arathi-goshek');
+  });
+  it('community spots carry their guide count', () => {
+    const c = candidates(34).find((s) => s.id === 'community:aoe-arathi-goshek')!;
+    expect(c.communitySources).toBeGreaterThanOrEqual(2);
+    expect(c.farmableBy).toBe('alliance');
+  });
+});

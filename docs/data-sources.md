@@ -10,7 +10,7 @@
 | Dropchancen, Kürschner-/Knoten-/Angelloot, Kreaturtyp, Münzloot, Händlerpreise, Angel-Basisskill | cmangos classic-db `ClassicDB_1_12_1_z2815` (sha256 `4f92db52…`) | `classic_fallback` |
 | Kürschner-Formel, Erz-/Kräuter-Skillgrenzen, Grau-Level | Wowpedia / cmangos `Formulas.h` | `classic_fallback` |
 | XP pro Kill (Basis-XP, Zero-Difference, Elite ×2, Ausgeruht ×2), XP je Level | cmangos `Formulas.h`, warcraft.wiki.gg „Mob experience“ / „Experience to level“; `ExperienceMultiplier` aus cmangos `creature_template` | `classic_fallback` |
-| Community-Farmspots (174) | `scripts/data/community-spots.json`: Warcraft Tavern (Cloth Farming, 1–60 Grinding, Skinning 1–300), Almar's Guides (Classic Farming), wow-professions.com (Leder-Guides), Boostroom (WoW Forever Farming Spots), Method.gg (Herbalism in WoW Forever) | `manual_unverified`, beim Build gegen Forever-Spawns aufgelöst |
+| Community-Farmspots (198, davon 47 AoE) | `scripts/data/community-spots.json`: Warcraft Tavern (Cloth Farming, 1–60 Grinding, Skinning 1–300, Horde Mage Solo AoE), Conquest Capped (WoW Forever Mage Leveling), Legacy-WoW (AoE Mage Grinding Spots), Noob to Boss (Mage AoE Farming), TheGWW (AoE Gold Farms), Almar's Guides (Classic Farming), wow-professions.com (Leder-Guides), Boostroom (WoW Forever Farming Spots), Method.gg (Herbalism in WoW Forever) | `manual_unverified`, beim Build gegen Forever-Spawns aufgelöst |
 | Deutsche Zonennamen, Kontinent, Zonentyp, Zonenkontrolle | `scripts/data/zones.json` (manuell) | `manual_unverified` |
 | AH-Preise, Preisverlauf, Rezepte/Reagenzien | AHledger / auctionhouse.fyi / Blizzard (live) | zeitabhängiger Cache |
 

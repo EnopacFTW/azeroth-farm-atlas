@@ -21,6 +21,8 @@ export interface FinderFilters {
   foreverOnly: boolean;
   /** Only spots recommended by community guides. */
   communityOnly?: boolean;
+  /** Only spots recommended for AoE grinding/farming (tag "aoe", from AoE guides). */
+  aoeOnly?: boolean;
   showUnavailable: boolean;
   maxAbove: number; // highest acceptable mob level above player level
 }
@@ -150,6 +152,12 @@ export function scoreSpot(profile: Profile, spot: SpotCandidate, filters: Finder
     excluded = true;
     whyNot.push(tr('Kein Community-Tipp', 'Not a community pick'));
   }
+  const aoe = (spot.tags as string[]).includes('aoe');
+  if (filters.aoeOnly && !aoe) {
+    excluded = true;
+    whyNot.push(tr('Kein AoE-Spot laut Guides', 'Not an AoE spot according to the guides'));
+  }
+  if (aoe) why.push(tr('AoE-Spot: dichte Gruppen, in AoE-Guides empfohlen', 'AoE spot: dense packs, recommended in AoE guides'));
   if (community) why.push(tr(`Von der Community empfohlen (${community} ${community === 1 ? 'Guide' : 'Guides'}, siehe Details)`, `Recommended by the community (${community} ${community === 1 ? 'guide' : 'guides'}, see details)`));
 
   // ---- hard: elites / instances / solo

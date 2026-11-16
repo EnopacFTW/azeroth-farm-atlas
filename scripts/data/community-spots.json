@@ -102,6 +102,32 @@
       "title": "Herbalism in WoW Forever (1–300)",
       "url": "https://www.method.gg/wow-forever/herbalism-in-wow-forever-leveling-guide-herbalism-items-enchants-trainers",
       "forever": true
+    },
+    "wt_aoe": {
+      "site": "Warcraft Tavern",
+      "title": "Horde Mage Solo AoE Leveling Guide 1–60",
+      "url": "https://warcrafttavern.com/wow-classic/guides/horde-mage-solo-aoe"
+    },
+    "cc_forever_mage": {
+      "site": "Conquest Capped",
+      "title": "WoW Forever Mage Leveling (AoE spots)",
+      "url": "https://conquestcapped.com/guides/wow-forever/wow-forever-mage-leveling/",
+      "forever": true
+    },
+    "legacy_aoe": {
+      "site": "Legacy-WoW",
+      "title": "Classic AoE Mage Grinding Spots",
+      "url": "https://legacy-wow.com/?p=14358"
+    },
+    "ntb_aoe": {
+      "site": "Noob to Boss",
+      "title": "WoW Classic Mage AoE Farming Guide",
+      "url": "https://noobtoboss.com/wow-classic-mage-aoe-farming-guide/"
+    },
+    "gww_aoe": {
+      "site": "TheGWW",
+      "title": "Best AoE Gold Farms in WoW Classic",
+      "url": "https://thegww.com/best-aoe-gold-farms-in-wow-classic/"
     }
   },
   "spots": [
@@ -425,10 +451,14 @@
       ],
       "src": [
         "wt_cloth",
-        "wt_grind"
+        "wt_grind",
+        "legacy_aoe",
+        "ntb_aoe",
+        "cc_forever_mage"
       ],
       "en": "Skeletons at Raven Hill Cemetery; wool and silk, good XP at 23–27.",
-      "de": "Skelette am Friedhof von Rabenflucht; Wolle und Seide, gute XP mit 23–27."
+      "de": "Skelette am Friedhof von Rabenflucht; Wolle und Seide, gute XP mit 23–27.",
+      "aoe": true
     },
     {
       "id": "wool-duskwood-worgen",
@@ -443,10 +473,13 @@
         "cloth"
       ],
       "src": [
-        "almar"
+        "almar",
+        "legacy_aoe",
+        "cc_forever_mage"
       ],
       "en": "Nightbane worgen across Duskwood (Alliance).",
-      "de": "Nachtfluch-Worgen in Dämmerwald (Allianz)."
+      "de": "Nachtfluch-Worgen in Dämmerwald (Allianz).",
+      "aoe": true
     },
     {
       "id": "wool-duskwood-ogres",
@@ -486,10 +519,14 @@
         "cloth"
       ],
       "src": [
-        "wt_cloth"
+        "wt_cloth",
+        "wt_aoe",
+        "cc_forever_mage",
+        "ntb_aoe"
       ],
       "en": "Farmers, peasants and footmen in the Hillsbrad Fields (Horde).",
-      "de": "Bauern, Knechte und Fußsoldaten auf den Feldern von Hillsbrad (Horde)."
+      "de": "Bauern, Knechte und Fußsoldaten auf den Feldern von Hillsbrad (Horde).",
+      "aoe": true
     },
     {
       "id": "wool-hillsbrad-durnholde",
@@ -813,10 +850,13 @@
         "cloth"
       ],
       "src": [
-        "wt_cloth"
+        "wt_cloth",
+        "wt_aoe",
+        "cc_forever_mage"
       ],
       "en": "Miners in the Azurelode Mine.",
-      "de": "Minenarbeiter in der Azurmine."
+      "de": "Minenarbeiter in der Azurmine.",
+      "aoe": true
     },
     {
       "id": "silk-needles-galak",
@@ -910,10 +950,12 @@
         "cloth"
       ],
       "src": [
-        "wt_cloth"
+        "wt_cloth",
+        "wt_aoe"
       ],
       "en": "Venture Co. at Lake Nazferiti.",
-      "de": "Venture Co. am Nazferitisee."
+      "de": "Venture Co. am Nazferitisee.",
+      "aoe": true
     },
     {
       "id": "silk-arathi-boulderfist",
@@ -946,10 +988,12 @@
         "cloth"
       ],
       "src": [
-        "wt_cloth"
+        "wt_cloth",
+        "wt_aoe"
       ],
       "en": "Syndicate in north-west Arathi.",
-      "de": "Syndikat im Nordwesten des Arathihochlands."
+      "de": "Syndikat im Nordwesten des Arathihochlands.",
+      "aoe": true
     },
     {
       "id": "silk-arathi-drywhisker",
@@ -1016,10 +1060,12 @@
       ],
       "src": [
         "wt_cloth",
-        "almar"
+        "almar",
+        "wt_aoe"
       ],
       "en": "Library and Armory are the usual silk/mageweave runs.",
-      "de": "Bibliothek und Waffenkammer sind die üblichen Seide-/Magiestoff-Runs."
+      "de": "Bibliothek und Waffenkammer sind die üblichen Seide-/Magiestoff-Runs.",
+      "aoe": true
     },
     {
       "id": "silk-razorfen-downs",
@@ -1064,10 +1110,12 @@
         "cloth"
       ],
       "src": [
-        "wt_cloth"
+        "wt_cloth",
+        "wt_aoe"
       ],
       "en": "Humanoids drop silk and mageweave.",
-      "de": "Humanoiden droppen Seide und Magiestoff."
+      "de": "Humanoiden droppen Seide und Magiestoff.",
+      "aoe": true
     },
     {
       "id": "mageweave-azshara-highborne",
@@ -1365,10 +1413,14 @@
       "src": [
         "wt_cloth",
         "almar",
-        "wt_grind"
+        "wt_grind",
+        "wt_aoe",
+        "legacy_aoe",
+        "cc_forever_mage"
       ],
       "en": "Southsea pirates on the east coast (Lost Rigger Cove); XP at 45–48.",
-      "de": "Südmeerpiraten an der Ostküste (Bucht des Verlorenen Riggers); XP mit 45–48."
+      "de": "Südmeerpiraten an der Ostküste (Bucht des Verlorenen Riggers); XP mit 45–48.",
+      "aoe": true
     },
     {
       "id": "mageweave-tanaris-wastewander",
@@ -1383,10 +1435,13 @@
         "cloth"
       ],
       "src": [
-        "wt_cloth"
+        "wt_cloth",
+        "wt_aoe",
+        "cc_forever_mage"
       ],
       "en": "Wastewander bandits east of Gadgetzan.",
-      "de": "Wüstenwanderer östlich von Gadgetzan."
+      "de": "Wüstenwanderer östlich von Gadgetzan.",
+      "aoe": true
     },
     {
       "id": "mageweave-tanaris-sandfury",
@@ -1568,10 +1623,12 @@
         "cloth"
       ],
       "src": [
-        "almar"
+        "almar",
+        "cc_forever_mage"
       ],
       "en": "Scarlet Crusade at Tyr's Hand.",
-      "de": "Scharlachroter Kreuzzug in Tyrs Hand."
+      "de": "Scharlachroter Kreuzzug in Tyrs Hand.",
+      "aoe": true
     },
     {
       "id": "rune-wpl-andorhal",
@@ -1588,10 +1645,12 @@
         "cloth"
       ],
       "src": [
-        "almar"
+        "almar",
+        "gww_aoe"
       ],
       "en": "Undead in the ruins of Andorhal.",
-      "de": "Untote in den Ruinen von Andorhal."
+      "de": "Untote in den Ruinen von Andorhal.",
+      "aoe": true
     },
     {
       "id": "rune-wpl-felstone",
@@ -1609,10 +1668,12 @@
       ],
       "src": [
         "almar",
-        "boostroom"
+        "boostroom",
+        "ntb_aoe"
       ],
       "en": "Felstone Field: dense, lower-level undead.",
-      "de": "Teufelssteinfeld: dichte, niedrigere Untote."
+      "de": "Teufelssteinfeld: dichte, niedrigere Untote.",
+      "aoe": true
     },
     {
       "id": "rune-wpl-dalsons",
@@ -1631,10 +1692,13 @@
       ],
       "src": [
         "boostroom",
-        "wt_grind"
+        "wt_grind",
+        "wt_aoe",
+        "legacy_aoe"
       ],
       "en": "Dalson's Tears: dense undead camp.",
-      "de": "Dalsons Tränen: dichtes Untoten-Lager."
+      "de": "Dalsons Tränen: dichtes Untoten-Lager.",
+      "aoe": true
     },
     {
       "id": "rune-wpl-sorrow-hill",
@@ -1652,10 +1716,14 @@
         "cloth"
       ],
       "src": [
-        "wt_grind"
+        "wt_grind",
+        "wt_aoe",
+        "legacy_aoe",
+        "ntb_aoe"
       ],
       "en": "Sorrow Hill ghouls and skeletons; XP at 51–53.",
-      "de": "Ghule und Skelette am Kummerhügel; XP mit 51–53."
+      "de": "Ghule und Skelette am Kummerhügel; XP mit 51–53.",
+      "aoe": true
     },
     {
       "id": "rune-felwood-deadwood-north",
@@ -1677,10 +1745,12 @@
       ],
       "src": [
         "wt_cloth",
-        "wt_grind"
+        "wt_grind",
+        "wt_aoe"
       ],
       "en": "Northern Deadwood furbolgs (Felpaw Village); XP at 54–55.",
-      "de": "Nördliche Totenwald-Furbolgs (Dorf der Teufelspfoten); XP mit 54–55."
+      "de": "Nördliche Totenwald-Furbolgs (Dorf der Teufelspfoten); XP mit 54–55.",
+      "aoe": true
     },
     {
       "id": "rune-felwood-jadefire-run",
@@ -1922,10 +1992,12 @@
         "skinning"
       ],
       "src": [
-        "wt_grind"
+        "wt_grind",
+        "wt_aoe"
       ],
       "en": "Wyverns at Highperch (27–32), skinnable.",
-      "de": "Wyvern am Hochhorst (27–32), kürschnerbar."
+      "de": "Wyvern am Hochhorst (27–32), kürschnerbar.",
+      "aoe": true
     },
     {
       "id": "xp-stv-nessingwary",
@@ -1960,10 +2032,12 @@
         "xp"
       ],
       "src": [
-        "wt_grind"
+        "wt_grind",
+        "wt_aoe"
       ],
       "en": "Lesser rock elementals in the Dustbowl (37–41).",
-      "de": "Geringe Felselementare im Staubkessel (37–41)."
+      "de": "Geringe Felselementare im Staubkessel (37–41).",
+      "aoe": true
     },
     {
       "id": "xp-badlands-rock",
@@ -1977,10 +2051,12 @@
         "xp"
       ],
       "src": [
-        "wt_grind"
+        "wt_grind",
+        "wt_aoe"
       ],
       "en": "Rock elementals at the Mirage Flats (38–42).",
-      "de": "Felselementare in den Spiegelungsebenen (38–42)."
+      "de": "Felselementare in den Spiegelungsebenen (38–42).",
+      "aoe": true
     },
     {
       "id": "xp-badlands-greater-rock",
@@ -1993,10 +2069,12 @@
         "xp"
       ],
       "src": [
-        "wt_grind"
+        "wt_grind",
+        "wt_aoe"
       ],
       "en": "Greater rock elementals near Camp Cagg (41–45).",
-      "de": "Große Felselementare beim Lager Cagg (41–45)."
+      "de": "Große Felselementare beim Lager Cagg (41–45).",
+      "aoe": true
     },
     {
       "id": "xp-stv-vile-reef",
@@ -2252,10 +2330,12 @@
         "skinning"
       ],
       "src": [
-        "wp_medium"
+        "wp_medium",
+        "ntb_aoe"
       ],
       "en": "Rotting Orchard and Roland's Doom; named the best medium leather spot.",
-      "de": "Verfaulter Obsthain und Rolands Verderben; als bester Spot für mittleres Leder genannt."
+      "de": "Verfaulter Obsthain und Rolands Verderben; als bester Spot für mittleres Leder genannt.",
+      "aoe": true
     },
     {
       "id": "leather-ashenvale-terrowulf",
@@ -2430,10 +2510,12 @@
         "skinning"
       ],
       "src": [
-        "wp_thick"
+        "wp_thick",
+        "wt_aoe"
       ],
       "en": "Ravasaurs; thick leather.",
-      "de": "Ravasaurier; dickes Leder."
+      "de": "Ravasaurier; dickes Leder.",
+      "aoe": true
     },
     {
       "id": "leather-searing-incendosaur",
@@ -2822,10 +2904,12 @@
         "rare"
       ],
       "src": [
-        "almar_pearl"
+        "almar_pearl",
+        "wt_aoe"
       ],
       "en": "Saltwater snapjaws: Golden Pearl; beach next to the Horde town.",
-      "de": "Salzwasserschnapper: Goldperle; Strand neben dem Horde-Ort."
+      "de": "Salzwasserschnapper: Goldperle; Strand neben dem Horde-Ort.",
+      "aoe": true
     },
     {
       "id": "mat-azshara-clams",
@@ -3216,6 +3300,436 @@
       ],
       "en": "Goldthorn, Khadgar's Whisker, Fadeleaf, Wild Steelbloom.",
       "de": "Golddorn, Khadgars Schnurrbart, Blassblatt, Wildstahlblume."
+    },
+    {
+      "id": "aoe-arathi-dabyrie",
+      "zone": "Arathi Highlands",
+      "mobs": [
+        "Dabyrie"
+      ],
+      "objectives": [
+        "xp"
+      ],
+      "src": [
+        "wt_aoe",
+        "ntb_aoe",
+        "cc_forever_mage"
+      ],
+      "en": "Dabyrie's Farmstead farmers (Horde): ~30k XP/h quoted at 30–36.",
+      "de": "Bauern auf Dabyries Gehöft (Horde): ~30k XP/h bei 30–36 genannt.",
+      "aoe": true
+    },
+    {
+      "id": "aoe-arathi-goshek",
+      "zone": "Arathi Highlands",
+      "mobs": [
+        "Hammerfall",
+        "Go'shek"
+      ],
+      "at": [
+        59,
+        54
+      ],
+      "r": 8,
+      "objectives": [
+        "xp"
+      ],
+      "src": [
+        "ntb_aoe",
+        "cc_forever_mage",
+        "legacy_aoe"
+      ],
+      "en": "Orc peons at Go'Shek Farm (Alliance), 33–37.",
+      "de": "Orc-Arbeiter auf dem Hof Go'Shek (Allianz), 33–37.",
+      "aoe": true
+    },
+    {
+      "id": "aoe-hillsbrad-torn-fin",
+      "zone": "Hillsbrad Foothills",
+      "mobs": [
+        "Torn Fin"
+      ],
+      "objectives": [
+        "xp"
+      ],
+      "src": [
+        "wt_aoe",
+        "legacy_aoe"
+      ],
+      "en": "Torn Fin murlocs on the Western Strand (30–32); avoid the casters.",
+      "de": "Torn-Fin-Murlocs am Weststrand (30–32); Zauberwirker meiden.",
+      "aoe": true
+    },
+    {
+      "id": "aoe-alterac-corrahns-dagger",
+      "zone": "Alterac Mountains",
+      "mobs": [
+        "Syndicate"
+      ],
+      "at": [
+        48.5,
+        82.9
+      ],
+      "r": 7,
+      "objectives": [
+        "xp",
+        "cloth"
+      ],
+      "src": [
+        "wt_aoe"
+      ],
+      "en": "Syndicate at Corrahn's Dagger (32–34); avoid ranged mobs.",
+      "de": "Syndikat bei Corrahns Dolch (32–34); Fernkämpfer meiden.",
+      "aoe": true
+    },
+    {
+      "id": "aoe-dustwallow-murlocs",
+      "zone": "Dustwallow Marsh",
+      "mobs": [
+        "Mirefin"
+      ],
+      "objectives": [
+        "xp"
+      ],
+      "src": [
+        "wt_aoe",
+        "legacy_aoe",
+        "cc_forever_mage"
+      ],
+      "en": "Mirefin murlocs on the north-east islands (36–42).",
+      "de": "Mirefin-Murlocs auf den Inseln im Nordosten (36–42).",
+      "aoe": true
+    },
+    {
+      "id": "aoe-dustwallow-spiders",
+      "zone": "Dustwallow Marsh",
+      "mobs": [
+        "Darkfang"
+      ],
+      "objectives": [
+        "xp"
+      ],
+      "src": [
+        "wt_aoe"
+      ],
+      "en": "Darkfang spiders in the north-west (35–41).",
+      "de": "Dunkelzahnspinnen im Nordwesten (35–41).",
+      "aoe": true
+    },
+    {
+      "id": "aoe-dustwallow-bloodfen",
+      "zone": "Dustwallow Marsh",
+      "mobs": [
+        "Bloodfen"
+      ],
+      "objectives": [
+        "xp",
+        "skinning"
+      ],
+      "src": [
+        "wt_aoe"
+      ],
+      "en": "Bloodfen raptors in the north (35–41).",
+      "de": "Blutsumpfraptoren im Norden (35–41).",
+      "aoe": true
+    },
+    {
+      "id": "aoe-needles-shimmering-flats",
+      "zone": "Thousand Needles",
+      "mobs": [
+        "Salt Flats",
+        "Sparkleshell"
+      ],
+      "objectives": [
+        "xp"
+      ],
+      "src": [
+        "wt_aoe"
+      ],
+      "en": "Beasts on the Shimmering Flats (34–35).",
+      "de": "Wildtiere auf den Schimmernden Ebenen (34–35).",
+      "aoe": true
+    },
+    {
+      "id": "aoe-swamp-marsh-murlocs",
+      "zone": "Swamp of Sorrows",
+      "mobs": [
+        "Marsh"
+      ],
+      "objectives": [
+        "xp"
+      ],
+      "src": [
+        "wt_aoe"
+      ],
+      "en": "Murlocs on the south-east coast; 60–80k XP/h quoted at 42–47.",
+      "de": "Murlocs an der Südostküste; 60–80k XP/h bei 42–47 genannt.",
+      "aoe": true
+    },
+    {
+      "id": "aoe-hinterlands-sludges",
+      "zone": "The Hinterlands",
+      "mobs": [
+        "Green Sludge",
+        "Jade Ooze"
+      ],
+      "objectives": [
+        "xp"
+      ],
+      "src": [
+        "wt_aoe"
+      ],
+      "en": "Green sludges and jade oozes (45–48).",
+      "de": "Grüne Schlämme und Jadeschlämme (45–48).",
+      "aoe": true
+    },
+    {
+      "id": "aoe-blasted-nethergarde",
+      "zone": "Blasted Lands",
+      "mobs": [
+        "Nethergarde"
+      ],
+      "objectives": [
+        "xp"
+      ],
+      "src": [
+        "wt_aoe"
+      ],
+      "en": "Nethergarde miners and soldiers (Horde, 47–54); avoid the clerics.",
+      "de": "Netherwache-Minenarbeiter und -Soldaten (Horde, 47–54); Kleriker meiden.",
+      "aoe": true
+    },
+    {
+      "id": "aoe-wpl-northridge",
+      "zone": "Western Plaguelands",
+      "mobs": [
+        "Scarlet"
+      ],
+      "at": [
+        48,
+        32
+      ],
+      "r": 7,
+      "objectives": [
+        "xp",
+        "cloth"
+      ],
+      "src": [
+        "wt_aoe"
+      ],
+      "en": "Scarlet Crusade at the Northridge Lumber Camp (55–56).",
+      "de": "Scharlachroter Kreuzzug im Holzfällerlager Nordwacht (55–56).",
+      "aoe": true
+    },
+    {
+      "id": "aoe-wpl-hearthglen",
+      "zone": "Western Plaguelands",
+      "mobs": [
+        "Scarlet"
+      ],
+      "at": [
+        46,
+        15
+      ],
+      "r": 9,
+      "objectives": [
+        "xp",
+        "cloth"
+      ],
+      "src": [
+        "wt_aoe",
+        "legacy_aoe",
+        "ntb_aoe"
+      ],
+      "en": "Scarlet Crusade in Hearthglen (57+); avoid the elite patrols.",
+      "de": "Scharlachroter Kreuzzug in Herdweiler (57+); Elite-Patrouillen meiden.",
+      "aoe": true
+    },
+    {
+      "id": "aoe-silithus-dredge-scorpids",
+      "zone": "Silithus",
+      "mobs": [
+        "Dredge Crusher",
+        "Stonelash"
+      ],
+      "objectives": [
+        "xp"
+      ],
+      "src": [
+        "wt_aoe"
+      ],
+      "en": "Dredge crushers and scorpids (56–58), ~50k XP/h quoted at 59.",
+      "de": "Schlickzermalmer und Skorpide (56–58), ~50k XP/h bei 59 genannt.",
+      "aoe": true
+    },
+    {
+      "id": "aoe-felwood-oozes",
+      "zone": "Felwood",
+      "mobs": [
+        "Cursed Ooze",
+        "Tainted Ooze"
+      ],
+      "objectives": [
+        "xp"
+      ],
+      "src": [
+        "wt_aoe"
+      ],
+      "en": "Cursed and tainted oozes in front of Jaedenar (49–52).",
+      "de": "Verfluchte und verseuchte Schlämme vor Jaedenar (49–52).",
+      "aoe": true
+    },
+    {
+      "id": "aoe-wetlands-mosshide",
+      "zone": "Wetlands",
+      "mobs": [
+        "Mosshide"
+      ],
+      "objectives": [
+        "xp"
+      ],
+      "src": [
+        "ntb_aoe",
+        "cc_forever_mage",
+        "legacy_aoe"
+      ],
+      "en": "Mosshide gnolls (22–26); less crowded for Alliance.",
+      "de": "Mosshide-Gnolle (22–26); für die Allianz weniger überlaufen.",
+      "aoe": true
+    },
+    {
+      "id": "aoe-darkshore-blackwood",
+      "zone": "Darkshore",
+      "mobs": [
+        "Blackwood"
+      ],
+      "objectives": [
+        "xp"
+      ],
+      "src": [
+        "cc_forever_mage"
+      ],
+      "en": "Blackwood furbolgs (10–20 AoE spot in Forever guides).",
+      "de": "Blackwood-Furbolgs (AoE-Spot 10–20 laut Forever-Guide).",
+      "aoe": true
+    },
+    {
+      "id": "aoe-barrens-lions-plainstriders",
+      "zone": "The Barrens",
+      "mobs": [
+        "Savannah",
+        "Plainstrider"
+      ],
+      "objectives": [
+        "xp",
+        "skinning"
+      ],
+      "src": [
+        "cc_forever_mage",
+        "wt_grind"
+      ],
+      "en": "Lions and plainstriders around the Crossroads (10–20).",
+      "de": "Löwen und Ebenenschreiter rund um das Wegekreuz (10–20).",
+      "aoe": true
+    },
+    {
+      "id": "aoe-westfall-defias",
+      "zone": "Westfall",
+      "mobs": [
+        "Defias"
+      ],
+      "objectives": [
+        "xp",
+        "cloth"
+      ],
+      "src": [
+        "cc_forever_mage"
+      ],
+      "en": "Defias camps, AoE from level 14.",
+      "de": "Defias-Lager, AoE ab Level 14.",
+      "aoe": true
+    },
+    {
+      "id": "aoe-zf-graveyard",
+      "zone": "Zul'Farrak",
+      "objectives": [
+        "gold",
+        "xp"
+      ],
+      "src": [
+        "gww_aoe",
+        "wt_aoe"
+      ],
+      "en": "Graveyard undead before the first boss (summoned, not in the spawn data): mage gold farm from 42 (vendor loot + BoEs).",
+      "de": "Untote am Friedhof vor dem ersten Boss (beschworen, nicht in den Spawndaten): Magier-Goldfarm ab 42 (Händlerloot + BoEs).",
+      "aoe": true,
+      "allMobs": true
+    },
+    {
+      "id": "aoe-dme-lashers",
+      "zone": "Dire Maul",
+      "mobs": [
+        "Whip Lasher"
+      ],
+      "objectives": [
+        "gold",
+        "herbalism"
+      ],
+      "src": [
+        "gww_aoe"
+      ],
+      "en": "Dire Maul East lashers in the Conservatory: herbs, ~60 g/h quoted.",
+      "de": "Peitscher im Konservatorium von Düsterbruch Ost: Kräuter, ~60 g/h genannt.",
+      "aoe": true
+    },
+    {
+      "id": "aoe-dmn-hounds",
+      "zone": "Dire Maul",
+      "mobs": [
+        "Gordok Mastiff"
+      ],
+      "objectives": [
+        "skinning",
+        "gold"
+      ],
+      "src": [
+        "gww_aoe"
+      ],
+      "en": "Gordok mastiffs in Dire Maul North: rugged leather (skinning ~280).",
+      "de": "Gordok-Doggen in Düsterbruch Nord: robustes Leder (Kürschnern ~280).",
+      "aoe": true
+    },
+    {
+      "id": "aoe-sunken-temple-dragonkin",
+      "zone": "The Temple of Atal'Hakkar",
+      "mobs": [
+        "Nightmare"
+      ],
+      "objectives": [
+        "gold",
+        "skinning"
+      ],
+      "src": [
+        "gww_aoe"
+      ],
+      "en": "Dragonkin around the Pit of Sacrifice and Chamber of the Dreamer; 60–80 g/h quoted.",
+      "de": "Drachkin um die Opfergrube und die Kammer des Träumers; 60–80 g/h genannt.",
+      "aoe": true
+    },
+    {
+      "id": "aoe-maraudon",
+      "zone": "Maraudon",
+      "allMobs": true,
+      "objectives": [
+        "xp",
+        "gold"
+      ],
+      "src": [
+        "wt_aoe"
+      ],
+      "en": "Maraudon AoE farm (needs the scepter from the Maraudon quests); up to ~80k XP/h quoted at 50.",
+      "de": "Maraudon-AoE-Farm (braucht das Zepter aus den Maraudon-Quests); bis ~80k XP/h bei 50 genannt.",
+      "aoe": true
     }
   ]
 }

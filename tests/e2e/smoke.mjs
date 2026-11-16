@@ -207,6 +207,20 @@ await check('Community-Spot: Quellen, XP-Panel, Instanz ohne Karte', async () =>
   return `${sources} Quellen, Instanzansicht ok`;
 });
 
+await check('Filter „Nur AoE-Spots“ zeigt nur AoE-Spots', async () => {
+  await go('#/finder');
+  await page.getByText('passende Spots').waitFor();
+  const adv = page.getByRole('button', { name: /Erweitert/ });
+  if (!(await page.getByLabel('Nur AoE-Spots').isVisible().catch(() => false))) await adv.click();
+  await page.getByLabel('Nur AoE-Spots').check();
+  await page.waitForTimeout(1500);
+  const cards = await page.locator('article').count();
+  const aoe = await page.locator('article:has-text("AoE")').count();
+  await page.getByLabel('Nur AoE-Spots').uncheck();
+  if (!cards || cards !== aoe) throw new Error(`${aoe}/${cards} Karten mit AoE-Badge`);
+  return `${cards} AoE-Spots`;
+});
+
 await go('#/finder');
 await browser.close();
 const failed = results.filter((r) => !r.ok);

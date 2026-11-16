@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Columns3, Drill, Fish, Leaf, MapPin, PawPrint, Shirt, Skull, Star, Users } from 'lucide-react';
+import { Columns3, Drill, Fish, Flame, Leaf, MapPin, PawPrint, Shirt, Skull, Star, Users } from 'lucide-react';
 import type { ScoredSpot } from '@/domain/scoring';
 import { pct } from '@/domain/scoring';
 import { formatCopper } from '@/domain/money';
@@ -62,6 +62,7 @@ export function SpotCard({ s, active, favorite, inCompare, onSelect, onFavorite,
         </div>
       </div>
       <div className="mt-2 flex flex-wrap gap-1">
+        {(sp.tags as string[]).includes('aoe') && <Badge tone="warn" title={tr('In AoE-Guides für Gruppen-Pulls empfohlen', 'Recommended for pack pulls in AoE guides')}><Flame className="size-3" /> AoE</Badge>}
         {sp.communitySources ? <Badge tone="info" title={tr('In recherchierten Farmguides empfohlen – Quellen in den Details', 'Recommended in researched farming guides – sources in the details')}><Users className="size-3" /> Community</Badge> : null}
         {sp.farmableBy && <Badge tone="warn">{sp.farmableBy === 'horde' ? tr('Nur Horde', 'Horde only') : tr('Nur Allianz', 'Alliance only')}</Badge>}
         {sp.hasElite ? <Badge tone="bad"><Skull className="size-3" /> Elite</Badge> : null}

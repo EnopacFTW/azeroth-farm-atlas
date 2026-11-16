@@ -99,6 +99,7 @@ export function SpotDetailPage() {
               <SourceBadge source="questiedb_forever" />
               {s.generated ? <SourceBadge source="atlas_clustering" /> : null}
               {d.sources.length > 0 && <SourceBadge source="community_guides" />}
+              {(s.tags as string[]).includes('aoe') && <Badge tone="warn" title={tr('In Forever verlangsamt Blizzard weniger als in Classic', 'In Forever, Blizzard slows less than in Classic')}>{tr('AoE-Spot', 'AoE spot')}</Badge>}
               {s.farmableBy && <Badge tone="warn">{s.farmableBy === 'horde' ? tr('Nur Horde (Mobs sind der Allianz freundlich)', 'Horde only (mobs are friendly to the Alliance)') : tr('Nur Allianz (Mobs sind der Horde freundlich)', 'Alliance only (mobs are friendly to the Horde)')}</Badge>}
               {scored && <Badge tone={scored.availability === 'ready' ? 'ok' : 'warn'}>{scored.availability === 'ready' ? tr('Sofort farmbar', 'Farmable now') : tr('Eingeschränkt – siehe „Warum nicht?“', 'Restricted – see “Why not?”')}</Badge>}
             </div>

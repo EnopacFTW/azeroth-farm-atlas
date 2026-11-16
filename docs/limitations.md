@@ -19,6 +19,9 @@
   ist vereinfacht (gleichmäßige Teilung). Forever-Änderungen an der XP-Kurve sind nicht berücksichtigt.
 - Item-Tooltips zeigen lokale Daten (Qualität, Itemlevel, Händlerpreis, beste Quellen) und den gecachten AH-Preis; Werte
   der Forever-Itemisierung (neue Stats) sind nicht enthalten → dafür der Wowhead-Link.
+- AoE-Spots (Filter „Nur AoE-Spots“) stammen aus Magier-AoE-Guides. In Forever verlangsamt Blizzard weniger als in Classic
+  (laut Conquest Capped ein voller Blizzard pro Pull), daher sind die Spots ein Ausgangspunkt. Beschworene Mobs (z. B. die
+  Friedhofs-Untoten in Zul'Farrak) fehlen in den Spawndaten; der Instanz-Spot zeigt dann alle Instanz-Mobs.
 - Community-Spots stammen überwiegend aus Classic-Guides; sie sind gegen Forever-Spawns aufgelöst, aber nicht im Spiel
   geprüft. Instanz-Spots haben keine Karte (keine Spawnkoordinaten in den Forever-Daten).
 - Neutrale Mobs (QuestieDB „freundlich zu A und H“) gelten als angreifbar, wenn sie keine Humanoiden sind und Classic-Loot

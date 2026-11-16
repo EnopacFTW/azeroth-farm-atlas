@@ -113,6 +113,7 @@ export function ProfileBar() {
           {toggle('lowPvpRisk', tr('Geringes PvP-Risiko', 'Low PvP risk'), tr('Schließt Feindgebiet auf PvP-/RP-PvP-Rulesets aus (Classic-Zonenkontrolle)', 'Excludes enemy territory on PvP/RP-PvP rulesets (Classic zone control)'))}
           {toggle('requireXp', tr('Noch XP vom Gegner', 'Mobs still give XP'), tr('Blendet graue Mobs aus (Classic-Formel)', 'Hides gray mobs (Classic formula)'))}
           {toggle('usableForMe', tr('Bei mir verwertbar', 'Usable for me'), tr('Nur Spots mit Materialien für deine Handwerksberufe', 'Only spots with materials for your crafting professions'))}
+          {toggle('aoeOnly', tr('Nur AoE-Spots', 'AoE spots only'), tr('Nur Spots, die AoE-Guides für Gruppen-Pulls empfehlen (meist Magier). In Forever verlangsamt Blizzard weniger – Classic-Spots sind ein Ausgangspunkt.', 'Only spots that AoE guides recommend for pack pulls (mostly mages). In Forever, Blizzard slows less – Classic spots are a starting point.'))}
           {toggle('communityOnly', tr('Nur Community-Tipps', 'Community picks only'), tr('Nur Spots, die in recherchierten Farmguides empfohlen werden (Quellen im Spot)', 'Only spots recommended in researched farming guides (sources in the spot)'))}
           {toggle('foreverOnly', tr('Nur Forever-Daten', 'Forever data only'), tr('Ignoriert Classic-Fallback (Dropchancen, Kürschnerbarkeit, Münzloot)', 'Ignores Classic fallback (drop rates, skinnability, coin loot)'))}
           {toggle('showUnavailable', tr('Noch nicht farmbar anzeigen', 'Show not-yet-farmable'))}

@@ -1,6 +1,6 @@
 # Coverage-Report (automatisch erzeugt)
 
-Build: 2026-11-16T23:26:36.212Z  ·  Seed SHA-256: `eb16d9b11a3a56a5…`
+Build: 2026-11-16T23:43:18.317Z  ·  Seed SHA-256: `2834914d97924855…`
 
 ## Datensätze
 
@@ -15,25 +15,25 @@ Build: 2026-11-16T23:26:36.212Z  ·  Seed SHA-256: `eb16d9b11a3a56a5…`
 | lootRows | 316092 |
 | lootRowsForeverRelation | 161687 |
 | lootRowsClassicWithRate | 154405 |
-| spots | 1880 |
+| spots | 1904 |
 | curatedRoutes | 0 |
-| communitySpots | 174 |
+| communitySpots | 198 |
 | skippedLootReferences | 19125 |
 
 ## Spots je Levelband und Farmziel (offene Welt)
 
 | Band | xp | gold | cloth | skinning | mining | herbalism | fishing | rare |
 |---|---|---|---|---|---|---|---|---|
-| 1-10 | 198 | 110 | 110 | 73 | 5 | 20 | 7 | 19 |
-| 11-20 | 322 | 192 | 188 | 113 | 37 | 70 | 19 | 62 |
-| 21-30 | 271 | 162 | 152 | 103 | 57 | 76 | 19 | 98 |
-| 31-40 | 276 | 152 | 127 | 109 | 70 | 84 | 13 | 193 |
-| 41-50 | 293 | 167 | 118 | 121 | 66 | 78 | 13 | 204 |
-| 51-60 | 296 | 193 | 138 | 119 | 68 | 78 | 15 | 217 |
+| 1-10 | 200 | 111 | 111 | 74 | 5 | 20 | 7 | 19 |
+| 11-20 | 326 | 195 | 191 | 114 | 37 | 70 | 19 | 62 |
+| 21-30 | 276 | 166 | 156 | 104 | 57 | 76 | 19 | 98 |
+| 31-40 | 284 | 157 | 131 | 111 | 70 | 84 | 13 | 193 |
+| 41-50 | 299 | 171 | 121 | 122 | 66 | 78 | 13 | 204 |
+| 51-60 | 301 | 197 | 141 | 120 | 68 | 78 | 15 | 218 |
 
 ## Community-Spots
 
-Aufgelöst: 174
+Aufgelöst: 198
 
 
 ## Quellen
