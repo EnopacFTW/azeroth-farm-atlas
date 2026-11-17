@@ -1,4 +1,6 @@
-# Azeroth Farm Atlas
+# FarmForever
+
+*Bis Version 0.4.x hieß die App „Azeroth Farm Atlas“; Daten und Einstellungen werden beim Update übernommen.*
 
 Windows-Desktop-App (Tauri 2 · Rust · React/TypeScript · SQLite) für **World of Warcraft: Forever, Level 1–60**:
 Farmfinder für XP, Gold, Stoff, Leder, Bergbau, Kräuter, Angeln und Rares mit belegten Forever-Spawns, Skillprüfung,
@@ -20,7 +22,7 @@ npm run data:build   # erzeugt src-tauri/resources/seed.db (nicht im Repo)
 npm run tauri dev
 ```
 
-Installer bauen: `npm run tauri build` → `src-tauri\target\release\bundle\nsis\Azeroth Farm Atlas_0.1.0_x64-setup.exe`.
+Installer bauen: `npm run tauri build` → `src-tauri\target\release\bundle\nsis\FarmForever_0.1.0_x64-setup.exe`.
 Voraussetzungen und Details: [docs/windows-build.md](docs/windows-build.md).
 
 ## Was die App kann

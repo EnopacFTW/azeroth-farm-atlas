@@ -42,7 +42,7 @@ pub async fn list_watchlist(state: State<'_, AppState>, profile_id: String) -> A
 /// Consistent SQLite backup of user.db via VACUUM INTO to a user-chosen file.
 #[tauri::command]
 pub async fn backup_user_data(app: AppHandle, state: State<'_, AppState>) -> AppResult<Option<String>> {
-    let name = format!("azeroth-farm-atlas-backup-{}.db", chrono::Utc::now().format("%Y%m%d-%H%M"));
+    let name = format!("farmforever-backup-{}.db", chrono::Utc::now().format("%Y%m%d-%H%M"));
     let Some(path) = app.dialog().file().add_filter("SQLite", &["db"]).set_file_name(&name).blocking_save_file() else {
         return Ok(None);
     };

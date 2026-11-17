@@ -7,6 +7,7 @@ import { useActiveProfile, useProfiles, useSaveSettings } from '@/services/hooks
 import { marketLabel } from '@/domain/market';
 import { getLang, nm, nmAlt, tr, type Lang } from '@/i18n';
 import { providerName } from './data';
+import { classLabel } from './ProfileBar';
 import { UpdateBanner } from './UpdateBanner';
 import { cx, Kbd } from './ui';
 
@@ -52,7 +53,7 @@ function GlobalSearch() {
   const kindLabel = { item: 'Item', npc: 'NPC', zone: 'Zone', object: tr('Knoten', 'Node') } as const;
   return (
     <div className="relative w-[min(520px,40vw)]">
-      <Search className="pointer-events-none absolute left-2.5 top-2 size-4 text-faint" />
+      <Search className="pointer-events-none absolute left-3 top-2.5 size-4 text-gold/60" />
       <input
         ref={input}
         value={q}
@@ -61,12 +62,12 @@ function GlobalSearch() {
         onBlur={() => setTimeout(() => setOpen(false), 150)}
         onKeyDown={(e) => { if (e.key === 'Enter' && res.data?.[0]) go(res.data[0]); if (e.key === 'Escape') setOpen(false); }}
         placeholder={tr('Item, Mob oder Zone suchen (DE/EN, ID)…', 'Search item, mob or zone (EN/DE, ID)…')}
-        className="h-8 w-full rounded-md border border-line bg-panel-2 pl-8 pr-14 text-[13px] text-ink outline-none placeholder:text-faint focus:border-gold/60"
+        className="h-9 w-full rounded-xl border border-line-2/70 bg-[#0d1119]/80 pl-9 pr-16 text-[13px] text-ink outline-none transition-colors placeholder:text-faint hover:border-line-2 focus:border-gold/60 focus:ring-2 focus:ring-gold/20"
         aria-label={tr('Globale Suche', 'Global search')}
       />
-      <span className="absolute right-2 top-1.5"><Kbd>{tr('Strg K', 'Ctrl K')}</Kbd></span>
+      <span className="absolute right-2.5 top-2"><Kbd>{tr('Strg K', 'Ctrl K')}</Kbd></span>
       {open && debounced.length >= 2 && (
-        <div className="absolute left-0 right-0 top-9 z-[1100] max-h-96 overflow-auto rounded-md border border-line-2 bg-panel-2 py-1 shadow-xl">
+        <div className="absolute left-0 right-0 top-10 z-[1100] max-h-96 overflow-auto rounded-xl border border-line-2 bg-panel-2/95 py-1 shadow-2xl backdrop-blur">
           {res.isLoading && <div className="px-3 py-2 text-[12.5px] text-faint">{tr('Suche…', 'Searching…')}</div>}
           {res.data?.length === 0 && <div className="px-3 py-2 text-[12.5px] text-faint">{tr('Keine Treffer in der lokalen Datenbank.', 'No matches in the local database.')}</div>}
           {res.data?.map((h) => (
@@ -96,7 +97,7 @@ function ProfileSwitcher() {
         await api.setActiveProfile(e.target.value);
         await qc.invalidateQueries({ queryKey: ['settings'] });
       }}
-      className="h-8 rounded-md border border-line bg-panel-2 px-2 text-[13px] text-ink outline-none"
+      className="h-9 rounded-xl border border-line-2/70 bg-[#0d1119]/80 px-2.5 text-[13px] text-ink outline-none hover:border-line-2 focus:border-gold/60"
     >
       {profiles.map((p) => (
         <option key={p.id} value={p.id}>
@@ -114,10 +115,10 @@ export function LanguageSwitch() {
   const lang = getLang();
   const set = (l: Lang) => { if (settings && l !== lang) save.mutate({ ...settings, language: l }); };
   return (
-    <div role="group" aria-label={tr('Sprache', 'Language')} className="flex h-8 overflow-hidden rounded-md border border-line text-[12px]">
+    <div role="group" aria-label={tr('Sprache', 'Language')} className="flex h-9 overflow-hidden rounded-xl border border-line-2/70 text-[12px] font-semibold">
       {(['de', 'en'] as const).map((l) => (
         <button key={l} type="button" onClick={() => set(l)} aria-pressed={lang === l}
-          className={cx('px-2.5 uppercase cursor-pointer', lang === l ? 'bg-gold/15 text-gold-2' : 'bg-panel-2 text-muted hover:text-ink')}>
+          className={cx('px-3 uppercase cursor-pointer transition-colors', lang === l ? 'bg-gradient-to-b from-gold/30 to-gold/10 text-gold-2' : 'bg-[#0d1119]/80 text-muted hover:text-ink')}>
           {l}
         </button>
       ))}
@@ -141,7 +142,7 @@ function StatusBar() {
   const h = health.data?.find((x) => x.provider === m?.provider);
   const [, ruleset, faction, region] = (m?.marketId ?? '').split('.');
   return (
-    <footer className="flex h-7 shrink-0 items-center gap-4 border-t border-line bg-panel px-3 text-[11.5px] text-faint">
+    <footer className="ff-chrome flex h-7 shrink-0 items-center gap-4 border-t border-line/80 px-4 text-[11.5px] text-faint">
       <span className="flex items-center gap-1">{online ? <Wifi className="size-3.5 text-ok" /> : <WifiOff className="size-3.5 text-warn" />}{online ? 'online' : tr('offline – Farmdaten lokal verfügbar', 'offline – farm data available locally')}</span>
       {m?.marketId && (
         <span>
@@ -157,32 +158,87 @@ function StatusBar() {
   );
 }
 
+const CLASS_COLOR: Record<string, string> = {
+  warrior: '#c69b6d', paladin: '#f48cba', hunter: '#aad372', rogue: '#fff468', priest: '#ffffff', shaman: '#0070dd',
+  mage: '#3fc7eb', warlock: '#8788ee', druid: '#ff7c0a',
+};
+
+/** Brand: logo mark + "FarmForever" wordmark. */
+function Brand() {
+  return (
+    <div className="flex items-center gap-2.5">
+      <img src="/app-icon.svg" alt="" className="size-8 drop-shadow-[0_0_10px_rgb(226_184_92/.35)]" />
+      <div className="leading-none">
+        <div className="ff-gold-text font-display text-[19px] font-bold tracking-[0.06em]">FarmForever</div>
+        <div className="mt-0.5 text-[10px] font-medium uppercase tracking-[0.22em] text-faint">WoW Forever · Farm Atlas 1–60</div>
+      </div>
+    </div>
+  );
+}
+
+/** Active character at the bottom of the sidebar. */
+function ProfileCard() {
+  const { profile } = useActiveProfile();
+  if (!profile) return null;
+  const color = CLASS_COLOR[profile.class] ?? '#e2b85c';
+  const horde = profile.faction === 'horde';
+  return (
+    <div className="relative overflow-hidden rounded-xl border border-line-2/70 bg-gradient-to-br from-panel-3/80 to-panel/60 p-3">
+      <div aria-hidden className="absolute -right-6 -top-6 size-20 rounded-full blur-2xl" style={{ background: color, opacity: 0.18 }} />
+      <div className="flex items-center gap-2.5">
+        <div className="grid size-9 shrink-0 place-items-center rounded-lg border text-[15px] font-bold" style={{ borderColor: `${color}66`, color, background: `${color}14` }}>
+          {profile.level}
+        </div>
+        <div className="min-w-0">
+          <div className="truncate text-[13px] font-semibold text-ink">{profile.name}</div>
+          <div className="truncate text-[11.5px]" style={{ color }}>{classLabel(profile.class)}</div>
+        </div>
+      </div>
+      <div className="mt-2 flex items-center gap-1.5 text-[11px] text-faint">
+        <span className={cx('size-2 rounded-full', horde ? 'bg-[#d4483e] shadow-[0_0_8px_#d4483e]' : 'bg-[#4f86e0] shadow-[0_0_8px_#4f86e0]')} />
+        {horde ? tr('Horde', 'Horde') : tr('Allianz', 'Alliance')}
+        <span className="text-line-2">·</span>
+        <span className="truncate uppercase">{profile.region} {profile.ruleset}</span>
+      </div>
+    </div>
+  );
+}
+
 export function Layout({ children }: { children: ReactNode }) {
   return (
     <div className="flex h-full flex-col">
-      <header className="flex h-12 shrink-0 items-center gap-4 border-b border-line bg-panel px-4">
-        <div className="flex items-center gap-2">
-          <img src="/app-icon.svg" alt="" className="size-6" />
-          <span className="font-display text-[15px] font-semibold tracking-wide text-gold-2">Azeroth Farm Atlas</span>
-          <span className="rounded bg-panel-3 px-1.5 text-[10.5px] text-faint">WoW Forever · 1–60</span>
-        </div>
+      <header className="ff-chrome relative flex h-14 shrink-0 items-center gap-5 px-4">
+        <Brand />
         <GlobalSearch />
         <div className="ml-auto flex items-center gap-2"><LanguageSwitch /><ProfileSwitcher /></div>
+        <div aria-hidden className="ff-divider absolute inset-x-0 bottom-0" />
       </header>
       <UpdateBanner />
       <div className="flex min-h-0 flex-1">
-        <nav className="flex w-48 shrink-0 flex-col gap-0.5 border-r border-line bg-panel p-2" aria-label={tr('Hauptnavigation', 'Main navigation')}>
+        <nav className="ff-chrome flex w-56 shrink-0 flex-col gap-1 border-r border-line/70 p-3" aria-label={tr('Hauptnavigation', 'Main navigation')}>
+          <div className="px-2 pb-1 pt-0.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-faint">{tr('Navigation', 'Navigation')}</div>
           {nav().map(({ to, label, Icon }) => (
             <NavLink
               key={to}
               to={to}
               className={({ isActive }) =>
-                cx('flex items-center gap-2.5 rounded-md px-2.5 py-1.5 text-[13px] transition-colors', isActive ? 'bg-gold/12 text-gold-2' : 'text-muted hover:bg-panel-3 hover:text-ink')
+                cx(
+                  'group relative flex items-center gap-3 rounded-lg px-3 py-2 text-[13.5px] transition-all',
+                  isActive
+                    ? 'bg-gradient-to-r from-gold/20 via-gold/[0.07] to-transparent text-gold-2 shadow-[inset_0_0_0_1px_rgb(226_184_92/.22)]'
+                    : 'text-muted hover:bg-white/[0.03] hover:text-ink',
+                )
               }
             >
-              <Icon className="size-4" /> {label}
+              {({ isActive }) => (
+                <>
+                  {isActive && <span aria-hidden className="absolute -left-3 top-1.5 bottom-1.5 w-[3px] rounded-r-full bg-gold shadow-[0_0_10px_rgb(226_184_92/.9)]" />}
+                  <Icon className={cx('size-[18px] transition-colors', isActive ? 'text-gold' : 'text-faint group-hover:text-gold/80')} /> {label}
+                </>
+              )}
             </NavLink>
           ))}
+          <div className="mt-auto"><ProfileCard /></div>
         </nav>
         <main className="min-w-0 flex-1 overflow-hidden">{children}</main>
       </div>

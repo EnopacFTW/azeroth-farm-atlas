@@ -1,8 +1,8 @@
 [package]
 name = "azeroth-farm-atlas"
-version = "0.4.1"
-description = "Azeroth Farm Atlas – WoW Forever Farmfinder (Windows)"
-authors = ["Azeroth Farm Atlas contributors"]
+version = "0.5.0"
+description = "FarmForever – WoW Forever farm finder (Windows)"
+authors = ["FarmForever contributors"]
 license = "GPL-3.0-or-later"
 edition = "2021"
 rust-version = "1.80"

@@ -2,59 +2,102 @@
 @import "leaflet/dist/leaflet.css";
 
 @theme {
-  --font-sans: "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
-  --font-display: "Segoe UI Variable Display", "Segoe UI", system-ui, sans-serif;
+  /* bundled fonts (@fontsource, SIL OFL): Inter for the UI, Cinzel for the brand and page titles */
+  --font-sans: "Inter Variable", "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
+  --font-display: "Cinzel", "Georgia", serif;
   --font-mono: "Cascadia Mono", Consolas, ui-monospace, monospace;
 
-  --color-bg: #0e1117;
-  --color-panel: #151a22;
-  --color-panel-2: #1b212c;
-  --color-panel-3: #232a37;
-  --color-line: #2a3242;
-  --color-line-2: #364053;
-  --color-ink: #e7e9ef;
-  --color-muted: #9aa3b5;
-  --color-faint: #6b7487;
-  --color-gold: #d6b25e;
-  --color-gold-2: #f1d58a;
+  --color-bg: #0a0d13;
+  --color-panel: #121722;
+  --color-panel-2: #171d2a;
+  --color-panel-3: #202838;
+  --color-line: #252e40;
+  --color-line-2: #34405a;
+  --color-ink: #ecedf2;
+  --color-muted: #a2abbd;
+  --color-faint: #6f7a8f;
+  --color-gold: #e2b85c;
+  --color-gold-2: #f6dc94;
   --color-gold-dim: #7d6630;
-  --color-ok: #5cc98a;
-  --color-warn: #e9a54e;
-  --color-bad: #e06c6c;
-  --color-info: #6fa8dc;
+  --color-ok: #5fd39a;
+  --color-warn: #f0ac57;
+  --color-bad: #ec7272;
+  --color-info: #74b4ef;
+  --color-arcane: #a78bfa;
   --color-q0: #9d9d9d;
-  --color-q1: #e7e9ef;
+  --color-q1: #ecedf2;
   --color-q2: #1eff00;
-  --color-q3: #2f8cff;
-  --color-q4: #b048f8;
-  --color-q5: #ff8000;
+  --color-q3: #3b93ff;
+  --color-q4: #b660ff;
+  --color-q5: #ff8a1a;
 }
 
 html, body, #root { height: 100%; }
 body {
   margin: 0;
-  background: var(--color-bg);
   color: var(--color-ink);
   font-family: var(--font-sans);
+  font-feature-settings: "cv11", "ss01";
   -webkit-font-smoothing: antialiased;
   user-select: none;
+  /* layered background: warm gold glow top-left, arcane glow bottom-right */
+  background:
+    radial-gradient(1200px 700px at -10% -20%, rgb(226 184 92 / .10), transparent 60%),
+    radial-gradient(900px 600px at 110% 120%, rgb(120 90 220 / .10), transparent 60%),
+    linear-gradient(180deg, #0c1018 0%, #090b10 100%);
+  background-attachment: fixed;
 }
 input, textarea, select, .selectable { user-select: text; }
 ::selection { background: color-mix(in oklab, var(--color-gold) 40%, transparent); }
 * { scrollbar-width: thin; scrollbar-color: var(--color-line-2) transparent; }
+:focus-visible { outline: 2px solid color-mix(in oklab, var(--color-gold) 70%, transparent); outline-offset: 2px; }
 
 .num { font-variant-numeric: tabular-nums; }
 
-/* Leaflet on a coordinate plane (no Blizzard map tiles) */
-.leaflet-container { background: #10151d; font-family: var(--font-sans); }
-.leaflet-popup-content-wrapper, .leaflet-popup-tip { background: var(--color-panel-2); color: var(--color-ink); border: 1px solid var(--color-line-2); box-shadow: 0 8px 24px rgb(0 0 0 / .45); }
+/* ---- FarmForever surfaces ---- */
+@utility ff-surface {
+  background: linear-gradient(180deg, rgb(26 33 48 / .78), rgb(16 20 30 / .78));
+  border: 1px solid var(--color-line);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .04), 0 10px 30px -18px rgb(0 0 0 / .8);
+  backdrop-filter: blur(6px);
+}
+@utility ff-chrome {
+  background: linear-gradient(180deg, rgb(20 25 37 / .92), rgb(13 17 26 / .92));
+  backdrop-filter: blur(8px);
+}
+@utility ff-gold-text {
+  background: linear-gradient(180deg, #fff1c2 0%, #f3d27c 45%, #c9962f 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+@utility ff-gold-fill {
+  background: linear-gradient(180deg, #f8dc8c 0%, #e2b85c 55%, #c08f2e 100%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .35), 0 6px 18px -8px rgb(226 184 92 / .65);
+}
+@utility ff-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgb(226 184 92 / .45), transparent);
+}
+
+/* page titles: Cinzel with a soft gold tone */
+h1.font-display { letter-spacing: .02em; color: var(--color-gold-2); text-shadow: 0 1px 0 rgb(0 0 0 / .6), 0 0 22px rgb(226 184 92 / .15); }
+
+/* Leaflet */
+.leaflet-container { background: #0d1119; font-family: var(--font-sans); }
+.leaflet-popup-content-wrapper, .leaflet-popup-tip { background: var(--color-panel-2); color: var(--color-ink); border: 1px solid var(--color-line-2); box-shadow: 0 12px 32px rgb(0 0 0 / .55); }
+.leaflet-popup-content-wrapper { border-radius: 10px; }
 .leaflet-popup-content { margin: 10px 12px; font-size: 12.5px; line-height: 1.45; }
 .leaflet-container a.leaflet-popup-close-button { color: var(--color-muted); }
+.leaflet-bar { border: 1px solid var(--color-line-2) !important; border-radius: 8px !important; overflow: hidden; box-shadow: 0 6px 18px rgb(0 0 0 / .4) !important; }
 .leaflet-bar a { background: var(--color-panel-2); color: var(--color-ink); border-color: var(--color-line); }
-.leaflet-bar a:hover { background: var(--color-panel-3); }
-.leaflet-control-attribution { background: rgb(14 17 23 / .8) !important; color: var(--color-faint) !important; font-size: 10px; }
+.leaflet-bar a:hover { background: var(--color-panel-3); color: var(--color-gold-2); }
+.leaflet-control-attribution { background: rgb(10 13 19 / .8) !important; color: var(--color-faint) !important; font-size: 10px; border-top-left-radius: 6px; }
 .leaflet-control-attribution a { color: var(--color-muted) !important; }
-.leaflet-tooltip { background: var(--color-panel-2); color: var(--color-ink); border: 1px solid var(--color-line-2); box-shadow: none; font-size: 12px; }
+.leaflet-tooltip { background: var(--color-panel-2); color: var(--color-ink); border: 1px solid var(--color-line-2); box-shadow: 0 6px 16px rgb(0 0 0 / .45); font-size: 12px; border-radius: 6px; }
 .leaflet-tooltip-top:before { border-top-color: var(--color-line-2); }
+
+@keyframes ff-fade-up { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+.ff-fade-up { animation: ff-fade-up .25s ease-out both; }
 
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }

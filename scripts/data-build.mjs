@@ -43,7 +43,7 @@ const SOURCES = [
   { id: 'manual_zone_meta', name: 'Zonen-Metadaten (manuell kuratiert)', url: 'scripts/data/zones.json', license: 'Projektlizenz (GPL-3.0)',
     version: builtAt.slice(0, 10), flavor: 'classic_era', reliability: 'manual_unverified',
     notes: 'Deutsche Zonennamen, Kontinent, Zonentyp, Classic-Zonenkontrolle für PvP-Hinweis.' },
-  { id: 'atlas_clustering', name: 'Azeroth Farm Atlas – automatische Spot-Gruppierung', url: 'scripts/lib/geo.mjs', license: 'GPL-3.0',
+  { id: 'atlas_clustering', name: 'FarmForever – automatische Spot-Gruppierung', url: 'scripts/lib/geo.mjs', license: 'GPL-3.0',
     version: String(SEED_SCHEMA_VERSION), flavor: 'forever', reliability: 'forever_client_data',
     notes: 'Spots sind automatisch aus Forever-Spawnpunkten gruppiert (DBSCAN, eps 6 %). Keine handkuratierten Routen.' },
   { id: 'community_guides', name: 'Community-Farmguides (recherchiert)', url: 'scripts/data/community-spots.json', license: 'Fakten mit Quellenlink',

@@ -54,7 +54,7 @@ pub async fn export_profile(app: AppHandle, state: State<'_, AppState>, id: Stri
         return Ok(None);
     };
     let path = path.into_path().map_err(|_| AppError::invalid(crate::i18n::tr("Ungültiger Pfad", "Invalid path")))?;
-    let doc = serde_json::json!({ "format": "azeroth-farm-atlas.profile", "version": 1, "profile": p });
+    let doc = serde_json::json!({ "format": "farmforever.profile", "version": 1, "profile": p });
     std::fs::write(&path, serde_json::to_vec_pretty(&doc)?)?;
     Ok(Some(path.display().to_string()))
 }
@@ -69,8 +69,9 @@ pub async fn import_profile(app: AppHandle, state: State<'_, AppState>) -> AppRe
         return Err(AppError::invalid(crate::i18n::tr("Datei zu groß für ein Profil", "File too large for a profile")));
     }
     let v: serde_json::Value = serde_json::from_slice(&std::fs::read(&path)?)?;
-    if v.get("format").and_then(|f| f.as_str()) != Some("azeroth-farm-atlas.profile") {
-        return Err(AppError::invalid(crate::i18n::tr("Keine Azeroth-Farm-Atlas-Profildatei", "Not an Azeroth Farm Atlas profile file")));
+    // "azeroth-farm-atlas.profile" = files exported before the rename (0.4.x)
+    if !matches!(v.get("format").and_then(|f| f.as_str()), Some("farmforever.profile" | "azeroth-farm-atlas.profile")) {
+        return Err(AppError::invalid(crate::i18n::tr("Keine FarmForever-Profildatei", "Not a FarmForever profile file")));
     }
     let mut p: Profile = serde_json::from_value(v.get("profile").cloned().unwrap_or_default())
         .map_err(|e| AppError::invalid(crate::i18n::tr(format!("Profil ungültig: {e}"), format!("Invalid profile: {e}"))))?;

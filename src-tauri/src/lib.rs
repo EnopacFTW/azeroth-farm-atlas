@@ -1,4 +1,4 @@
-//! Azeroth Farm Atlas – Tauri 2 desktop backend.
+//! FarmForever (formerly Azeroth Farm Atlas) – Tauri 2 desktop backend.
 
 pub mod commands {
     pub mod farm;
@@ -52,7 +52,7 @@ pub fn run() {
                 Err(e) => {
                     use tauri_plugin_dialog::{DialogExt, MessageDialogKind};
                     app.dialog()
-                        .message(crate::i18n::tr(format!("Azeroth Farm Atlas konnte die lokalen Daten nicht öffnen:\n\n{}\n\nDatenordner: %APPDATA%\\de.azerothfarmatlas.desktop", e.message), format!("Azeroth Farm Atlas could not open its local data:\n\n{}\n\nData folder: %APPDATA%\\de.azerothfarmatlas.desktop", e.message)))
+                        .message(crate::i18n::tr(format!("FarmForever konnte die lokalen Daten nicht öffnen:\n\n{}\n\nDatenordner: %APPDATA%\\de.azerothfarmatlas.desktop", e.message), format!("FarmForever could not open its local data:\n\n{}\n\nData folder: %APPDATA%\\de.azerothfarmatlas.desktop", e.message)))
                         .kind(MessageDialogKind::Error)
                         .title(crate::i18n::tr("Startfehler", "Startup error"))
                         .blocking_show();
@@ -120,5 +120,5 @@ pub fn run() {
             commands::settings::reset_local_data,
         ])
         .run(tauri::generate_context!())
-        .expect("error while running Azeroth Farm Atlas");
+        .expect("error while running FarmForever");
 }

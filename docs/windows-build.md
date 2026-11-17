@@ -59,8 +59,8 @@ npm run tauri build
 
 Ergebnis (Version aus `tauri.conf.json`):
 
-- `src-tauri\target\release\bundle\nsis\Azeroth Farm Atlas_<version>_x64-setup.exe` (bevorzugt; pro Benutzer, DE/EN) + `.sig`
-- `src-tauri\target\release\bundle\msi\Azeroth Farm Atlas_<version>_x64_de-DE.msi` (+ en-US, je mit `.sig`)
+- `src-tauri\target\release\bundle\nsis\FarmForever_<version>_x64-setup.exe` (bevorzugt; pro Benutzer, DE/EN) + `.sig`
+- `src-tauri\target\release\bundle\msi\FarmForever_<version>_x64_de-DE.msi` (+ en-US, je mit `.sig`)
 
 Die Installer sind **nicht Authenticode-signiert** (kein Code-Signing-Zertifikat) → SmartScreen zeigt „Unbekannter
 Herausgeber“. Die Update-Signatur (minisign) ist davon unabhängig und schützt nur den Updater-Kanal.
@@ -93,3 +93,10 @@ Neues Release:
 
 Frontend/Domain-Tests laufen plattformunabhängig. Der Installer muss auf einem Windows-Runner gebaut werden
 (`windows-latest`, Rust stable, Node 22+, `npm ci && npm run tauri build`).
+
+## Umbenennung (0.5.0)
+
+Bis 0.4.x hieß die App „Azeroth Farm Atlas“ (Ordner `%LOCALAPPDATA%\Azeroth Farm Atlas`). Der FarmForever-Installer
+entfernt diese alte Programm-Installation (NSIS-Hook `src-tauri/windows/hooks.nsh`) und ersetzt deren Verknüpfungen.
+Bundle-ID (`de.azerothfarmatlas.desktop`), Datenordner, Anmeldeinformationsspeicher und Update-URL bleiben unverändert,
+damit Profile, Sessions, Karten und API-Keys erhalten bleiben und der Auto-Updater der alten Versionen weiter funktioniert.

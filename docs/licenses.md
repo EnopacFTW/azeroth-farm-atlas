@@ -19,5 +19,7 @@ im lokalen Datenordner ab. Die Tabellen-Spaltenlayouts stammen aus
 WoWDBDefs (wowdev); die File-IDs der Tabellen aus der Community-Listfile (wowdev). Ohne Client: selbst erzeugte Koordinatenflächen mit Spawndichte oder eigene importierte Bilder.
 Item-Icons werden nicht geladen.
 
+**Schriften (eingebettet):** Inter und Cinzel über @fontsource (SIL Open Font License 1.1).
+
 **Laufzeit-Bibliotheken:** Tauri (MIT/Apache-2.0), React (MIT), Leaflet (BSD-2), TanStack Query (MIT), Zustand (MIT),
 Zod (MIT), lucide-react (ISC), rusqlite/SQLite (MIT/Public Domain), reqwest (MIT/Apache-2.0), keyring (MIT/Apache-2.0).

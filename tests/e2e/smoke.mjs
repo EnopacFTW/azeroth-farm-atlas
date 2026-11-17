@@ -1,7 +1,7 @@
 // Windows desktop E2E smoke test. Drives the REAL Tauri/WebView2 window via the Chrome DevTools Protocol.
 // Start the app with remote debugging first, e.g. (PowerShell):
 //   $env:WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS="--remote-debugging-port=9222"; npm run tauri dev
-//   (or start the installed "Azeroth Farm Atlas.exe" with the same env var)
+//   (or start the installed "FarmForever.exe" with the same env var)
 // Then: npm run test:e2e
 import { chromium } from 'playwright-core';
 
@@ -45,8 +45,8 @@ await check('App startet und Farmfinder zeigt Spots (Level 28, Demo-Profil)', as
   await go('#/finder');
   await page.getByText('passende Spots').waitFor();
   // the counter renders before the candidate query has finished
-  await page.waitForFunction(() => Number(document.querySelector('section span.font-semibold.num')?.textContent) > 0, null, { timeout: 30_000 }).catch(() => {});
-  const n = Number(await page.locator('section span.font-semibold.num').first().textContent());
+  await page.waitForFunction(() => Number(document.querySelector('section span.ff-gold-text.num')?.textContent) > 0, null, { timeout: 30_000 }).catch(() => {});
+  const n = Number(await page.locator('section span.ff-gold-text.num').first().textContent());
   if (!(n > 0)) throw new Error(`0 Spots`);
   return `${n} Spots`;
 });

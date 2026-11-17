@@ -46,7 +46,7 @@ pub struct HttpClient {
     pub retry_base: Duration,
 }
 
-pub const USER_AGENT: &str = concat!("AzerothFarmAtlas/", env!("CARGO_PKG_VERSION"), " (Windows desktop; read-only)");
+pub const USER_AGENT: &str = concat!("FarmForever/", env!("CARGO_PKG_VERSION"), " (Windows desktop; read-only)");
 
 impl HttpClient {
     pub fn new(policy: NetworkPolicy) -> Self {

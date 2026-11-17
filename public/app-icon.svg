@@ -1,20 +1,38 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#1c2230"/>
-      <stop offset="1" stop-color="#0d1017"/>
+    <radialGradient id="bg" cx="0.35" cy="0.3" r="0.95">
+      <stop offset="0" stop-color="#2a2414"/>
+      <stop offset="0.45" stop-color="#161b27"/>
+      <stop offset="1" stop-color="#0a0d14"/>
+    </radialGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fff1c2"/>
+      <stop offset="0.35" stop-color="#f3d27c"/>
+      <stop offset="0.7" stop-color="#d4a23c"/>
+      <stop offset="1" stop-color="#9c6d1c"/>
     </linearGradient>
-    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#f1d58a"/>
-      <stop offset="1" stop-color="#b88a2e"/>
+    <linearGradient id="rim" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f6dc94"/>
+      <stop offset="1" stop-color="#8a6420"/>
     </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#f3d27c" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#f3d27c" stop-opacity="0"/>
+    </radialGradient>
   </defs>
-  <rect x="32" y="32" width="960" height="960" rx="200" fill="url(#bg)"/>
-  <rect x="32" y="32" width="960" height="960" rx="200" fill="none" stroke="#c9a14a" stroke-opacity=".55" stroke-width="16"/>
-  <g stroke="#c9a14a" stroke-opacity=".18" stroke-width="6">
-    <path d="M232 192v640M392 192v640M552 192v640M712 192v640M192 272h640M192 432h640M192 592h640M192 752h640"/>
-  </g>
-  <path d="M512 196c-112 0-200 88-200 200 0 150 200 404 200 404s200-254 200-404c0-112-88-200-200-200z" fill="url(#gold)"/>
-  <circle cx="512" cy="396" r="84" fill="#141925"/>
-  <path d="M512 340l18 40 44 5-33 30 9 43-38-22-38 22 9-43-33-30 44-5z" fill="#f1d58a"/>
+  <rect x="40" y="40" width="944" height="944" rx="216" fill="url(#bg)"/>
+  <rect x="40" y="40" width="944" height="944" rx="216" fill="none" stroke="url(#rim)" stroke-width="22"/>
+  <rect x="84" y="84" width="856" height="856" rx="176" fill="none" stroke="#f3d27c" stroke-opacity=".12" stroke-width="6"/>
+  <circle cx="512" cy="512" r="330" fill="url(#glow)"/>
+  <!-- infinity ribbon: "Forever" -->
+  <path d="M512 520 C 440 404, 250 396, 246 520 C 242 644, 440 640, 512 520 C 584 400, 778 396, 778 520 C 778 644, 584 636, 512 520 Z"
+        fill="none" stroke="#0a0d14" stroke-opacity=".55" stroke-width="104" stroke-linejoin="round" transform="translate(0 10)"/>
+  <path d="M512 520 C 440 404, 250 396, 246 520 C 242 644, 440 640, 512 520 C 584 400, 778 396, 778 520 C 778 644, 584 636, 512 520 Z"
+        fill="none" stroke="url(#gold)" stroke-width="84" stroke-linejoin="round"/>
+  <path d="M512 520 C 440 404, 250 396, 246 520 C 242 644, 440 640, 512 520 C 584 400, 778 396, 778 520 C 778 644, 584 636, 512 520 Z"
+        fill="none" stroke="#fff6d8" stroke-opacity=".45" stroke-width="10" transform="translate(-6 -18)"/>
+  <!-- spark: loot / treasure -->
+  <path d="M512 196 C 524 262, 546 284, 612 296 C 546 308, 524 330, 512 396 C 500 330, 478 308, 412 296 C 478 284, 500 262, 512 196 Z" fill="url(#gold)"/>
+  <circle cx="512" cy="296" r="18" fill="#fff6d8"/>
+  <path d="M512 708 l 14 34 34 14 -34 14 -14 34 -14 -34 -34 -14 34 -14 z" fill="#f3d27c" fill-opacity=".8"/>
 </svg>

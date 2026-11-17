@@ -62,10 +62,10 @@ export function ProfileBar() {
   );
 
   return (
-    <div className="border-b border-line bg-panel/60 px-4 py-2.5">
+    <div className="ff-chrome relative border-b border-line/70 px-4 py-3">
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
         <div className="flex items-center gap-2">
-          <span className="text-[11px] font-semibold uppercase tracking-wider text-faint">Lvl</span>
+          <span className="text-[10.5px] font-semibold uppercase tracking-[0.16em] text-gold/80">Lvl</span>
           <input aria-label={tr('Charakterlevel', 'Character level')} type="number" min={1} max={60} value={p.level}
             onChange={(e) => update({ level: Math.min(60, Math.max(1, Number(e.target.value) || 1)) })} className={cx(inputCls, 'w-14 text-center num')} />
           <input aria-label={tr('Level-Regler', 'Level slider')} type="range" min={1} max={60} step={1} value={p.level} onChange={(e) => update({ level: Number(e.target.value) })} className="w-40 accent-[var(--color-gold)]" />

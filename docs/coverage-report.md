@@ -1,6 +1,6 @@
 # Coverage-Report (automatisch erzeugt)
 
-Build: 2026-11-16T23:43:18.317Z  ·  Seed SHA-256: `2834914d97924855…`
+Build: 2026-11-17T00:00:15.849Z  ·  Seed SHA-256: `8523fdc575507199…`
 
 ## Datensätze
 
@@ -41,6 +41,6 @@ Aufgelöst: 198
 - **QuestieDB – Flavor Forever** (GPL-3.0) – https://github.com/Questie/QuestieDB – Version: `4dbb82440a27856f8dccf57094a5d792cdc7cc9b` – forever_client_data
 - **cmangos classic-db (1.12.1)** (GPL-3.0) – https://github.com/cmangos/classic-db – Version: `ClassicDB_1_12_1_z2815.sql.gz sha256:4f92db520868ab4e566726f68b5b2e380ae781209beaf22237b4f7f04600d0c0` – classic_fallback
 - **Classic-Spielregeln (Wowpedia)** (Fakten / CC BY-SA Referenz) – https://wowpedia.fandom.com/wiki/Skinning – Version: `Classic 1.12` – classic_fallback
-- **Zonen-Metadaten (manuell kuratiert)** (Projektlizenz (GPL-3.0)) – scripts/data/zones.json – Version: `2026-11-16` – manual_unverified
-- **Azeroth Farm Atlas – automatische Spot-Gruppierung** (GPL-3.0) – scripts/lib/geo.mjs – Version: `2` – forever_client_data
-- **Community-Farmguides (recherchiert)** (Fakten mit Quellenlink) – scripts/data/community-spots.json – Version: `2026-11-16` – manual_unverified
+- **Zonen-Metadaten (manuell kuratiert)** (Projektlizenz (GPL-3.0)) – scripts/data/zones.json – Version: `2026-11-17` – manual_unverified
+- **FarmForever – automatische Spot-Gruppierung** (GPL-3.0) – scripts/lib/geo.mjs – Version: `2` – forever_client_data
+- **Community-Farmguides (recherchiert)** (Fakten mit Quellenlink) – scripts/data/community-spots.json – Version: `2026-11-17` – manual_unverified

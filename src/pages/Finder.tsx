@@ -78,9 +78,9 @@ export function FinderPage() {
     <div className="flex h-full flex-col">
       <ProfileBar />
       <div className="flex min-h-0 flex-1">
-        <section style={{ width: w }} className="flex shrink-0 flex-col border-r border-line">
-          <div className="flex items-center gap-2 border-b border-line px-3 py-2 text-[12.5px]">
-            <span className="font-semibold text-ink num">{ranked.length}</span>
+        <section style={{ width: w }} className="flex shrink-0 flex-col border-r border-line/70 bg-[#0b0f16]/60">
+          <div className="flex items-center gap-2 border-b border-line/70 px-3 py-2 text-[12.5px]">
+            <span className="ff-gold-text num text-[16px] font-bold">{ranked.length}</span>
             <span className="text-muted">{tr('passende Spots', 'matching spots')}</span>
             {ranked.length > visible.length && <span className="text-faint">({tr('zeige', 'showing')} {visible.length})</span>}
             {cand.isFetching && <Spinner label="" />}
@@ -101,20 +101,20 @@ export function FinderPage() {
             ))}
           </div>
         </section>
-        <div onMouseDown={drag} className="w-1 shrink-0 cursor-col-resize bg-line/40 hover:bg-gold/40" role="separator" aria-label={tr('Breite anpassen', 'Resize')} />
+        <div onMouseDown={drag} className="w-1 shrink-0 cursor-col-resize bg-line/30 transition-colors hover:bg-gold/50" role="separator" aria-label={tr('Breite anpassen', 'Resize')} />
         <section className="flex min-w-0 flex-1 flex-col">
           {selected ? (
             <>
               <WorldMap className="min-h-[320px] flex-[3]" zoneId={selected.spot.zoneId} zoneName={nm(selected.spot.zone)} uiMapId={selected.spot.zone.uiMapId} markers={markers}
                 hull={detail.data?.spot.hull} route={detail.data?.spot.route}
                 focus={selected.spot.centerX != null ? { x: selected.spot.centerX, y: selected.spot.centerY!, r: selected.spot.radius ?? 6 } : null} />
-              <div className="flex-[2] overflow-y-auto border-t border-line p-4">
+              <div className="ff-chrome relative flex-[2] overflow-y-auto border-t border-gold/20 p-4">
                 <div className="flex items-start gap-3">
                   <div className="min-w-0">
-                    <h2 className="text-[15px] font-semibold text-ink">{title(selected.spot)}</h2>
+                    <h2 className="font-display text-[17px] font-semibold tracking-wide text-gold-2">{title(selected.spot)}</h2>
                     <p className="text-[12px] text-faint">{titleAlt(selected.spot)}</p>
                   </div>
-                  <Link to={`/spots/${encodeURIComponent(selected.spot.id)}`} className="ml-auto shrink-0 rounded-md border border-line bg-panel-3 px-3 py-1 text-[12.5px] text-gold hover:bg-line-2">{tr('Alle Details & AH-Preise →', 'All details & AH prices →')}</Link>
+                  <Link to={`/spots/${encodeURIComponent(selected.spot.id)}`} className="ff-gold-fill ml-auto shrink-0 rounded-lg px-3.5 py-1.5 text-[12.5px] font-semibold text-[#1d1607] hover:brightness-110">{tr('Alle Details & AH-Preise →', 'All details & AH prices →')}</Link>
                 </div>
                 <div className="mt-3 grid gap-4 md:grid-cols-3">
                   <Reasons title={tr('Warum empfohlen?', 'Why recommended?')} icon={<CheckCircle2 className="size-4 text-ok" />} items={selected.why} empty="—" />

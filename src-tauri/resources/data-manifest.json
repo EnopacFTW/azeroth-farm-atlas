@@ -1,6 +1,6 @@
 {
   "seedSchemaVersion": 2,
-  "builtAt": "2026-11-16T23:43:18.317Z",
+  "builtAt": "2026-11-17T00:00:15.849Z",
   "sources": [
     {
       "id": "questiedb_forever",
@@ -31,12 +31,12 @@
       "name": "Zonen-Metadaten (manuell kuratiert)",
       "url": "scripts/data/zones.json",
       "license": "Projektlizenz (GPL-3.0)",
-      "version": "2026-11-16",
+      "version": "2026-11-17",
       "reliability": "manual_unverified"
     },
     {
       "id": "atlas_clustering",
-      "name": "Azeroth Farm Atlas – automatische Spot-Gruppierung",
+      "name": "FarmForever – automatische Spot-Gruppierung",
       "url": "scripts/lib/geo.mjs",
       "license": "GPL-3.0",
       "version": "2",
@@ -47,7 +47,7 @@
       "name": "Community-Farmguides (recherchiert)",
       "url": "scripts/data/community-spots.json",
       "license": "Fakten mit Quellenlink",
-      "version": "2026-11-16",
+      "version": "2026-11-17",
       "reliability": "manual_unverified"
     }
   ],
@@ -137,5 +137,5 @@
       "rare": 218
     }
   },
-  "seedSha256": "2834914d97924855a476dda2d929041dd7a9c7f54aa0eb82fec627e967df2146"
+  "seedSha256": "8523fdc575507199ff9f1ccc2003669478035e1a29295a67e5389764fe8ee5ae"
 }

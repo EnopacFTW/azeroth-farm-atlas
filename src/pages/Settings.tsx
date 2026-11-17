@@ -156,7 +156,7 @@ function Providers() {
                     </div>
                     {secretInput('blizzard_client_id', 'Client-ID')}
                     {secretInput('blizzard_client_secret', 'Client-Secret')}
-                    <p className="text-[11.5px] text-faint">{tr('Zugangsdaten liegen nur in der Windows-Anmeldeinformationsverwaltung („AzerothFarmAtlas“), nie in SQLite, Logs oder Exporten. OAuth-Token nur im Speicher.', 'Credentials are kept only in the Windows Credential Manager (“AzerothFarmAtlas”), never in SQLite, logs or exports. OAuth token in memory only.')}</p>
+                    <p className="text-[11.5px] text-faint">{tr('Zugangsdaten liegen nur in der Windows-Anmeldeinformationsverwaltung (Eintrag „AzerothFarmAtlas“ – Name aus Kompatibilität beibehalten), nie in SQLite, Logs oder Exporten. OAuth-Token nur im Speicher.', 'Credentials are kept only in the Windows Credential Manager (entry “AzerothFarmAtlas” – name kept for compatibility), never in SQLite, logs or exports. OAuth token in memory only.')}</p>
                   </>
                 )}
               </div>

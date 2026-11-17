@@ -31,7 +31,7 @@ export function App() {
   if (!isDesktop) {
     return (
       <div className="mx-auto mt-24 max-w-xl p-6">
-        <ErrorBox title={tr('Nur als Windows-App lauffähig', 'Runs only as a Windows app')} error={{ message: tr('Azeroth Farm Atlas ist eine Tauri-Desktop-App. Start: „npm run tauri dev“ oder den Installer verwenden. Im reinen Browser gibt es weder SQLite noch AH-Adapter.', 'Azeroth Farm Atlas is a Tauri desktop app. Start it with “npm run tauri dev” or the installer. A plain browser has neither SQLite nor the AH adapters.') }} />
+        <ErrorBox title={tr('Nur als Windows-App lauffähig', 'Runs only as a Windows app')} error={{ message: tr('FarmForever ist eine Tauri-Desktop-App. Start: „npm run tauri dev“ oder den Installer verwenden. Im reinen Browser gibt es weder SQLite noch AH-Adapter.', 'FarmForever is a Tauri desktop app. Start it with “npm run tauri dev” or the installer. A plain browser has neither SQLite nor the AH adapters.') }} />
       </div>
     );
   }

@@ -29,6 +29,25 @@ export const spotKindLabel = (k: string) =>
 export const gatherSkillName = (k: string) =>
   ({ skinning: tr('Kürschnern', 'Skinning'), mining: tr('Bergbau', 'Mining'), herbalism: tr('Kräuter', 'Herbalism'), fishing: tr('Angeln', 'Fishing') } as Record<string, string>)[k] ?? k;
 
+/** Circular fit gauge (0–100): green ≥ 75, gold ≥ 50, otherwise muted. */
+export function ScoreRing({ value, size = 44 }: { value: number; size?: number }) {
+  const r = (size - 6) / 2;
+  const c = 2 * Math.PI * r;
+  const v = Math.max(0, Math.min(100, value));
+  const color = v >= 75 ? '#5fd39a' : v >= 50 ? '#e2b85c' : '#8b94a8';
+  return (
+    <div className="relative grid shrink-0 place-items-center" style={{ width: size, height: size }}
+      title={tr('Eignung (fitScore) – keine Wirtschaftlichkeit', 'Fit (fitScore) – not profitability')}>
+      <svg width={size} height={size} className="-rotate-90">
+        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="rgb(255 255 255 / .07)" strokeWidth="4" />
+        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={color} strokeWidth="4" strokeLinecap="round"
+          strokeDasharray={`${(c * v) / 100} ${c}`} style={{ filter: `drop-shadow(0 0 4px ${color}88)` }} />
+      </svg>
+      <span className="num absolute text-[13px] font-bold" style={{ color }}>{v}</span>
+    </div>
+  );
+}
+
 export function SpotCard({ s, active, favorite, inCompare, onSelect, onFavorite, onCompare }: {
   s: ScoredSpot; active: boolean; favorite: boolean; inCompare: boolean; onSelect: () => void; onFavorite: () => void; onCompare: () => void;
 }) {
@@ -39,13 +58,16 @@ export function SpotCard({ s, active, favorite, inCompare, onSelect, onFavorite,
   return (
     <article
       onClick={onSelect}
-      className={cx('cursor-pointer rounded-lg border px-3.5 py-3 transition-colors', active ? 'border-gold/60 bg-gold/[0.06]' : 'border-line bg-panel hover:border-line-2')}
+      className={cx('group ff-fade-up relative cursor-pointer rounded-xl border px-3.5 py-3 transition-all duration-200',
+        active
+          ? 'border-gold/60 bg-gradient-to-br from-gold/[0.12] via-panel/80 to-panel/70 shadow-[0_0_0_1px_rgb(226_184_92/.25),0_12px_30px_-14px_rgb(226_184_92/.45)]'
+          : 'border-line bg-gradient-to-br from-panel-2/80 to-panel/70 hover:-translate-y-px hover:border-gold/30 hover:shadow-[0_12px_28px_-16px_rgb(0_0_0/.9)]')}
       aria-selected={active}
     >
       <div className="flex items-start gap-2">
-        <KindIcon className="mt-0.5 size-4 shrink-0 text-gold" />
+        <div className="grid size-8 shrink-0 place-items-center rounded-lg border border-gold/25 bg-gold/[0.08] text-gold shadow-[inset_0_1px_0_rgb(255_255_255/.06)]"><KindIcon className="size-4" /></div>
         <div className="min-w-0 flex-1">
-          <h3 className="truncate text-[13.5px] font-semibold text-ink" title={titleAlt(sp) ?? undefined}>{title(sp)}</h3>
+          <h3 className="truncate text-[13.5px] font-semibold text-ink transition-colors group-hover:text-gold-2" title={titleAlt(sp) ?? undefined}>{title(sp)}</h3>
           <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-[12px] text-muted">
             <span>{nm(sp.zone)}</span>
             <span className="text-faint">·</span>
@@ -56,8 +78,8 @@ export function SpotCard({ s, active, favorite, inCompare, onSelect, onFavorite,
             <span className="num">{sp.spawnCount} Spawns</span>
           </div>
         </div>
-        <div className="flex shrink-0 flex-col items-end gap-1">
-          <span className="num text-[15px] font-semibold text-gold-2" title={tr('Eignung (fitScore) – keine Wirtschaftlichkeit', 'Fit (fitScore) – not profitability')}>{s.fitScore}</span>
+        <div className="flex shrink-0 flex-col items-center gap-1">
+          <ScoreRing value={s.fitScore} />
           <Badge tone={a.tone}>{a.label}</Badge>
         </div>
       </div>

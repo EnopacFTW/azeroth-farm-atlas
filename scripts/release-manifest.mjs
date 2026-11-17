@@ -17,7 +17,7 @@ if (!fs.existsSync(sigPath)) {
 const asset = file.replace(/ /g, '.');
 const manifest = {
   version,
-  notes: process.argv[2] ?? `Azeroth Farm Atlas ${version}`,
+  notes: process.argv[2] ?? `FarmForever ${version}`,
   pub_date: new Date().toISOString(),
   platforms: {
     'windows-x86_64': {

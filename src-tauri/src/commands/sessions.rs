@@ -72,7 +72,7 @@ pub async fn export_sessions(app: AppHandle, state: State<'_, AppState>, profile
     let sessions = user::list_sessions(&*state.user()?, &profile_id)?;
     let (ext, body) = match format.as_str() {
         "csv" => ("csv", sessions_csv(&sessions).into_bytes()),
-        "json" => ("json", serde_json::to_vec_pretty(&serde_json::json!({ "format": "azeroth-farm-atlas.sessions", "version": 1, "sessions": sessions }))?),
+        "json" => ("json", serde_json::to_vec_pretty(&serde_json::json!({ "format": "farmforever.sessions", "version": 1, "sessions": sessions }))?),
         _ => return Err(AppError::invalid(crate::i18n::tr("Format muss csv oder json sein", "Format must be csv or json"))),
     };
     let Some(path) = app.dialog().file().add_filter(ext, &[ext]).set_file_name(&format!("farm-sessions.{ext}")).blocking_save_file() else {
